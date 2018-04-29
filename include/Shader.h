@@ -16,6 +16,8 @@ public:
   Shader(const std::string& vsFilepath, const std::string& fsFilepath);
   ~Shader();
 
+  unsigned int programID() const { return (unsigned int)_programID; }
+
   void Bind();
   void Unbind();
 
