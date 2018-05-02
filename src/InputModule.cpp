@@ -1,6 +1,10 @@
 #include "../include/InputModule.h"
-#include "../include/Game.h"
+
 #include <iostream>
+
+#include "../include/Game.h"
+#include "../include/ErrorHandler.h"
+
 
 InputModule::InputModule() {}
 
@@ -8,23 +12,24 @@ InputModule::~InputModule() {}
 
 // ATRIBUTES INITIALIZATION
 
-bool InputModule::											_joysticksInit;
-std::vector<SDL_Joystick*> InputModule::					_joysticks;
+std::vector<InputModule::ButtonState> InputModule::_keyStates;
+
+bool InputModule::_joysticksInit;
+std::vector<SDL_Joystick*> InputModule::_joysticks;
 std::vector< std::pair<Vector2D*, Vector2D*> > InputModule::_joystickValues;
-std::vector< std::vector<bool> > InputModule::				_joyButtonStates;
-const int InputModule::										_joyDeadZone;
+std::vector< std::vector<InputModule::ButtonState> > InputModule::_joyButtonStates;
+const int InputModule::_joyDeadZone;
 
-std::vector<bool> InputModule::								_mouseButtonStates;
-Vector2D* InputModule::										_mousePosition;
+std::vector<InputModule::ButtonState> InputModule::_mouseButtonStates;
+Vector2D* InputModule::_mousePosition;
 
-const Uint8* InputModule::									_keyboardState;
+
 
 
 // MAIN FUNCTIONS
 
 bool InputModule::Init()
 {
-	SDL_ClearError();
 	if(!SDL_WasInit(SDL_INIT_EVENTS))
 	{
 		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0) {
@@ -33,12 +38,33 @@ bool InputModule::Init()
 		}
 	}
 
+	// Initializing mouse buttons
 	for (int i = 0; i < 3; i++)
 	{
-		_mouseButtonStates.push_back(false);
+		ButtonState temp;
+		temp.isUp = false;
+		temp.isDown = false;
+		_mouseButtonStates.push_back(temp);
 	}
 
 	_mousePosition = new Vector2D(0, 0);
+
+	// Initializing keyboard
+	int a;
+	int* numKeys = &a;
+	const Uint8* tempKeyboard = SDL_GetKeyboardState(numKeys);
+	if (numKeys == NULL) {
+		LOG_ERROR(SDL_GetError());
+		return false;
+	}
+		
+	for (int i = 0; i < *numKeys; i++)
+	{
+		ButtonState temp;
+		temp.isUp = false;
+		temp.isDown = false;
+		_keyStates.push_back(temp);
+	}
 
 	return true;
 }
@@ -47,19 +73,62 @@ void InputModule::Update()
 {
 
 	// KEYBOARD
-	_keyboardState = SDL_GetKeyboardState(0);
 
+	// Update Keyboard
+	//for (int i = 0; i < _keyStates.size(); i++)
+	for (int i = 0; i < 10000; i++)
+	{
+		if (i >= _keyStates.size()) {
+			int a = 23;
+			bool c = false;
+			ButtonState b = _keyStates[i%_keyStates.size()];
+			continue;
+		}
+		const Uint8* tempSDLKeyboard = SDL_GetKeyboardState(0);
+		if (tempSDLKeyboard[i] == 1) {
+			_keyStates[i].isDown = true;
+			_keyStates[i].isUp = false;
+		}			
+		else 
+			if (_keyStates[i].isDown == true) {
+				_keyStates[i].isUp = true;
+				_keyStates[i].isDown = false;
+			}
+			else{
+				_keyStates[i].isUp = false;
+			}	
+	}
+
+	// Reset mouse buttons
+	for (int i = 0; i < 3; i++)
+	{
+		_mouseButtonStates[i].isUp = false;
+		_mouseButtonStates[i].isDown = false;
+	}
+
+	// Reset joystick buttons
+	if (_joysticksInit)
+	{
+		for (int i = 0; i < _joyButtonStates.size(); i++)
+		{
+			for (int j = 0; j < _joyButtonStates[i].size(); j++)
+			{
+				_joyButtonStates[i][j].isUp = false;
+				_joyButtonStates[i][j].isDown = false;
+			}
+		}
+	}
+	
+	// Search for events (joystick and mouse)
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
 	{
 		switch (e.type)
 		{
-			// QUIT
 		case SDL_QUIT:
 			Game::Instance()->clean();
 			break;
 
-			// JOYSTICK
 		case SDL_JOYAXISMOTION:
 			OnJoystickAxisMove(e);
 			break;
@@ -72,7 +141,6 @@ void InputModule::Update()
 			OnJoystickButtonUp(e);
 			break;
 
-			// MOUSE
 		case SDL_MOUSEBUTTONDOWN:
 			OnMouseButtonDown(e);
 			break;
@@ -85,18 +153,8 @@ void InputModule::Update()
 			OnMouseMove(e);
 			break;
 
-		case SDL_KEYDOWN:
-			OnKeyDown(e);
-			break;		
-
-		case SDL_KEYUP:
-			OnKeyUp(e);
-			break;
 		}
-
-	}
-
-
+	}	
 }
 
 void InputModule::Clean()
@@ -106,6 +164,8 @@ void InputModule::Clean()
 		{
 			SDL_JoystickClose(_joysticks[i]);
 		}
+
+	// delete _mousePosition;
 }
 
 
@@ -114,11 +174,10 @@ void InputModule::Clean()
 
 void InputModule::InitJoysticks()
 {
-	SDL_ClearError();
 	if (SDL_WasInit(SDL_INIT_JOYSTICK) == 0)
 	{
 		if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0) {
-			std::cout << SDL_GetError() << "\n";
+			LOG_ERROR(SDL_GetError());
 			_joysticksInit = false;
 		}			
 	}
@@ -132,18 +191,25 @@ void InputModule::InitJoysticks()
 		for (int i = 0; i < numJoy; i++)
 		{
 			SDL_Joystick *joy = SDL_JoystickOpen(i);
-			if (joy == NULL)
-				std::cout << SDL_GetError() << "\n";
-			else {
+			if (joy == NULL) {
+				LOG_ERROR(SDL_GetError());
+			}							
+				
+			else 
+			{
 				_joysticks.push_back(joy);
 				_joystickValues.push_back(std::make_pair(new Vector2D(0, 0), new Vector2D(0, 0)));
 
-				std::vector<bool> tempButtons;
+				std::vector<ButtonState> tempButtons;
 				for (int j = 0; j < SDL_JoystickNumButtons(joy); j++)
 				{
-					tempButtons.push_back(false);
+					ButtonState tempButtonState;
+					tempButtonState.isUp = false;
+					tempButtonState.isDown = false;
+					tempButtons.push_back(tempButtonState);
 				}
 				_joyButtonStates.push_back(tempButtons);
+				std::cout << "Joysticks has " << tempButtons.size() << " buttons\n";
 			}
 		}
 
@@ -159,29 +225,34 @@ bool InputModule::JoysticksInitialized()
 	return _joysticksInit;
 }
 
-int InputModule::StickXValue(int joyIndex, IH_Stick stick)
+int InputModule::StickXValue(int joyIndex, JoyAnalogStick stick)
 {
 	if (_joystickValues.size() == 0) return 0;
 
-	if (stick == IH_LEFT_STICK)
+	if (stick == LEFT_STICK)
 		return _joystickValues[joyIndex].first->x();
 	else
 		return _joystickValues[joyIndex].second->x();
 }
 
-int InputModule::StickYValue(int joyIndex, IH_Stick stick)
+int InputModule::StickYValue(int joyIndex, JoyAnalogStick stick)
 {
 	if (_joystickValues.size() == 0) return 0;
 
-	if (stick == IH_LEFT_STICK)
+	if (stick == LEFT_STICK)
 		return _joystickValues[joyIndex].first->y();
 	else
 		return _joystickValues[joyIndex].second->y();
 }
 
-bool InputModule::JoyButtonState(int joyIndex, int buttonNumber)
+bool InputModule::IsJoyButtonUp(int joyIndex, int buttonNumber)
 {
-	return _joyButtonStates[joyIndex][buttonNumber];
+	return _joyButtonStates[joyIndex][buttonNumber].isUp;
+}
+
+bool InputModule::IsJoyButtonDown(int joyIndex, int buttonNumber)
+{
+	return _joyButtonStates[joyIndex][buttonNumber].isDown;
 }
 
 // handle _joysticks events
@@ -245,28 +316,45 @@ void InputModule::OnJoystickAxisMove(SDL_Event &e)
 void InputModule::OnJoystickButtonDown(SDL_Event &e)
 {
 	int joyIndex = e.jaxis.which;
-	_joyButtonStates[joyIndex][e.jbutton.button] = true;
+	_joyButtonStates[joyIndex][e.jbutton.button].isDown = true;
+	_joyButtonStates[joyIndex][e.jbutton.button].isUp = false;
 }
 
 void InputModule::OnJoystickButtonUp(SDL_Event &e)
 {
 	int joyIndex = e.jaxis.which;
-	_joyButtonStates[joyIndex][e.jbutton.button] = false;
+	_joyButtonStates[joyIndex][e.jbutton.button].isDown = false;
+	_joyButtonStates[joyIndex][e.jbutton.button].isDown = true;
 }
 
 
 
 // MOUSE
 
-bool InputModule::MouseButtonState(IH_MouseButton button)
+bool InputModule::IsMouseButtonUp(MouseButton button)
 {
-	return _mouseButtonStates[button];
+	return _mouseButtonStates[button].isUp;
+}
+
+bool InputModule::IsMouseButtonDown(MouseButton button)
+{
+	return _mouseButtonStates[button].isDown;
 }
 
 Vector2D * InputModule::mousePosition()
 {
 	return _mousePosition;
 }
+
+/*
+void InputModule::ResetMouseButtons()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		_mouseButtonStates.push_back(false);
+	}
+}
+*/
 
 // handle mouse events
 void InputModule::OnMouseMove(SDL_Event &e)
@@ -280,15 +368,15 @@ void InputModule::OnMouseButtonDown(SDL_Event &e)
 	switch (e.button.button)
 	{
 	case SDL_BUTTON_LEFT:
-		_mouseButtonStates[IH_MOUSE_LB] = true;
+		_mouseButtonStates[MOUSE_LB].isDown = true;
 		break;
 
 	case SDL_BUTTON_MIDDLE:
-		_mouseButtonStates[IH_MOUSE_MB] = true;
+		_mouseButtonStates[MOUSE_MB].isDown = true;
 		break;
 
 	case SDL_BUTTON_RIGHT:
-		_mouseButtonStates[IH_MOUSE_RB] = true;
+		_mouseButtonStates[MOUSE_RB].isDown = true;
 		break;
 	}
 }
@@ -298,15 +386,15 @@ void InputModule::OnMouseButtonUp(SDL_Event &e)
 	switch (e.button.button)
 	{
 	case SDL_BUTTON_LEFT:
-		_mouseButtonStates[IH_MOUSE_LB] = false;
+		_mouseButtonStates[MOUSE_LB].isUp = true;
 		break;
 
 	case SDL_BUTTON_MIDDLE:
-		_mouseButtonStates[IH_MOUSE_MB] = false;
+		_mouseButtonStates[MOUSE_MB].isUp = true;
 		break;
 
 	case SDL_BUTTON_RIGHT:
-		_mouseButtonStates[IH_MOUSE_RB] = false;
+		_mouseButtonStates[MOUSE_RB].isUp = true;
 		break;
 	}
 }
@@ -315,28 +403,12 @@ void InputModule::OnMouseButtonUp(SDL_Event &e)
 
 // KEYBOARD
 
-bool InputModule::isKeyPressed(SDL_Scancode key)
+bool InputModule::isKeyDown(SDL_Scancode key)
 {
-	if (_keyboardState == NULL) return false;
-
-	if (_keyboardState[key] == 1) return true;
-
-	return false;
-
+	return _keyStates[key].isDown;	
 }
 
-// handle keyboard events
-void InputModule::OnKeyDown(SDL_Event &e)
+bool InputModule::isKeyUp(SDL_Scancode key)
 {
-
-}
-
-void InputModule::OnKeyUp(SDL_Event &e)
-{
-	switch (e.key.keysym.scancode)
-	{
-	case SDL_SCANCODE_ESCAPE:
-		Game::Instance()->clean();
-		break;
-	}
+	return _keyStates[key].isUp;
 }

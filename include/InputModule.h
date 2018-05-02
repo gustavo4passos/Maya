@@ -11,18 +11,47 @@ public:
 
 	typedef enum
 	{
-		IH_MOUSE_LB = 0,
-		IH_MOUSE_MB = 1,
-		IH_MOUSE_RB = 2
+		MOUSE_LB = 0,
+		MOUSE_MB = 1,
+		MOUSE_RB = 2
 	}
-	IH_MouseButton;
+	MouseButton;
 
 	typedef enum
 	{
-		IH_LEFT_STICK = 0,
-		IH_RIGHT_STICK = 1
+		JOY_A,
+		JOY_B,
+		JOY_X,
+		JOY_Y,
+		JOY_LB,
+		JOY_RB,
+		JOY_BACK,
+		JOY_START,
+		JOY_LSTICK,
+		JOY_RSTICK,		
+		JOY_UP,
+		JOY_DOWN,
+		JOY_LEFT,
+		JOY_RIGHT
 	}
-	IH_Stick;
+	JoyButton;
+
+	typedef enum
+	{
+		LEFT_STICK = 0,
+		RIGHT_STICK = 1
+	}
+	JoyAnalogStick;
+
+	typedef enum
+	{
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	}
+	Key;
+
 	
 	// Main functions
 	static bool Init();
@@ -30,31 +59,42 @@ public:
 	static void Clean();
 
 	// Joysticks
-	static void InitJoysticks();
 	static bool JoysticksInitialized();
-	static bool JoyButtonState(int joyIndex, int buttonNumber);
+	static void InitJoysticks();	
+	static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
+	static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
 	
-	static int StickXValue(int joyIndex, IH_Stick);
-	static int StickYValue(int joyIndex, IH_Stick);
+	static int StickXValue(int joyIndex, JoyAnalogStick);
+	static int StickYValue(int joyIndex, JoyAnalogStick);
 
 	// Mouse
-	static bool MouseButtonState(IH_MouseButton);
+	static bool IsMouseButtonUp(MouseButton);
+	static bool IsMouseButtonDown(MouseButton);
 	static Vector2D *mousePosition();
 
 	// Keyboard
-	static bool isKeyPressed(SDL_Scancode);
+	static bool isKeyDown(SDL_Scancode);
+	static bool isKeyUp(SDL_Scancode);
 	
 private:
 	
 	InputModule();
 	~InputModule();
 
+	typedef struct buttonstate
+	{
+		bool isUp;
+		bool isDown;
+	}
+	ButtonState;
+	
 	// Joystick atributes
 	static bool _joysticksInit;
 	static std::vector<SDL_Joystick*> _joysticks;
 	static std::vector< std::pair<Vector2D*, Vector2D*> > _joystickValues;
-	static std::vector< std::vector<bool> > _joyButtonStates;
-	static const int _joyDeadZone = 20000;
+	static const int _joyDeadZone = 15000;
+	static std::vector< std::vector<ButtonState> > _joyButtonStates;
+	
 	
 	// Joystick methods
 	static void OnJoystickAxisMove(SDL_Event&);
@@ -62,9 +102,9 @@ private:
 	static void OnJoystickButtonUp(SDL_Event&);
 
 
-	// Mouse atributes
-	static std::vector<bool> _mouseButtonStates;
+	// Mouse atributes	
 	static Vector2D *_mousePosition;
+	static std::vector<ButtonState> _mouseButtonStates;
 	
 	// Mouse methods
 	static void OnMouseMove(SDL_Event&);
@@ -73,11 +113,8 @@ private:
 
 
 	// Keyboard atributes
-	static const Uint8 *_keyboardState;
-	
-	// Keyboard methods
-	static void OnKeyDown(SDL_Event&);
-	static void OnKeyUp(SDL_Event&);
+	static std::vector<ButtonState> _keyStates;
+
 };
 
 #endif
