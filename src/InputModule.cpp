@@ -12,7 +12,12 @@ InputModule::~InputModule() {}
 
 // ATRIBUTES INITIALIZATION
 
-std::vector<InputModule::ButtonState> InputModule::_keyStates;
+bool InputModule::_closeWindow;
+
+uint32_t InputModule::_bfPressed;
+uint32_t InputModule::_bfReleased;
+uint32_t InputModule::_bfWasPressed;
+uint32_t InputModule::_bfFlags;
 
 bool InputModule::_joysticksInit;
 std::vector<SDL_Joystick*> InputModule::_joysticks;
@@ -29,7 +34,7 @@ Vector2D* InputModule::_mousePosition;
 // MAIN FUNCTIONS
 
 bool InputModule::Init()
-{
+{	
 	if(!SDL_WasInit(SDL_INIT_EVENTS))
 	{
 		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0) {
@@ -37,6 +42,16 @@ bool InputModule::Init()
 			return false;
 		}
 	}
+
+	// Initializing closeWindow
+
+
+	// Initializing keyboard BitFields
+	_bfPressed = 0;
+	_bfReleased = 0;
+	_bfWasPressed = 0;
+	_bfFlags = 0xFFFFFFFF;
+
 
 	// Initializing mouse buttons
 	for (int i = 0; i < 3; i++)
@@ -48,56 +63,15 @@ bool InputModule::Init()
 	}
 
 	_mousePosition = new Vector2D(0, 0);
-
-	// Initializing keyboard
-	int a;
-	int* numKeys = &a;
-	const Uint8* tempKeyboard = SDL_GetKeyboardState(numKeys);
-	if (numKeys == NULL) {
-		LOG_ERROR(SDL_GetError());
-		return false;
-	}
-		
-	for (int i = 0; i < *numKeys; i++)
-	{
-		ButtonState temp;
-		temp.isUp = false;
-		temp.isDown = false;
-		_keyStates.push_back(temp);
-	}
-
+	
 	return true;
 }
 
 void InputModule::Update()
 {
-
-	// KEYBOARD
-
-	// Update Keyboard
-	//for (int i = 0; i < _keyStates.size(); i++)
-	for (int i = 0; i < 10000; i++)
-	{
-		if (i >= _keyStates.size()) {
-			int a = 23;
-			bool c = false;
-			ButtonState b = _keyStates[i%_keyStates.size()];
-			continue;
-		}
-		const Uint8* tempSDLKeyboard = SDL_GetKeyboardState(0);
-		if (tempSDLKeyboard[i] == 1) {
-			_keyStates[i].isDown = true;
-			_keyStates[i].isUp = false;
-		}			
-		else 
-			if (_keyStates[i].isDown == true) {
-				_keyStates[i].isUp = true;
-				_keyStates[i].isDown = false;
-			}
-			else{
-				_keyStates[i].isUp = false;
-			}	
-	}
+	// Reset released info and declares 
+	_bfReleased = 0;
+	uint32_t currentDown = 0;
 
 	// Reset mouse buttons
 	for (int i = 0; i < 3; i++)
@@ -119,14 +93,14 @@ void InputModule::Update()
 		}
 	}
 	
-	// Search for events (joystick and mouse)
+	// Search for events
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
-	{
+	{		
 		switch (e.type)
 		{
 		case SDL_QUIT:
-			Game::Instance()->clean();
+			
 			break;
 
 		case SDL_JOYAXISMOTION:
@@ -153,8 +127,138 @@ void InputModule::Update()
 			OnMouseMove(e);
 			break;
 
+		case SDL_KEYDOWN:
+			switch (e.key.keysym.scancode) 
+			{
+			
+			case SDL_SCANCODE_UP:
+				currentDown = currentDown | UP;
+				// std::cout << "Up:" << std::hex << "0x" << currentDown << "\n";
+				break;
+			
+			case SDL_SCANCODE_DOWN:
+				currentDown = currentDown | DOWN;
+				// std::cout << "Down:" << std::hex << "0x" << currentDown << "\n";
+				break;
+			
+			case SDL_SCANCODE_LEFT:
+				currentDown = currentDown | LEFT;
+				// std::cout << "Left:" << std::hex << "0x" << currentDown << "\n";
+				break;
+			
+			case SDL_SCANCODE_RIGHT:
+				currentDown = currentDown | RIGHT;
+				// std::cout << "Right:" << std::hex << "0x" << currentDown << "\n";
+				break;
+			
+			case SDL_SCANCODE_SPACE:
+				currentDown = currentDown | SPACE;
+				break;
+			
+			case SDL_SCANCODE_RETURN:
+				currentDown = currentDown | ENTER;
+				break;
+			
+			case SDL_SCANCODE_ESCAPE:
+				currentDown = currentDown | ESC;
+				break;
+			
+			case SDL_SCANCODE_BACKSPACE:
+				currentDown = currentDown | BACKSPACE;
+				break;
+			
+			case SDL_SCANCODE_TAB:
+				currentDown = currentDown | TAB;
+				break;
+			
+			case SDL_SCANCODE_LCTRL:
+				currentDown = currentDown | LCTRL;
+				break;
+			
+			case SDL_SCANCODE_RCTRL:
+				currentDown = currentDown | RCTRL;
+				break;
+			
+			case SDL_SCANCODE_LALT:
+				currentDown = currentDown | LALT;
+				break;
+			
+			case SDL_SCANCODE_RALT:
+				currentDown = currentDown | RALT;
+				break;
+
+			default:
+				break;
+			}
+			break;
+
+		case SDL_KEYUP:
+			switch (e.key.keysym.scancode) 
+			{
+
+			case SDL_SCANCODE_UP:
+				_bfReleased = _bfReleased | UP;
+				break;
+
+			case SDL_SCANCODE_DOWN:
+				_bfReleased = _bfReleased | DOWN;
+				break;
+
+			case SDL_SCANCODE_LEFT:
+				_bfReleased = _bfReleased | LEFT;
+				break;
+
+			case SDL_SCANCODE_RIGHT:
+				_bfReleased = _bfReleased | RIGHT;
+				break;
+
+			case SDL_SCANCODE_SPACE:
+				_bfReleased = _bfReleased | SPACE;
+				break;
+
+			case SDL_SCANCODE_RETURN:
+				_bfReleased = _bfReleased | ENTER;
+				break;
+
+			case SDL_SCANCODE_ESCAPE:
+				_bfReleased = _bfReleased | ESC;
+				break;
+
+			case SDL_SCANCODE_BACKSPACE:
+				_bfReleased = _bfReleased | BACKSPACE;
+				break;
+
+			case SDL_SCANCODE_TAB:
+				_bfReleased = _bfReleased | TAB;
+				break;
+
+			case SDL_SCANCODE_LCTRL:
+				_bfReleased = _bfReleased | LCTRL;
+				break;
+
+			case SDL_SCANCODE_RCTRL:
+				_bfReleased = _bfReleased | RCTRL;
+				break;
+
+			case SDL_SCANCODE_LALT:
+				_bfReleased = _bfReleased | LALT;
+				break;
+
+			case SDL_SCANCODE_RALT:
+				_bfReleased = _bfReleased | RALT;
+				break;
+
+			default:
+				break;
+			}
+			break;
 		}
-	}	
+	}
+
+	_bfPressed = (_bfPressed | currentDown) & ~(_bfReleased);
+	_bfWasPressed = (_bfFlags & _bfPressed);
+	_bfFlags = (~(_bfPressed) | _bfReleased);
+
 }
 
 void InputModule::Clean()
@@ -167,7 +271,6 @@ void InputModule::Clean()
 
 	// delete _mousePosition;
 }
-
 
 
 // JOYSTICK
@@ -346,15 +449,10 @@ Vector2D * InputModule::mousePosition()
 	return _mousePosition;
 }
 
-/*
-void InputModule::ResetMouseButtons()
+void InputModule::SetMousePosition(int x, int y)
 {
-	for (int i = 0; i < 3; i++)
-	{
-		_mouseButtonStates.push_back(false);
-	}
+	SDL_WarpMouseInWindow(NULL, x, y);
 }
-*/
 
 // handle mouse events
 void InputModule::OnMouseMove(SDL_Event &e)
@@ -403,12 +501,34 @@ void InputModule::OnMouseButtonUp(SDL_Event &e)
 
 // KEYBOARD
 
-bool InputModule::isKeyDown(SDL_Scancode key)
+bool InputModule::IsKeyPressed(InputModule::BF_Key key) 
 {
-	return _keyStates[key].isDown;	
+	
+	if (_bfPressed & key) {
+		return true;
+	}
+		
+	return false;
+
 }
 
-bool InputModule::isKeyUp(SDL_Scancode key)
+bool InputModule::WasKeyReleased(InputModule::BF_Key key) 
 {
-	return _keyStates[key].isUp;
+	if (_bfReleased & key) {		
+		return true;
+	} 
+	return false;
+}
+
+bool InputModule::WasKeyPressed(BF_Key key)
+{
+	if (_bfWasPressed & key) {
+		return true;
+	}		
+	return false;
+}
+
+bool InputModule::CloseWindowRequest()
+{
+	return _closeWindow;
 }
