@@ -17,7 +17,6 @@ bool InputModule::_closeWindow;
 uint32_t InputModule::_bfPressed;
 uint32_t InputModule::_bfReleased;
 uint32_t InputModule::_bfWasPressed;
-uint32_t InputModule::_bfFlags;
 
 bool InputModule::_joysticksInit;
 std::vector<SDL_Joystick*> InputModule::_joysticks;
@@ -50,9 +49,7 @@ bool InputModule::Init()
 	_bfPressed = 0;
 	_bfReleased = 0;
 	_bfWasPressed = 0;
-	_bfFlags = 0xFFFFFFFF;
-
-
+	
 	// Initializing mouse buttons
 	for (int i = 0; i < 3; i++)
 	{
@@ -69,10 +66,11 @@ bool InputModule::Init()
 
 void InputModule::Update()
 {
-	// Reset released info and declares 
-	_bfReleased = 0;
-	_bfWasPressed = 0;
-	// uint32_t currentDown = 0;
+
+	_closeWindow = false;
+
+	_bfReleased = 0x0;
+	_bfWasPressed = 0x0;
 
 	// Reset mouse buttons
 	for (int i = 0; i < 3; i++)
@@ -161,7 +159,7 @@ void InputModule::Update()
 		switch (e.type)
 		{
 		case SDL_QUIT:
-			
+			_closeWindow = true;
 			break;
 
 		case SDL_JOYAXISMOTION:
@@ -261,8 +259,6 @@ void InputModule::Clean()
 		{
 			SDL_JoystickClose(_joysticks[i]);
 		}
-
-	// delete _mousePosition;
 }
 
 

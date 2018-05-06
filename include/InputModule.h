@@ -141,8 +141,7 @@ private:
 	static uint32_t _bfReleased;	
 	// Bitfield of keys that just got pressed
 	static uint32_t _bfWasPressed;
-	// Flags to allow each key on "_bfWasPressed" to be updated
-	static uint32_t _bfFlags;
+
 
 };
 
