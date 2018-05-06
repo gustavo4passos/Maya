@@ -264,18 +264,22 @@ void InputModule::Clean()
 
 // JOYSTICK
 
-void InputModule::InitJoysticks()
+bool InputModule::InitJoysticks()
 {
 	if (SDL_WasInit(SDL_INIT_JOYSTICK) == 0)
 	{
 		if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0) {
 			LOG_ERROR(SDL_GetError());
 			_joysticksInit = false;
+			return false;
 		}			
 	}
 
-	if (SDL_NumJoysticks() <= 0)
+	if (SDL_NumJoysticks() <= 0) {
 		_joysticksInit = false;
+		return false;
+	}
+		
 
 	else
 	{
@@ -307,8 +311,6 @@ void InputModule::InitJoysticks()
 
 		SDL_JoystickEventState(SDL_ENABLE);
 		_joysticksInit = true;
-
-		std::cout << "Initialized " << _joysticks.size() << " joystick(s)\n";
 	}
 }
 
@@ -490,7 +492,7 @@ void InputModule::OnMouseButtonUp(SDL_Event &e)
 
 // KEYBOARD
 
-bool InputModule::IsKeyPressed(InputModule::BF_Key key) 
+bool InputModule::IsKeyPressed(BF_Key key) 
 {
 	
 	if (_bfPressed & key) return true;		
@@ -498,7 +500,7 @@ bool InputModule::IsKeyPressed(InputModule::BF_Key key)
 
 }
 
-bool InputModule::WasKeyReleased(InputModule::BF_Key key) 
+bool InputModule::WasKeyReleased(BF_Key key) 
 {
 	if (_bfReleased & key) return true;
 	return false;
@@ -509,6 +511,8 @@ bool InputModule::WasKeyPressed(BF_Key key)
 	if (_bfWasPressed & key) return true;	
 	return false;
 }
+
+
 
 bool InputModule::CloseWindowRequest()
 {

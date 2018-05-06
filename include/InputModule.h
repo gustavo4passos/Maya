@@ -62,7 +62,7 @@ public:
 	BF_Key;
 	
 
-	bool CloseWindowRequest();
+	static bool CloseWindowRequest();
 
 	
 	// Main functions
@@ -72,7 +72,7 @@ public:
 
 	// Joysticks
 	static bool JoysticksInitialized();
-	static void InitJoysticks();	
+	static bool InitJoysticks();	
 	static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
 	static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
 	
