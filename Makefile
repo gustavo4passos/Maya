@@ -26,7 +26,7 @@ ifeq ($(OS), Linux)
 endif
 
 bin/Application.exe: build/Application.o build/Shader.o build/Window.o \
-	build/Vector2D.o build/LuaScript.o build/TestInput.o build/Renderer.o
+	build/Vector2D.o build/LuaScript.o build/Renderer.o
 	g++ build/Window.o build/Vector2D.o build/Shader.o build/Application.o build/LuaScript.o build/Renderer.o \
 	$(LUA_LIB_PATH) $(SDL_LIB_PATH) $(GLEW_LIB_PATH) $(TINYXML2_LIB_PATH) $(LINKER_FLAGS) $(COMPILER_FLAGS) \
 	-o bin/Application
