@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <GL/glu.h>
 
 #include "../include/ErrorHandler.h"
 
@@ -63,18 +64,21 @@ ShaderSource Shader::ParseShader(const std::string& vsFilepath, const std::strin
 }
 
 GLuint Shader::CreateShader(const ShaderSource& shaderSource) {
-  GLuint program = glCreateProgram();
+  GLuint programID = glCreateProgram();
 
   GLuint vs = CompileShader(GL_VERTEX_SHADER, shaderSource.vertexShaderSource);
   GLuint fs = CompileShader(GL_FRAGMENT_SHADER, shaderSource.fragmentShaderSource);
 
-  glAttachShader(_programID, vs);
-  glAttachShader(_programID, fs);
-  glLinkProgram(_programID);
+  glAttachShader(programID, vs);
+  glAttachShader(programID, fs);
+  glLinkProgram(programID);
+
+  return programID;
 }
 
 GLuint Shader::CompileShader(GLenum shaderType, const std::string& source) {
   GLuint shader = glCreateShader(shaderType);
+
   const char* src = source.c_str();
   glShaderSource(shader, 1, &src, NULL);
   glCompileShader(shader);
