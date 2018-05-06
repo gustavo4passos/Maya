@@ -11,11 +11,12 @@
 
 #define M_DEBUG
 #if defined(M_DEBUG)
-#define ASSERT(x) if(!x) DEBUG_BREAK;
+#define ASSERT(x) if(!x) DEBUG_BREAK();
 #define LOG_ERROR(x) std::cerr << "Error: "<< __FILE__ << ":" << __LINE__ << " " << __func__ << " [" << x << "]" << std::endl;
 #else
 #define ASSERT(x)
 #define LOG_ERROR(x)
 #endif
+
 
 #endif
