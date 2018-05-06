@@ -71,7 +71,8 @@ void InputModule::Update()
 {
 	// Reset released info and declares 
 	_bfReleased = 0;
-	uint32_t currentDown = 0;
+	_bfWasPressed = 0;
+	// uint32_t currentDown = 0;
 
 	// Reset mouse buttons
 	for (int i = 0; i < 3; i++)
@@ -97,6 +98,66 @@ void InputModule::Update()
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
 	{		
+		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
+			switch (e.key.keysym.scancode)
+			{
+			case SDL_SCANCODE_UP:
+				_bfWasPressed = _bfWasPressed | UP;
+				break;
+
+			case SDL_SCANCODE_DOWN:
+				_bfWasPressed = _bfWasPressed | DOWN;
+				break;
+
+			case SDL_SCANCODE_LEFT:
+				_bfWasPressed = _bfWasPressed | LEFT;
+				break;
+
+			case SDL_SCANCODE_RIGHT:
+				_bfWasPressed = _bfWasPressed | RIGHT;
+				break;
+
+			case SDL_SCANCODE_SPACE:
+				_bfWasPressed = _bfWasPressed | SPACE;
+				break;
+
+			case SDL_SCANCODE_RETURN:
+				_bfWasPressed = _bfWasPressed | ENTER;
+				break;
+
+			case SDL_SCANCODE_ESCAPE:
+				_bfWasPressed = _bfWasPressed | ESC;
+				break;
+
+			case SDL_SCANCODE_BACKSPACE:
+				_bfWasPressed = _bfWasPressed | BACKSPACE;
+				break;
+
+			case SDL_SCANCODE_TAB:
+				_bfWasPressed = _bfWasPressed | TAB;
+				break;
+
+			case SDL_SCANCODE_LCTRL:
+				_bfWasPressed = _bfWasPressed | LCTRL;
+				break;
+
+			case SDL_SCANCODE_RCTRL:
+				_bfWasPressed = _bfWasPressed | RCTRL;
+				break;
+
+			case SDL_SCANCODE_LALT:
+				_bfWasPressed = _bfWasPressed | LALT;
+				break;
+
+			case SDL_SCANCODE_RALT:
+				_bfWasPressed = _bfWasPressed | RALT;
+				break;
+
+			default:
+				break;
+			}
+		}
+
 		switch (e.type)
 		{
 		case SDL_QUIT:
@@ -125,71 +186,6 @@ void InputModule::Update()
 
 		case SDL_MOUSEMOTION:
 			OnMouseMove(e);
-			break;
-
-		case SDL_KEYDOWN:
-			switch (e.key.keysym.scancode) 
-			{
-			
-			case SDL_SCANCODE_UP:
-				currentDown = currentDown | UP;
-				// std::cout << "Up:" << std::hex << "0x" << currentDown << "\n";
-				break;
-			
-			case SDL_SCANCODE_DOWN:
-				currentDown = currentDown | DOWN;
-				// std::cout << "Down:" << std::hex << "0x" << currentDown << "\n";
-				break;
-			
-			case SDL_SCANCODE_LEFT:
-				currentDown = currentDown | LEFT;
-				// std::cout << "Left:" << std::hex << "0x" << currentDown << "\n";
-				break;
-			
-			case SDL_SCANCODE_RIGHT:
-				currentDown = currentDown | RIGHT;
-				// std::cout << "Right:" << std::hex << "0x" << currentDown << "\n";
-				break;
-			
-			case SDL_SCANCODE_SPACE:
-				currentDown = currentDown | SPACE;
-				break;
-			
-			case SDL_SCANCODE_RETURN:
-				currentDown = currentDown | ENTER;
-				break;
-			
-			case SDL_SCANCODE_ESCAPE:
-				currentDown = currentDown | ESC;
-				break;
-			
-			case SDL_SCANCODE_BACKSPACE:
-				currentDown = currentDown | BACKSPACE;
-				break;
-			
-			case SDL_SCANCODE_TAB:
-				currentDown = currentDown | TAB;
-				break;
-			
-			case SDL_SCANCODE_LCTRL:
-				currentDown = currentDown | LCTRL;
-				break;
-			
-			case SDL_SCANCODE_RCTRL:
-				currentDown = currentDown | RCTRL;
-				break;
-			
-			case SDL_SCANCODE_LALT:
-				currentDown = currentDown | LALT;
-				break;
-			
-			case SDL_SCANCODE_RALT:
-				currentDown = currentDown | RALT;
-				break;
-
-			default:
-				break;
-			}
 			break;
 
 		case SDL_KEYUP:
@@ -255,10 +251,7 @@ void InputModule::Update()
 		}
 	}
 
-	_bfPressed = (_bfPressed | currentDown) & ~(_bfReleased);
-	_bfWasPressed = (_bfFlags & _bfPressed);
-	_bfFlags = (~(_bfPressed) | _bfReleased);
-
+	_bfPressed = (_bfPressed | _bfWasPressed) & ~(_bfReleased);
 }
 
 void InputModule::Clean()
@@ -449,7 +442,7 @@ Vector2D * InputModule::mousePosition()
 	return _mousePosition;
 }
 
-void InputModule::SetMousePosition(int x, int y)
+void InputModule::setMousePosition(int x, int y)
 {
 	SDL_WarpMouseInWindow(NULL, x, y);
 }
@@ -504,27 +497,20 @@ void InputModule::OnMouseButtonUp(SDL_Event &e)
 bool InputModule::IsKeyPressed(InputModule::BF_Key key) 
 {
 	
-	if (_bfPressed & key) {
-		return true;
-	}
-		
+	if (_bfPressed & key) return true;		
 	return false;
 
 }
 
 bool InputModule::WasKeyReleased(InputModule::BF_Key key) 
 {
-	if (_bfReleased & key) {		
-		return true;
-	} 
+	if (_bfReleased & key) return true;
 	return false;
 }
 
 bool InputModule::WasKeyPressed(BF_Key key)
 {
-	if (_bfWasPressed & key) {
-		return true;
-	}		
+	if (_bfWasPressed & key) return true;	
 	return false;
 }
 
