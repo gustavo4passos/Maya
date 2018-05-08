@@ -10,11 +10,11 @@ public:
 	Vector2D(const Vector2D&);
 	Vector2D(float x, float y);
 
-	float x() const { return _x; }
-	float y() const { return _y; }
+	inline float x() const { return _x; }
+	inline float y() const { return _y; }
 
-	void setX(float x) { this->_x = x; }
-	void setY(float y) { this->_y = y; }
+	inline void setX(float x) { this->_x = x; }
+	inline void setY(float y) { this->_y = y; }
 
 	float DotProduct(const Vector2D& vec) const;
 	float Length() const;

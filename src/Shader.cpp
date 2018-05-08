@@ -25,6 +25,52 @@ void Shader::Unbind() {
   glUseProgram(0);
 }
 
+void Shader::SetUniform1f(const char* name, float v0){
+  glUniform1f(GetUniformLocation(name), v0);
+}
+
+void Shader::SetUniform2f(const char* name, float v0, float v1){
+  glUniform2f(GetUniformLocation(name), v0, v1);
+}
+
+void Shader::PrintActiveAttributes() const {
+  GLint i;
+  GLint count;
+  GLint size;
+  GLenum type;
+
+  const GLsizei bufSize = 16;
+  GLchar name[bufSize];
+  GLsizei length;
+
+  glGetProgramiv(_programID, GL_ACTIVE_ATTRIBUTES,  &count);
+  std::cout << "There are " << count << " active attributes.\n";
+
+  for(i = 0; i < count; i++) {
+    glGetActiveAttrib(_programID, (GLuint)i, bufSize, &length, &size, &type, name);
+    std::cout << "Attribute " << i << " type " << type << " name " << name;
+  }
+}
+
+void Shader::PrintActiveUniforms() const {
+  GLint i;
+  GLint count;
+  GLint size;
+  GLenum type;
+
+  const GLsizei bufSize = 16;
+  GLchar name[bufSize];
+  GLsizei length;
+
+  glGetProgramiv(_programID, GL_ACTIVE_UNIFORMS,  &count);
+  std::cout << "There are " << count << " active uniforms.\n";
+
+  for(i = 0; i < count; i++) {
+    glGetActiveUniform(_programID, (GLuint)i, bufSize, &length, &size, &type, name);
+    std::cout << "Uniform " << i << " type " << type << " name " << name << std::endl;
+  }
+}
+
 ShaderSource Shader::ParseShader(const std::string& vsFilepath, const std::string& fsFilepath) {
   std::ifstream vsFile(vsFilepath.c_str());
   std::ifstream fsFile(fsFilepath.c_str());
