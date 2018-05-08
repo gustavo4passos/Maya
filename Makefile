@@ -10,7 +10,7 @@ endif
 
 #Additional libraries
 ifeq ($(OS), Windows_NT)
-SDL_LIB_PATH = -Iextern\windows\mingw\lib
+SDL_LIB_PATH = -Lextern\windows\mingw\SDL2\lib
 GLEW_LIB_PATH = -Lextern\windows\mingw\glew-2.0.0\lib
 LUA_LIB_PATH = -Lextern\windows\mingw\lua-5.3.4\lib
 TINYXML2_LIB_PATH = -Lextern\windows\mingw\tinyxml2-6.2.0\lib
