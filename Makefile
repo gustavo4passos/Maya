@@ -1,6 +1,6 @@
 #External deppendencies
 ifeq ($(OS), Windows_NT)
-SDL_INCLUDE_PATH = -Iextern\windows\mingw\DL2\include
+SDL_INCLUDE_PATH = -Iextern\windows\mingw\SDL2\include
 GLEW_INCLUDE_PATH = -Iextern\windows\mingw\glew-2.0.0\include
 TINYXML2_INCLUDE_PATH = -Iextern\windows\mingw\tinyxml2-6.2.0\include
 LUA_INCLUDE_PATH = -Iextern\windows\mingw\lua-5.3.4\include
