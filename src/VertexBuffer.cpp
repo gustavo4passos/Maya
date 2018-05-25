@@ -1,7 +1,7 @@
 #include "../include/VertexBuffer.h"
 
 VertexBuffer::VertexBuffer(const GLvoid* data, GLsizeiptr size) : _vboID(0) {
-  glGenBuffers(1, &(this->_vboID));
+  glGenBuffers(1, &_vboID);
   glBindBuffer(GL_ARRAY_BUFFER, this->_vboID);
   glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }

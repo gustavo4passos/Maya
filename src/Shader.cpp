@@ -33,6 +33,14 @@ void Shader::SetUniform2f(const char* name, float v0, float v1){
   glUniform2f(GetUniformLocation(name), v0, v1);
 }
 
+void Shader::SetUniform3f(const char* name, float v0, float v1, float v2) {
+  glUniform3f(GetUniformLocation(name), v0, v1, v2);
+}
+
+void Shader::SetUniform4f(const char* name, float v0, float v1, float v2, float v3){
+  glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+}
+
 void Shader::PrintActiveAttributes() const {
   GLint i;
   GLint count;
@@ -48,7 +56,7 @@ void Shader::PrintActiveAttributes() const {
 
   for(i = 0; i < count; i++) {
     glGetActiveAttrib(_programID, (GLuint)i, bufSize, &length, &size, &type, name);
-    std::cout << "Attribute " << i << " type " << type << " name " << name;
+    std::cout << "Attribute " << i << " type " << type << " name " << name << "\n";
   }
 }
 

@@ -3,6 +3,7 @@
 #include <string>
 
 #include "GL/glew.h"
+#define GLEW_STATIC
 
 #include "../include/ErrorHandler.h"
 
