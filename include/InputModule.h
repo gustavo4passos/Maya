@@ -2,13 +2,12 @@
 #define __INPUT_MODULE__
 
 #include "../include/Vector2D.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <vector>
-#include <cstdint>
 
 class InputModule
 {
-public:	
+public:
 
 	typedef enum
 	{
@@ -29,7 +28,7 @@ public:
 		JOY_BACK,
 		JOY_START,
 		JOY_LSTICK,
-		JOY_RSTICK,		
+		JOY_RSTICK,
 		JOY_UP,
 		JOY_DOWN,
 		JOY_LEFT,
@@ -57,14 +56,14 @@ public:
 		LCTRL = 0x2000,
 		RCTRL = 0x4000,
 		LALT = 0x8000,
-		RALT = 0x10000		
+		RALT = 0x10000
 	}
 	BF_Key;
-	
+
 
 	static bool CloseWindowRequest();
 
-	
+
 	// Main functions
 	static bool Init();
 	static void Update();
@@ -72,10 +71,10 @@ public:
 
 	// Joysticks
 	static bool JoysticksInitialized();
-	static bool InitJoysticks();	
+	static bool InitJoysticks();
 	static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
 	static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
-	
+
 	static int StickXValue(int joyIndex, JoyAnalogStick);
 	static int StickYValue(int joyIndex, JoyAnalogStick);
 
@@ -86,7 +85,7 @@ public:
 	static void setMousePosition(int x, int y);
 
 	// Keyboard
-	
+
 	// Return true if key is beeing pressed at the moment
 	static bool IsKeyPressed(BF_Key);
 	// Return true if key just got released
@@ -94,11 +93,11 @@ public:
 	// Return true if key just got pressed
 	static bool WasKeyPressed(BF_Key);
 
-	
+
 private:
-	
+
 	InputModule();
-	~InputModule();	
+	~InputModule();
 
 	typedef struct buttonstate
 	{
@@ -110,22 +109,22 @@ private:
 
 	static bool _closeWindow;
 
-	
+
 	// Joystick atributes
 	static bool _joysticksInit;
 	static std::vector<SDL_Joystick*> _joysticks;
 	static std::vector< std::pair<Vector2D*, Vector2D*> > _joystickValues;
 	static const int _joyDeadZone = 15000;
-	static std::vector< std::vector<ButtonState> > _joyButtonStates;	
+	static std::vector< std::vector<ButtonState> > _joyButtonStates;
 	// Joystick methods
 	static void OnJoystickAxisMove(SDL_Event&);
 	static void OnJoystickButtonDown(SDL_Event&);
 	static void OnJoystickButtonUp(SDL_Event&);
 
 
-	// Mouse atributes	
+	// Mouse atributes
 	static Vector2D *_mousePosition;
-	static std::vector<ButtonState> _mouseButtonStates;	
+	static std::vector<ButtonState> _mouseButtonStates;
 	// Mouse methods
 	static void OnMouseMove(SDL_Event&);
 	static void OnMouseButtonDown(SDL_Event&);
@@ -133,12 +132,12 @@ private:
 
 
 	// Keyboard atributes (bitFields)
-	
+
 	// Bitfield of pressed keys on the moment
 	static uint32_t _bfPressed;
-	
+
 	// Bitfield of keys that just got released
-	static uint32_t _bfReleased;	
+	static uint32_t _bfReleased;
 	// Bitfield of keys that just got pressed
 	static uint32_t _bfWasPressed;
 

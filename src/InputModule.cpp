@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "../include/Game.h"
 #include "../include/ErrorHandler.h"
 
 
@@ -33,7 +32,7 @@ Vector2D* InputModule::_mousePosition;
 // MAIN FUNCTIONS
 
 bool InputModule::Init()
-{	
+{
 	if(!SDL_WasInit(SDL_INIT_EVENTS))
 	{
 		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0) {
@@ -49,7 +48,7 @@ bool InputModule::Init()
 	_bfPressed = 0;
 	_bfReleased = 0;
 	_bfWasPressed = 0;
-	
+
 	// Initializing mouse buttons
 	for (int i = 0; i < 3; i++)
 	{
@@ -60,13 +59,12 @@ bool InputModule::Init()
 	}
 
 	_mousePosition = new Vector2D(0, 0);
-	
+
 	return true;
 }
 
 void InputModule::Update()
 {
-
 	_closeWindow = false;
 
 	_bfReleased = 0x0;
@@ -91,11 +89,11 @@ void InputModule::Update()
 			}
 		}
 	}
-	
+
 	// Search for events
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
-	{		
+	{
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.scancode)
 			{
@@ -187,7 +185,7 @@ void InputModule::Update()
 			break;
 
 		case SDL_KEYUP:
-			switch (e.key.keysym.scancode) 
+			switch (e.key.keysym.scancode)
 			{
 
 			case SDL_SCANCODE_UP:
@@ -272,14 +270,14 @@ bool InputModule::InitJoysticks()
 			LOG_ERROR(SDL_GetError());
 			_joysticksInit = false;
 			return false;
-		}			
+		}
 	}
 
 	if (SDL_NumJoysticks() <= 0) {
 		_joysticksInit = false;
 		return false;
 	}
-		
+
 
 	else
 	{
@@ -289,9 +287,9 @@ bool InputModule::InitJoysticks()
 			SDL_Joystick *joy = SDL_JoystickOpen(i);
 			if (joy == NULL) {
 				LOG_ERROR(SDL_GetError());
-			}							
-				
-			else 
+			}
+
+			else
 			{
 				_joysticks.push_back(joy);
 				_joystickValues.push_back(std::make_pair(new Vector2D(0, 0), new Vector2D(0, 0)));
@@ -492,15 +490,15 @@ void InputModule::OnMouseButtonUp(SDL_Event &e)
 
 // KEYBOARD
 
-bool InputModule::IsKeyPressed(BF_Key key) 
+bool InputModule::IsKeyPressed(BF_Key key)
 {
-	
-	if (_bfPressed & key) return true;		
+
+	if (_bfPressed & key) return true;
 	return false;
 
 }
 
-bool InputModule::WasKeyReleased(BF_Key key) 
+bool InputModule::WasKeyReleased(BF_Key key)
 {
 	if (_bfReleased & key) return true;
 	return false;
@@ -508,10 +506,9 @@ bool InputModule::WasKeyReleased(BF_Key key)
 
 bool InputModule::WasKeyPressed(BF_Key key)
 {
-	if (_bfWasPressed & key) return true;	
+	if (_bfWasPressed & key) return true;
 	return false;
 }
-
 
 
 bool InputModule::CloseWindowRequest()

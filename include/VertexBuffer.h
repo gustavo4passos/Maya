@@ -1,16 +1,19 @@
 #ifndef VERTEXBUFFER_H
 #define VERTEXBUFFER_H
 
+#include <GL/glew.h>
+#include <GL/gl.h>
+
 class VertexBuffer {
 public:
-  VertexBuffer(const void* data, unsigned int size);
+  VertexBuffer(const GLvoid* data, GLsizeiptr size);
   ~VertexBuffer();
 
-  void Bind();
-  void Unbind();
+  void Bind() const;
+  void Unbind() const;
 
 private:
-  _vaoID;
+  GLuint _vboID;
 };
 
 #endif
