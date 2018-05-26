@@ -1,11 +1,11 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 class Window {
 public:
-  Window(const char* title, int width, int height, int openGLMajorVersion, int openGLMinorVersion, bool vsync = false, bool fullscreen = false);
+  Window(const char* title, int width, int height, int openGLMajorVersion = 3, int openGLMinorVersion = 3, bool vsync = false, bool fullscreen = false);
   ~Window();
 
   bool Init();
@@ -25,8 +25,8 @@ private:
   int _height;
   int _openGLMajorVersion;
   int _openGLMinorVersion;
-  bool _fullscreen;
   bool _vsync;
+  bool _fullscreen;
 
   SDL_Window* _windowPtr;
   SDL_GLContext _openGLContext;

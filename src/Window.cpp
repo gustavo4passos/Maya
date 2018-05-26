@@ -3,13 +3,18 @@
 #include <string>
 
 #include "GL/glew.h"
+#define GLEW_STATIC
 
 #include "../include/ErrorHandler.h"
 
 Window::Window(const char* title, int width, int height, int openGLMajorVersion,
-  int openGLMinorVersion, bool vsync, bool fullscreen) : _title(title), _width(width),
-  _height(height), _openGLMajorVersion(openGLMajorVersion),
-  _openGLMinorVersion(openGLMinorVersion), _vsync(vsync), _fullscreen(fullscreen),
+  int openGLMinorVersion, bool vsync, bool fullscreen) :
+  _title(title),
+  _width(width),
+  _height(height),
+  _openGLMajorVersion(openGLMajorVersion),
+  _openGLMinorVersion(openGLMinorVersion),
+  _vsync(vsync), _fullscreen(fullscreen),
   _windowPtr(NULL)
   {}
 
@@ -18,7 +23,7 @@ Window::~Window() {
     SDL_DestroyWindow(this->_windowPtr);
     this->_windowPtr = NULL;
   }
-
+  
   if(SDL_WasInit(SDL_INIT_VIDEO) != 0) {
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
   }
