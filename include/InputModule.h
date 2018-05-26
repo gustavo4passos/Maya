@@ -82,7 +82,7 @@ public:
 	// Mouse
 	static bool IsMouseButtonUp(MouseButton);
 	static bool IsMouseButtonDown(MouseButton);
-	static Vector2D *mousePosition();
+	static Vector2D mousePosition();
 	static void setMousePosition(int x, int y);
 
 	// Keyboard
@@ -124,7 +124,7 @@ private:
 
 
 	// Mouse atributes	
-	static Vector2D *_mousePosition;
+	static Vector2D _mousePosition;
 	static std::vector<ButtonState> _mouseButtonStates;	
 	// Mouse methods
 	static void OnMouseMove(SDL_Event&);

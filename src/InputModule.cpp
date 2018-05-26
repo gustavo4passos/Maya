@@ -1,8 +1,5 @@
 #include "../include/InputModule.h"
 
-#include <iostream>
-
-#include "../include/Game.h"
 #include "../include/ErrorHandler.h"
 
 
@@ -25,7 +22,7 @@ std::vector< std::vector<InputModule::ButtonState> > InputModule::_joyButtonStat
 const int InputModule::_joyDeadZone;
 
 std::vector<InputModule::ButtonState> InputModule::_mouseButtonStates;
-Vector2D* InputModule::_mousePosition;
+Vector2D InputModule::_mousePosition;
 
 
 
@@ -37,13 +34,13 @@ bool InputModule::Init()
 	if(!SDL_WasInit(SDL_INIT_EVENTS))
 	{
 		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0) {
-			std::cout << SDL_GetError() << "\n";
+			LOG_ERROR("SDL: " << SDL_GetError());
 			return false;
 		}
 	}
 
 	// Initializing closeWindow
-
+	_closeWindow = false;
 
 	// Initializing keyboard BitFields
 	_bfPressed = 0;
@@ -59,7 +56,7 @@ bool InputModule::Init()
 		_mouseButtonStates.push_back(temp);
 	}
 
-	_mousePosition = new Vector2D(0, 0);
+	_mousePosition = Vector2D(0, 0);
 	
 	return true;
 }
@@ -269,7 +266,7 @@ bool InputModule::InitJoysticks()
 	if (SDL_WasInit(SDL_INIT_JOYSTICK) == 0)
 	{
 		if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0) {
-			LOG_ERROR(SDL_GetError());
+			LOG_ERROR("SDL: " << SDL_GetError());
 			_joysticksInit = false;
 			return false;
 		}			
@@ -288,7 +285,7 @@ bool InputModule::InitJoysticks()
 		{
 			SDL_Joystick *joy = SDL_JoystickOpen(i);
 			if (joy == NULL) {
-				LOG_ERROR(SDL_GetError());
+				LOG_ERROR("SDL: " << SDL_GetError());
 			}							
 				
 			else 
@@ -310,7 +307,9 @@ bool InputModule::InitJoysticks()
 		}
 
 		SDL_JoystickEventState(SDL_ENABLE);
+		
 		_joysticksInit = true;
+		return true;
 	}
 }
 
@@ -435,7 +434,7 @@ bool InputModule::IsMouseButtonDown(MouseButton button)
 	return _mouseButtonStates[button].isDown;
 }
 
-Vector2D * InputModule::mousePosition()
+Vector2D InputModule::mousePosition()
 {
 	return _mousePosition;
 }
@@ -448,8 +447,8 @@ void InputModule::setMousePosition(int x, int y)
 // handle mouse events
 void InputModule::OnMouseMove(SDL_Event &e)
 {
-	_mousePosition->setX(e.motion.x);
-	_mousePosition->setY(e.motion.y);
+	_mousePosition.setX(e.motion.x);
+	_mousePosition.setY(e.motion.y);
 }
 
 void InputModule::OnMouseButtonDown(SDL_Event &e)
