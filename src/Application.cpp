@@ -6,7 +6,6 @@
 #include "../include/Shader.h"
 #include "../include/VertexArray.h"
 #include "../include/Window.h"
-#include "../include/Player.h"
 #include "../include/Texture.h"
 
 int main(int argc, char *argv[]) {
