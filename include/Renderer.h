@@ -30,7 +30,7 @@ public:
 
   // Initializes the renderer data
   bool Init();
-  void Clean();
+  void Clean(); 
   void Clear();
   void SetClearColor(GLclampf r, GLclampf g, GLclampf b, GLclampf a);
 

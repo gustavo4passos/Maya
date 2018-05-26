@@ -5,7 +5,7 @@
 
 class Window {
 public:
-  Window(const char* title, int width, int height, int openGLMajorVersion = 3, int openGLMinorVersion = 2, bool vsync = false, bool fullscreen = false);
+  Window(const char* title, int width, int height, int openGLMajorVersion = 3, int openGLMinorVersion = 3, bool vsync = false, bool fullscreen = false);
   ~Window();
 
   bool Init();
