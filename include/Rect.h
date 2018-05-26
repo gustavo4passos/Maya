@@ -5,8 +5,10 @@
 
 class Rect {
 public:
-    Rect(float x, float y, int w, int h);
-    Rect(Vector2D position, int w, int h);
+    Rect(float x, float y, int w, int h) : _w(w), _h(h) { 
+        this->_position = Vector2D(x, y);
+    }
+    Rect(Vector2D position, int w, int h) : _position(position), _w(w), _h(h) { }
 
     inline  Vector2D const& position() const { return this->_position; }
     inline float x() const { return this->_position.x(); }

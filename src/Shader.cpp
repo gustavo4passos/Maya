@@ -5,6 +5,7 @@
 #include <GL/glu.h>
 
 #include "../include/ErrorHandler.h"
+#include "../include/GLCall.h"
 
 Shader::Shader(const std::string& vsFilepath, const std::string& fsFilepath)
   : _vertexShaderFilepath(vsFilepath), _fragmentShaderFilepath(fsFilepath)
@@ -14,31 +15,40 @@ Shader::Shader(const std::string& vsFilepath, const std::string& fsFilepath)
 }
 
 Shader::~Shader() {
-  glDeleteProgram(_programID);
+  GLCall(glDeleteProgram(_programID));
 }
 
 void Shader::Bind() {
-  glUseProgram(this->_programID);
+  GLCall(glUseProgram(this->_programID));
 }
 
 void Shader::Unbind() {
-  glUseProgram(0);
+  GLCall(glUseProgram(0));
 }
 
-void Shader::SetUniform1f(const char* name, float v0){
-  glUniform1f(GetUniformLocation(name), v0);
+void Shader::SetUniform1f(const char* name, GLfloat v0){
+  Bind();
+  GLCall(glUniform1f(GetUniformLocation(name), v0));
 }
 
-void Shader::SetUniform2f(const char* name, float v0, float v1){
-  glUniform2f(GetUniformLocation(name), v0, v1);
+void Shader::SetUniform2f(const char* name, GLfloat v0, GLfloat v1){
+  Bind();
+  GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
 }
 
-void Shader::SetUniform3f(const char* name, float v0, float v1, float v2) {
-  glUniform3f(GetUniformLocation(name), v0, v1, v2);
+void Shader::SetUniform3f(const char* name, GLfloat v0, GLfloat v1, GLfloat v2) {
+  Bind();
+  GLCall(glUniform3f(GetUniformLocation(name), v0, v1, v2));
 }
 
-void Shader::SetUniform4f(const char* name, float v0, float v1, float v2, float v3){
-  glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+void Shader::SetUniform4f(const char* name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3){
+  Bind();
+  GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
+}
+
+void Shader::SetUniformMat4(const char* name, const void* data){
+  Bind();
+  GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, (const GLfloat*)data));
 }
 
 void Shader::PrintActiveAttributes() const {
@@ -51,11 +61,11 @@ void Shader::PrintActiveAttributes() const {
   GLchar name[bufSize];
   GLsizei length;
 
-  glGetProgramiv(_programID, GL_ACTIVE_ATTRIBUTES,  &count);
+  GLCall(glGetProgramiv(_programID, GL_ACTIVE_ATTRIBUTES,  &count));
   std::cout << "There are " << count << " active attributes.\n";
 
   for(i = 0; i < count; i++) {
-    glGetActiveAttrib(_programID, (GLuint)i, bufSize, &length, &size, &type, name);
+    GLCall(glGetActiveAttrib(_programID, (GLuint)i, bufSize, &length, &size, &type, name));
     std::cout << "Attribute " << i << " type " << type << " name " << name << "\n";
   }
 }
@@ -70,11 +80,11 @@ void Shader::PrintActiveUniforms() const {
   GLchar name[bufSize];
   GLsizei length;
 
-  glGetProgramiv(_programID, GL_ACTIVE_UNIFORMS,  &count);
+  GLCall(glGetProgramiv(_programID, GL_ACTIVE_UNIFORMS,  &count));
   std::cout << "There are " << count << " active uniforms.\n";
 
   for(i = 0; i < count; i++) {
-    glGetActiveUniform(_programID, (GLuint)i, bufSize, &length, &size, &type, name);
+    GLCall(glGetActiveUniform(_programID, (GLuint)i, bufSize, &length, &size, &type, name));
     std::cout << "Uniform " << i << " type " << type << " name " << name << std::endl;
   }
 }
@@ -120,12 +130,18 @@ ShaderSource Shader::ParseShader(const std::string& vsFilepath, const std::strin
 GLuint Shader::CreateShader(const ShaderSource& shaderSource) {
   GLuint programID = glCreateProgram();
 
+  if(programID == 0) LOG_ERROR("OpenGL Error: Unable to create program.\n");
+
   GLuint vs = CompileShader(GL_VERTEX_SHADER, shaderSource.vertexShaderSource);
   GLuint fs = CompileShader(GL_FRAGMENT_SHADER, shaderSource.fragmentShaderSource);
 
-  glAttachShader(programID, vs);
-  glAttachShader(programID, fs);
-  glLinkProgram(programID);
+  GLCall(glAttachShader(programID, vs));
+  GLCall(glAttachShader(programID, fs));
+  GLCall(glLinkProgram(programID));
+
+  // Shaders are now linked to a program, so we no longer need them
+  GLCall(glDeleteShader(vs));
+  GLCall(glDeleteShader(fs));
 
   return programID;
 }
@@ -133,15 +149,17 @@ GLuint Shader::CreateShader(const ShaderSource& shaderSource) {
 GLuint Shader::CompileShader(GLenum shaderType, const std::string& source) {
   GLuint shader = glCreateShader(shaderType);
 
+  if(shader == 0) LOG_ERROR("OpenGL Error: Unable to create Shader.");
+
   const char* src = source.c_str();
-  glShaderSource(shader, 1, &src, NULL);
-  glCompileShader(shader);
+  GLCall(glShaderSource(shader, 1, &src, NULL));
+  GLCall(glCompileShader(shader));
 
   GLint compileStatus;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
+  GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus));
   if(compileStatus != GL_TRUE) {
     GLchar log[512];
-    glGetShaderInfoLog(shader, 512, NULL, log);
+    GLCall(glGetShaderInfoLog(shader, 512, NULL, log));
     LOG_ERROR("Unable to compile shader: file: " +
       (shaderType == GL_VERTEX_SHADER ? _vertexShaderFilepath : _fragmentShaderFilepath) +
       std::string(" \n") + std::string(log));

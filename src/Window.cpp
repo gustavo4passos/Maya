@@ -23,7 +23,7 @@ Window::~Window() {
     SDL_DestroyWindow(this->_windowPtr);
     this->_windowPtr = NULL;
   }
-
+  
   if(SDL_WasInit(SDL_INIT_VIDEO) != 0) {
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
   }

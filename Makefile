@@ -25,9 +25,9 @@ endif
 ifeq ($(OS), Linux)
 endif
 
-bin/Application.exe: build/Shader.o build/Window.o build/Vector2D.o build/VertexArray.o build/Texture.o \
+bin/Application.exe: build/Shader.o build/Window.o build/Vector2D.o build/VertexArray.o build/Texture.o build/Player.o \
  	build/LuaScript.o build/Renderer.o build/InputModule.o build/VertexBuffer.o build/IndexBuffer.o build/Application.o
-	g++ build/Window.o build/Vector2D.o build/Shader.o build/LuaScript.o build/Renderer.o \
+	g++ build/Window.o build/Vector2D.o build/Shader.o build/LuaScript.o build/Renderer.o build/Player.o build/Texture.o \
 	build/InputModule.o build/VertexBuffer.o build/IndexBuffer.o build/VertexArray.o build/Application.o \
 	$(LUA_LIB_PATH) $(SDL_LIB_PATH) $(GLEW_LIB_PATH) $(TINYXML2_LIB_PATH) $(LINKER_FLAGS) $(COMPILER_FLAGS) \
 	-o bin/Application
@@ -65,6 +65,9 @@ build/Texture.o: include/Texture.h src/Texture.cpp
 
 build/VertexArray.o: include/VertexArray.h src/VertexArray.cpp
 	g++ -c src/VertexArray.cpp ${GLEW_INCLUDE_PATH} -o build/VertexArray.o
+
+build/Player.o: include/Player.h src/Player.cpp
+	g++ -c src/Player.cpp ${GLEW_INCLUDE_PATH} -o build/Player.o
 
 
 clean:
