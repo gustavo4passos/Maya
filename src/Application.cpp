@@ -17,19 +17,22 @@ int main(int argc, char *argv[]) {
   bool fullscreen = script.Get<bool>("window.fullscreen");
 
   Window window = Window("Project Maya", width, height, 3, 3, vsync, fullscreen);
-  window.Init();
- 
+
+  window.Init(); 
   {
     InputModule::Init();
+
     Renderer renderer = Renderer();
- 
     renderer.Init();
     renderer.SetClearColor(.3f, .3f, .3f, 1.f);
     renderer.SetViewportSize(width, height);
 
+    Texture tex = Texture("../res/sprites/emma.jpg");
+
     while(true) {
 
       InputModule::Update();
+
       if(InputModule::WasKeyReleased(InputModule::ESC)) {
         break;
       }
@@ -38,6 +41,8 @@ int main(int argc, char *argv[]) {
       }
 
       renderer.Clear();
+      Rect r = Rect(0, 0, 800, 600);
+      renderer.Draw(tex, r, r);
       window.Swap();
     }
   }

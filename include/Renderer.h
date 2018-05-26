@@ -27,10 +27,10 @@ class Renderer {
 public:
   Renderer();
   ~Renderer();
+  void Clean();
 
   // Initializes the renderer data
   bool Init();
-  void Clean();
   void Clear();
   void SetClearColor(GLclampf r, GLclampf g, GLclampf b, GLclampf a);
 
