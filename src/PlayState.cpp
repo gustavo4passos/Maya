@@ -3,8 +3,10 @@
 #include "../include/GameStateMachine.h"
 #include "../include/Game.h"
 
+const std::string PlayState::_playID = "PLAY";
+
 void PlayState::Update(){
-    if(InputModule::WasKeyReleased(ESC)){
+    if(InputModule::WasKeyReleased(InputModule::ESC)){
         GameStateMachine::PopState();
     }
 
@@ -16,10 +18,12 @@ void PlayState::Render(){
     //-----------waiting for vinicius------------
 }
 
-void PlayState::OnEnter(){
+bool PlayState::OnEnter(){
+    return true;
     //----------waiting for gustavo to teach us how to use LuaScript---------
 }
 
-void PlayState::OnExit(){
-    //----------clear the textures (waiting for gustavinho-sama teach how to clear this fuck fuckness-----)
+bool PlayState::OnExit(){
+    return true;
+    //----------clear the textures------------
 }

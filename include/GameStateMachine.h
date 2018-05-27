@@ -6,17 +6,14 @@
 
 class GameStateMachine{
 public:
-
-    GameStateMachine(){}
-	~GameStateMachine();
-	void PushState(GameState* _state); 
-	void ChangeState(GameState* _state); 
-	void Update(); 
-	void Render();
-	void PopState();
+	static void PushState(GameState* _state); 
+	static void PopState();
+	static void ChangeState(GameState* _state); 
+	static void Update(); 
+	static void Render();
 
 private:
-
+	GameStateMachine(){}
     std::stack<GameState*> _gameStates;
 };
 

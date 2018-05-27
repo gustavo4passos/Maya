@@ -1,4 +1,5 @@
 #include "../include/GameStateMachine.h"
+#include "../include/ErrorHandler.h"
 
 void GameStateMachine::PushState(GameState* _state){
     _gameStates.push(_state);
