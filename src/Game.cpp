@@ -1,8 +1,12 @@
 #include "../include/Game.h"
+
+#include <SDL2/SDL.h>
+
 #include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
-#include "../include/Texture.h"
+#include "../include/Maya.h"
+
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -23,13 +27,16 @@ bool Game::Init() {
         return false;
     }
 
-    _renderer->SetClearColor(0.f, 0.f, 0.f, 1.f);
+    _renderer->SetClearColor(0.f, .8f, 0.f, 1.f);
     _renderer->SetViewportSize(width, height);
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
     }
+
+    _maya = new Maya();
+    _maya->Load(0,height/2,72,76,"../Maya_More_Clothes.png",3);
 
     _running = false;
 
@@ -47,11 +54,21 @@ void Game::Run() {
 
 void Game::Render() {
     _renderer->Clear();
+
+    _maya->Draw(_renderer);
+
     _window->Swap();
 }
 
 void Game::Update() {
+    unsigned int timePassed = SDL_GetTicks();
+	unsigned int frameTime = timePassed - _lastFrame;
+	_lastFrame = timePassed;
+    
     InputModule::Update();
+    
+    _maya->Update(frameTime);
+    
     HandleEvents();
 }
 
