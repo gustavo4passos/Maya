@@ -16,17 +16,10 @@ Window::Window(const char* title, int width, int height, int openGLMajorVersion,
   _openGLMinorVersion(openGLMinorVersion),
   _vsync(vsync), _fullscreen(fullscreen),
   _windowPtr(NULL)
-  {}
+  { }
 
 Window::~Window() {
-  if(this->_windowPtr != NULL) {
-    SDL_DestroyWindow(this->_windowPtr);
-    this->_windowPtr = NULL;
-  }
-  
-  if(SDL_WasInit(SDL_INIT_VIDEO) != 0) {
-    SDL_QuitSubSystem(SDL_INIT_VIDEO);
-  }
+  Close();
 }
 bool Window::Init() {
 
@@ -38,15 +31,15 @@ bool Window::Init() {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _openGLMinorVersion);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-  this->_windowPtr = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL);
+  _windowPtr = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL);
 
-  if(this->_windowPtr == NULL) {
+  if(_windowPtr == NULL) {
     LOG_ERROR("Unable to create window. " + std::string(SDL_GetError()));
     return false;
   }
   else {
-    this->_openGLContext = SDL_GL_CreateContext(this->_windowPtr);
-    if(this->_openGLContext == NULL) {
+    _openGLContext = SDL_GL_CreateContext(_windowPtr);
+    if(_openGLContext == NULL) {
       LOG_ERROR("Unable to create OpenGL context. " + std::string(SDL_GetError()));
       return false;
     }
@@ -59,10 +52,10 @@ bool Window::Init() {
         return false;
       }
       else {
-        if(this->_vsync) {
+        if(_vsync) {
           SetVsync(true);
         }
-        if(this->_fullscreen) {
+        if(_fullscreen) {
           SetFullscreen(true);
         }
       }
@@ -73,24 +66,28 @@ bool Window::Init() {
 }
 
 void Window::Close() {
-  SDL_DestroyWindow(this->_windowPtr);
-  this->_windowPtr = NULL;
+  if(_windowPtr != NULL){
+    SDL_DestroyWindow(_windowPtr);
+    _windowPtr = NULL;
+  }
 
-  SDL_QuitSubSystem(SDL_INIT_VIDEO);
+  if(SDL_WasInit(SDL_INIT_VIDEO)){
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+  }
 }
 
 void Window::Swap() {
-  SDL_GL_SwapWindow(this->_windowPtr);
+  SDL_GL_SwapWindow(_windowPtr);
 }
 
 void Window::SetFullscreen(bool fullscreen) {
   if(fullscreen) {
-    if(SDL_SetWindowFullscreen(this->_windowPtr, SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+    if(SDL_SetWindowFullscreen(_windowPtr, SDL_WINDOW_FULLSCREEN_DESKTOP)) {
       LOG_ERROR("Unable to set fullscreen mode. " + std::string(SDL_GetError()));
     }
   }
   else {
-      if(SDL_SetWindowFullscreen(this->_windowPtr, 0) < 0) {
+      if(SDL_SetWindowFullscreen(_windowPtr, 0) < 0) {
         LOG_ERROR("Unable to set windowed mode. " + std::string(SDL_GetError()));
       }
   }
