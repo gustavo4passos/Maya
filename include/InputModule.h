@@ -1,9 +1,10 @@
-#ifndef __INPUT_MODULE__
-#define __INPUT_MODULE__
+#ifndef INPUTMODULE_H
+#define INPUTMODULE_H
 
-#include "../include/Vector2D.h"
 #include <SDL2/SDL.h>
 #include <vector>
+
+#include "Vector2D.h"
 
 class InputModule
 {
@@ -79,8 +80,8 @@ public:
 	static int StickYValue(int joyIndex, JoyAnalogStick);
 
 	// Mouse
-	static bool IsMouseButtonUp(MouseButton);
-	static bool IsMouseButtonDown(MouseButton);
+	static bool WasMouseButtonReleased(MouseButton);
+	static bool IsMouseButtonPressed(MouseButton);
 	static Vector2D mousePosition();
 	static void setMousePosition(int x, int y);
 
@@ -106,9 +107,7 @@ private:
 	}
 	ButtonState;
 
-
 	static bool _closeWindow;
-
 
 	// Joystick atributes
 	static bool _joysticksInit;
@@ -136,7 +135,6 @@ private:
 
 	// Bitfield of pressed keys on the moment
 	static uint32_t _bfPressed;
-
 	// Bitfield of keys that just got released
 	static uint32_t _bfReleased;
 	// Bitfield of keys that just got pressed

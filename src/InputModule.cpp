@@ -421,12 +421,12 @@ void InputModule::OnJoystickButtonUp(SDL_Event &e)
 
 // MOUSE
 
-bool InputModule::IsMouseButtonUp(MouseButton button)
+bool InputModule::WasMouseButtonReleased(MouseButton button)
 {
 	return _mouseButtonStates[button].isUp;
 }
 
-bool InputModule::IsMouseButtonDown(MouseButton button)
+bool InputModule::IsMouseButtonPressed(MouseButton button)
 {
 	return _mouseButtonStates[button].isDown;
 }

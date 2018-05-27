@@ -2,6 +2,9 @@
 #include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
+#include "../include/Maya.h"
+
+#include <SDL2/SDL.h>
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -30,6 +33,9 @@ bool Game::Init() {
         return false;
     }
 
+    _maya = new Maya();
+    _maya->Load(0,height/2,72,76,"../Maya_More_Clothes.png",3);
+
     _running = false;
 
     return true;
@@ -47,19 +53,31 @@ void Game::Run() {
 
 void Game::Render() {
     _renderer->Clear();
+
+    _maya->Draw(_renderer);
+
     _window->Swap();
 }
 
 void Game::Update() {
+    unsigned int timePassed = SDL_GetTicks();
+	unsigned int frameTime = timePassed - _lastFrame;
+	_lastFrame = timePassed;
+    
     InputModule::Update();
+    
+    _maya->Update(frameTime);
+    
     HandleEvents();
 }
 
 void Game::Clean() {
+     delete _renderer;
+
     _window->Close();
     InputModule::Clean();
     
-    delete _renderer;
+   
     delete _window;
 
     _renderer = NULL;
