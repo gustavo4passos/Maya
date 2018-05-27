@@ -4,7 +4,7 @@
 #include "../include/ErrorHandler.h"
 #include "../include/Rect.h"
 
-GameEntity::GameEntity() : _texture(NULL), _loaded(false)
+GameEntity::GameEntity() : _loaded(false), _texture(NULL)
 {}
 
 GameEntity::~GameEntity()
@@ -20,26 +20,16 @@ void GameEntity::Load(int xPos, int yPos, int width, int height, std::string tex
     _texture = new Texture(textureFile);
     _scale = scale;
     _flip = flip;
-
+ 
     _loaded = true;
 }
-
-// void GameEntity::Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale)
-// {
-//     this->Load(xPos, yPos, width, height, textureFile, scale, false);
-// }
-    
-// void GameEntity::Load(int xPos, int yPos, int width, int height, std::string textureFile, bool flip)
-// {
-//     this->Load(xPos, yPos, width, height, textureFile, 1, flip);
-// }
 
 bool GameEntity::Draw(Renderer* renderer)
 {
     if(_loaded){
-        Rect src = Rect(_position, _width, _height);
-        Rect dest = src;
-        renderer->Draw(*_texture, src, dest /*, _scale */);
+        Rect src = Rect(0,0, _width, _height);
+        Rect dest = Rect(_position, 72*2, 76*2);        
+        renderer->Draw(_texture, &src, &dest);
         return true;
     }
     LOG_ERROR("Entity is not loaded");

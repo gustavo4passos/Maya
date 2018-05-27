@@ -1,8 +1,8 @@
 #ifndef INPUTMODULE_H
 #define INPUTMODULE_H
 
-#include <SDL2/SDL.h>
 #include <vector>
+#include <SDL2/SDL.h>
 
 #include "Vector2D.h"
 

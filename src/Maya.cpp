@@ -55,16 +55,16 @@ void Maya::HandleInput()
 
     // Walking
     if(InputModule::IsKeyPressed(InputModule::RIGHT) && InputModule::IsKeyPressed(InputModule::LEFT)){
-       if(velocityNow.x() < 0) _acceleration.setX(0.8);
-       else if(velocityNow.x() > 0) _acceleration.setX(-0.8);
+       if(velocityNow.x() < 0) _acceleration.setX(0.4);
+       else if(velocityNow.x() > 0) _acceleration.setX(-0.4);
        else _acceleration.setX(0);
     }    
-    else if (InputModule::IsKeyPressed(InputModule::RIGHT)) _acceleration.setX(0.6);
-    else if (InputModule::IsKeyPressed(InputModule::LEFT)) _acceleration.setX(-0.6);
+    else if (InputModule::IsKeyPressed(InputModule::RIGHT)) _acceleration.setX(0.3);
+    else if (InputModule::IsKeyPressed(InputModule::LEFT)) _acceleration.setX(-0.3);
 
     // If stopped to go any some direction
-    if(InputModule::WasKeyReleased(InputModule::LEFT) && velocityNow.x() < 0) _acceleration.setX(0.6);
-    if(InputModule::WasKeyReleased(InputModule::RIGHT) && velocityNow.x() > 0) _acceleration.setX(-0.6);
+    if(InputModule::WasKeyReleased(InputModule::LEFT) && velocityNow.x() < 0) _acceleration.setX(0.3);
+    if(InputModule::WasKeyReleased(InputModule::RIGHT) && velocityNow.x() > 0) _acceleration.setX(-0.3);
 }
 void Maya::Clean()
 {

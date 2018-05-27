@@ -8,13 +8,15 @@
 #include "../include/GLCall.h"
 
 Texture::Texture(std::string filename) :
-    _filename(filename)
+    _filename(filename),
+    _textureID(0)
 {  
     // TODO: File loading should be done in ResourceManager
     unsigned char* data = stbi_load(filename.c_str(), &_w, &_h, &_nChannels, 0);
 
     if(data == NULL) {
         LOG_ERROR("Unable to load image file. Filename\"" + _filename + "\"");
+        return;
     }    
 
     GLCall(glGenTextures(1, &_textureID));
@@ -72,4 +74,3 @@ void Texture::UploadTexture(BYTE* data) {
 
     GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, _w, _h, 0, format, GL_UNSIGNED_BYTE, (const void*)data));
 }
-

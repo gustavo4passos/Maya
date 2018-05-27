@@ -14,8 +14,6 @@ public:
     virtual ~GameEntity();
 
     virtual void Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale=1, bool flip=false);
-    // virtual void Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale);
-    // virtual void Load(int xPos, int yPos, int width, int height, std::string textureFile, bool flip);
 	virtual bool Draw(Renderer*);
 	virtual bool Update(unsigned int frameTime);
 	virtual void Clean();
