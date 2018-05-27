@@ -3,6 +3,7 @@
 
 #include "Renderer.h"
 #include "Window.h"
+#include "Player.h"
 
 class Texture; 
 
@@ -24,7 +25,10 @@ private:
     Window* _window;
     Renderer* _renderer;
 
-    Texture* _texture;
+    Player* _maya;
+
+    unsigned int _lastFrame;
+
     bool _running;
 };
 #endif
