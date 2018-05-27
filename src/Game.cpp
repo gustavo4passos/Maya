@@ -2,6 +2,7 @@
 #include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
+#include "../include/Texture.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -22,7 +23,7 @@ bool Game::Init() {
         return false;
     }
 
-    _renderer->SetClearColor(0.f, 1.f, 0.f, 1.f);
+    _renderer->SetClearColor(0.f, 0.f, 0.f, 1.f);
     _renderer->SetViewportSize(width, height);
 
     if(!InputModule::Init()){
@@ -41,7 +42,6 @@ void Game::Run() {
     while(_running) {
         Update();
         Render();
-
     }
 }
 
@@ -56,11 +56,10 @@ void Game::Update() {
 }
 
 void Game::Clean() {
-    _window->Close();
-    InputModule::Clean();
-    
-    delete _renderer;
+    delete _renderer;  
     delete _window;
+
+    InputModule::Clean();
 
     _renderer = NULL;
     _window = NULL;
