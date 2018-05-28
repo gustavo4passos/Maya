@@ -13,6 +13,7 @@ struct Color {
   float r;
   float g;
   float b;
+  float a;
 };
 
 // Trying to initialize or render without a valid OpenGL context is going to 
@@ -41,11 +42,15 @@ public:
 
 private:
   VertexArray* _spriteVAO;
+  VertexArray* _primitivesVAO;
   VertexBuffer* _spriteVBO;
+  VertexBuffer* _primitivesVBO;
   Shader* _spriteShader;
   Shader* _primitivesShader;
 
   float _viewportW, _viewportH;  
+
+  void PreparePrimitiveForDrawing(Rect* rect, Color* color);
 };
 
 #endif

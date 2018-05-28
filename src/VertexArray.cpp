@@ -7,6 +7,7 @@ VertexArray::VertexArray() {
 }
 
 VertexArray::~VertexArray() {
+    Unbind();
     GLCall(glDeleteVertexArrays(1, &_vaoID));
 }
 

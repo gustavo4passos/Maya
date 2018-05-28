@@ -108,6 +108,15 @@ void Window::SetVsync(bool vsync) {
   }
 }
 
+void Window::SetResolution(int width, int height){
+  if(width <= 0 && height <= 0) {
+    LOG_ERROR("Invalid resolution.");
+  }
+
+  SDL_SetWindowSize(_windowPtr, width, height);
+}
+
+
 bool Window::InitSDLVideoSubsystem() {
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0) {
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
