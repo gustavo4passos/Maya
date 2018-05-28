@@ -20,7 +20,7 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize window.");
         return false;
     }
-    
+
     _renderer = new Renderer();
     if(!_renderer->Init()){
         LOG_ERROR("Unable to initialize renderer.");
@@ -64,11 +64,11 @@ void Game::Update() {
     unsigned int timePassed = SDL_GetTicks();
 	unsigned int frameTime = timePassed - _lastFrame;
 	_lastFrame = timePassed;
-    
+
     InputModule::Update();
-    
+
     _maya->Update(frameTime);
-    
+
     HandleEvents();
 }
 
@@ -90,4 +90,3 @@ void Game::HandleEvents() {
         _running = false;
     }
 }
-

@@ -52,6 +52,15 @@ bool Window::Init() {
         return false;
       }
       else {
+
+        // Prints current graphics device and OpenGL version
+        const unsigned char* graphicsDeviceInfo = glGetString(GL_RENDERER);
+        const unsigned char* openGLVersion = glGetString(GL_VERSION);
+        const unsigned char* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+        std::cout << graphicsDeviceInfo << std::endl;
+        std::cout << "OpenGL Version: "<< openGLVersion << std::endl;
+        std::cout << "GLSL Version: " << glslVersion << std::endl;
         if(_vsync) {
           SetVsync(true);
         }
@@ -98,6 +107,15 @@ void Window::SetVsync(bool vsync) {
     LOG_ERROR("Unable to use Vsync. " + std::string(SDL_GetError()));
   }
 }
+
+void Window::SetResolution(int width, int height){
+  if(width <= 0 && height <= 0) {
+    LOG_ERROR("Invalid resolution.");
+  }
+
+  SDL_SetWindowSize(_windowPtr, width, height);
+}
+
 
 bool Window::InitSDLVideoSubsystem() {
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0) {

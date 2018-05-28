@@ -9,6 +9,7 @@ VertexBuffer::VertexBuffer(const GLvoid* data, GLsizeiptr size) : _vboID(0) {
 }
 
 VertexBuffer::~VertexBuffer() {
+  Unbind();
   GLCall(glDeleteBuffers(1, &(this->_vboID)));
 }
 
