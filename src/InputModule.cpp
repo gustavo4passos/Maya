@@ -1,9 +1,7 @@
 #include "../include/InputModule.h"
-
-#include <iostream>
-
 #include "../include/ErrorHandler.h"
 
+#include <iostream>
 
 InputModule::InputModule() {}
 
@@ -24,7 +22,7 @@ std::vector< std::vector<InputModule::ButtonState> > InputModule::_joyButtonStat
 const int InputModule::_joyDeadZone;
 
 std::vector<InputModule::ButtonState> InputModule::_mouseButtonStates;
-Vector2D* InputModule::_mousePosition;
+Vector2D InputModule::_mousePosition;
 
 
 
@@ -36,13 +34,13 @@ bool InputModule::Init()
 	if(!SDL_WasInit(SDL_INIT_EVENTS))
 	{
 		if (SDL_InitSubSystem(SDL_INIT_EVENTS) != 0) {
-			std::cout << SDL_GetError() << "\n";
+			LOG_ERROR("SDL: " << SDL_GetError());
 			return false;
 		}
 	}
 
 	// Initializing closeWindow
-
+	_closeWindow = false;
 
 	// Initializing keyboard BitFields
 	_bfPressed = 0;
@@ -56,10 +54,8 @@ bool InputModule::Init()
 		temp.isUp = false;
 		temp.isDown = false;
 		_mouseButtonStates.push_back(temp);
-	}
-
-	_mousePosition = new Vector2D(0, 0);
-
+	}  
+	_mousePosition = Vector2D(0, 0);
 	return true;
 }
 
@@ -80,9 +76,9 @@ void InputModule::Update()
 	// Reset joystick buttons
 	if (_joysticksInit)
 	{
-		for (int i = 0; i < _joyButtonStates.size(); i++)
+		for (unsigned int i = 0; i < _joyButtonStates.size(); i++)
 		{
-			for (int j = 0; j < _joyButtonStates[i].size(); j++)
+			for (unsigned int j = 0; j < _joyButtonStates[i].size(); j++)
 			{
 				_joyButtonStates[i][j].isUp = false;
 				_joyButtonStates[i][j].isDown = false;
@@ -253,7 +249,7 @@ void InputModule::Update()
 void InputModule::Clean()
 {
 	if (_joysticksInit)
-		for (unsigned int i = 0; i < SDL_NumJoysticks(); i++)
+		for (int i = 0; i < SDL_NumJoysticks(); i++)
 		{
 			SDL_JoystickClose(_joysticks[i]);
 		}
@@ -267,7 +263,7 @@ bool InputModule::InitJoysticks()
 	if (SDL_WasInit(SDL_INIT_JOYSTICK) == 0)
 	{
 		if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0) {
-			LOG_ERROR(SDL_GetError());
+			LOG_ERROR("SDL: " << SDL_GetError());
 			_joysticksInit = false;
 			return false;
 		}
@@ -286,10 +282,10 @@ bool InputModule::InitJoysticks()
 		{
 			SDL_Joystick *joy = SDL_JoystickOpen(i);
 			if (joy == NULL) {
-				LOG_ERROR(SDL_GetError());
-			}
-
-			else
+				LOG_ERROR("SDL: " << SDL_GetError());
+			}							
+				
+			else 
 			{
 				_joysticks.push_back(joy);
 				_joystickValues.push_back(std::make_pair(new Vector2D(0, 0), new Vector2D(0, 0)));
@@ -308,7 +304,9 @@ bool InputModule::InitJoysticks()
 		}
 
 		SDL_JoystickEventState(SDL_ENABLE);
+		
 		_joysticksInit = true;
+		return true;
 	}
 }
 
@@ -423,17 +421,17 @@ void InputModule::OnJoystickButtonUp(SDL_Event &e)
 
 // MOUSE
 
-bool InputModule::IsMouseButtonUp(MouseButton button)
+bool InputModule::WasMouseButtonReleased(MouseButton button)
 {
 	return _mouseButtonStates[button].isUp;
 }
 
-bool InputModule::IsMouseButtonDown(MouseButton button)
+bool InputModule::IsMouseButtonPressed(MouseButton button)
 {
 	return _mouseButtonStates[button].isDown;
 }
 
-Vector2D * InputModule::mousePosition()
+Vector2D InputModule::mousePosition()
 {
 	return _mousePosition;
 }
@@ -446,8 +444,8 @@ void InputModule::setMousePosition(int x, int y)
 // handle mouse events
 void InputModule::OnMouseMove(SDL_Event &e)
 {
-	_mousePosition->setX(e.motion.x);
-	_mousePosition->setY(e.motion.y);
+	_mousePosition.setX(e.motion.x);
+	_mousePosition.setY(e.motion.y);
 }
 
 void InputModule::OnMouseButtonDown(SDL_Event &e)

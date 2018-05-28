@@ -1,7 +1,12 @@
 #include "../include/Game.h"
+
+#include <SDL2/SDL.h>
+
 #include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
+#include "../include/Maya.h"
+
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -15,20 +20,23 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize window.");
         return false;
     }
-    
+
     _renderer = new Renderer();
     if(!_renderer->Init()){
         LOG_ERROR("Unable to initialize renderer.");
         return false;
     }
 
-    _renderer->SetClearColor(0.f, 1.f, 0.f, 1.f);
+    _renderer->SetClearColor(0.f, .8f, 0.f, 1.f);
     _renderer->SetViewportSize(width, height);
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
     }
+
+    _maya = new Maya();
+    _maya->Load(0,height/2,72,76,"../Maya_More_Clothes.png",3);
 
     _running = false;
 
@@ -38,29 +46,53 @@ bool Game::Init() {
 void Game::Run() {
     _running = true;
 
+    unsigned int previous = SDL_GetTicks();
+    unsigned int lag = 0.0;
+    const unsigned int MS_PER_UPDATE = 16;
     while(_running) {
-        Update();
+        unsigned int current =  SDL_GetTicks();
+        unsigned int elapsed = current - previous;
+
+        previous = current;
+        lag += elapsed;
+
+        InputModule::Update();
+        HandleEvents();
+
+        while(lag>=MS_PER_UPDATE){
+            Update();
+            lag -= MS_PER_UPDATE;
+            
+        }
+
         Render();
 
     }
+    
 }
 
 void Game::Render() {
     _renderer->Clear();
+
+    _maya->Draw(_renderer);
+
     _window->Swap();
 }
 
 void Game::Update() {
-    InputModule::Update();
-    HandleEvents();
+    unsigned int timePassed = SDL_GetTicks();
+	unsigned int frameTime = timePassed - _lastFrame;
+	_lastFrame = timePassed;
+
+    _maya->Update(frameTime);
+
 }
 
 void Game::Clean() {
-    delete _renderer;
-    _window->Close();
-    InputModule::Clean();
-    
+    delete _renderer;  
     delete _window;
+
+    InputModule::Clean();
 
     _renderer = NULL;
     _window = NULL;
@@ -74,4 +106,3 @@ void Game::HandleEvents() {
         _running = false;
     }
 }
-
