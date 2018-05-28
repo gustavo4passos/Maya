@@ -46,10 +46,29 @@ bool Game::Init() {
 void Game::Run() {
     _running = true;
 
+    unsigned int previous = SDL_GetTicks();
+    unsigned int lag = 0.0;
+    const unsigned int MS_PER_UPDATE = 16;
     while(_running) {
-        Update();
+        unsigned int current =  SDL_GetTicks();
+        unsigned int elapsed = current - previous;
+
+        previous = current;
+        lag += elapsed;
+
+        InputModule::Update();
+        HandleEvents();
+
+        while(lag>=MS_PER_UPDATE){
+            Update();
+            lag -= MS_PER_UPDATE;
+            
+        }
+
         Render();
+
     }
+    
 }
 
 void Game::Render() {
@@ -65,11 +84,8 @@ void Game::Update() {
 	unsigned int frameTime = timePassed - _lastFrame;
 	_lastFrame = timePassed;
 
-    InputModule::Update();
-
     _maya->Update(frameTime);
 
-    HandleEvents();
 }
 
 void Game::Clean() {
