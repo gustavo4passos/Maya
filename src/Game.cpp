@@ -56,10 +56,10 @@ void Game::Update() {
 }
 
 void Game::Clean() {
+    delete _renderer;
     _window->Close();
     InputModule::Clean();
     
-    delete _renderer;
     delete _window;
 
     _renderer = NULL;
