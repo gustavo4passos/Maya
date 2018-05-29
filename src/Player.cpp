@@ -24,7 +24,7 @@ bool Player::Update(unsigned int frameTime)
     if(_loaded)
     {
         HandleInput();
-        GameEntity::Update(frameTime);
+        GameEntity::Update(frameTime);        
     }
     return false;
 }
@@ -32,8 +32,8 @@ bool Player::Update(unsigned int frameTime)
 void Player::HandleInput()
 {
     Vector2D vec = InputModule::mousePosition();
-    _position.setX(vec.x()-(/*_scale**/(_width/2)));
-    _position.setY(vec.y()-(/*_scale**/(_height/2)));
+    _position.setX(vec.x()-(_scale*_width/2));
+    _position.setY(vec.y()-(_scale*_height/2));
 }
 
 void Player::Clean()

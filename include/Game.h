@@ -14,7 +14,7 @@ public:
 
     bool Init();
     void Run();
-    void Render();
+    void Render(float positionFactor);
     void Update();
     void Clean();
     void HandleEvents();

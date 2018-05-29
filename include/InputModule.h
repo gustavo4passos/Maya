@@ -62,7 +62,7 @@ public:
 	BF_Key;
 
 
-	static bool CloseWindowRequest();
+	inline static bool CloseWindowRequest();
 
 
 	// Main functions
@@ -71,19 +71,20 @@ public:
 	static void Clean();
 
 	// Joysticks
-	static bool JoysticksInitialized();
 	static bool InitJoysticks();
-	static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
-	static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
+	inline static bool JoysticksInitialized();
+	inline static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
+	inline static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
 
 	static int StickXValue(int joyIndex, JoyAnalogStick);
 	static int StickYValue(int joyIndex, JoyAnalogStick);
 
 	// Mouse
-	static bool WasMouseButtonReleased(MouseButton);
-	static bool IsMouseButtonPressed(MouseButton);
-	static Vector2D mousePosition();
-	static void setMousePosition(int x, int y);
+	inline static bool WasMouseButtonReleased(MouseButton);
+	inline static bool IsMouseButtonPressed(MouseButton);
+	inline static const Vector2D& GetMousePosition();
+	inline static void SetMousePosition(int x, int y);
+	inline static void SetMousePosition(Vector2D);
 
 	// Keyboard
 
@@ -139,7 +140,6 @@ private:
 	static uint32_t _bfReleased;
 	// Bitfield of keys that just got pressed
 	static uint32_t _bfWasPressed;
-
 
 };
 

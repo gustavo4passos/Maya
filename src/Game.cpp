@@ -20,7 +20,7 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize window.");
         return false;
     }
-    
+
     _renderer = new Renderer();
     if(!_renderer->Init()){
         LOG_ERROR("Unable to initialize renderer.");
@@ -36,7 +36,7 @@ bool Game::Init() {
     }
 
     _maya = new Maya();
-    _maya->Load(0,height/2,72,76,"../Maya_More_Clothes.png",3);
+    _maya->Load(0,height/2,36,39,"../res/assets/Maya_More_Clothes.png",5);
 
     _running = false;
 
@@ -46,30 +46,39 @@ bool Game::Init() {
 void Game::Run() {
     _running = true;
 
+    unsigned int previous = SDL_GetTicks();
+    unsigned int lag = 0.0;
+    const unsigned int MS_PER_UPDATE = 16;
     while(_running) {
-        Update();
-        Render();
+        unsigned int current =  SDL_GetTicks();
+        unsigned int elapsed = current - previous;
+
+        previous = current;
+        lag += elapsed;
+        
+        HandleEvents();        
+
+        while(lag>=MS_PER_UPDATE){
+            Update();
+            lag -= MS_PER_UPDATE;            
+        }
+
+        Render(float(lag) / MS_PER_UPDATE);
+
     }
+    
 }
 
-void Game::Render() {
+void Game::Render(float positionFactor) {
     _renderer->Clear();
 
-    _maya->Draw(_renderer);
+    _maya->Draw(_renderer, positionFactor);
 
     _window->Swap();
 }
 
 void Game::Update() {
-    unsigned int timePassed = SDL_GetTicks();
-	unsigned int frameTime = timePassed - _lastFrame;
-	_lastFrame = timePassed;
-    
-    InputModule::Update();
-    
-    _maya->Update(frameTime);
-    
-    HandleEvents();
+    _maya->Update();
 }
 
 void Game::Clean() {
@@ -83,11 +92,15 @@ void Game::Clean() {
 }
 
 void Game::HandleEvents() {
+    
+    InputModule::Update();
+
     if(InputModule::CloseWindowRequest()){
         _running = false;
     }
     if(InputModule::WasKeyReleased(InputModule::ESC)){
         _running = false;
     }
-}
 
+    _maya->HandleInput();
+}

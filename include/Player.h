@@ -15,7 +15,7 @@ public:
     virtual bool Update(unsigned int frameTime);
     virtual void Clean();
         
-private:
+protected:
 
     virtual void HandleInput();
 };
