@@ -28,7 +28,7 @@ bool Game::Init() {
     }
 
     _renderer->SetClearColor(0.f, .8f, 0.f, 1.f);
-    _renderer->SetViewportSize(width, height);
+    _renderer->SetViewportSize(_window->width(), _window->height());
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
@@ -36,8 +36,7 @@ bool Game::Init() {
     }
 
     _maya = new Maya();
-    _maya->Load(0,height/2,72,76,"../Maya_More_Clothes.png",3);
-
+    _maya->Load(0, 270 / 2, 32, 39,"../res/sprites/maya.png", 3);
     _running = false;
 
     return true;
@@ -88,5 +87,10 @@ void Game::HandleEvents() {
     }
     if(InputModule::WasKeyReleased(InputModule::ESC)){
         _running = false;
+    }
+    if(InputModule::IsKeyPressed(InputModule::LALT) &&
+       InputModule::WasKeyReleased(InputModule::ENTER)){
+        _window->ToggleFullscreen();
+	_renderer->SetViewportSize(_window->width(), _window->height());
     }
 }

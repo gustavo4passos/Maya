@@ -28,7 +28,7 @@ bool GameEntity::Draw(Renderer* renderer)
 {
     if(_loaded){
         Rect src = Rect(0,0, _width, _height);
-        Rect dest = Rect(_position, 72*2, 76*2);        
+        Rect dest = Rect(_position, _width, _height);        
         renderer->Draw(_texture, &src, &dest);
         return true;
     }
