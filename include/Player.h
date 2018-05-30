@@ -14,10 +14,8 @@ public:
     virtual bool Draw(Renderer*);
     virtual bool Update(unsigned int frameTime);
     virtual void Clean();
-        
-private:
-
-    virtual void HandleInput();
+    virtual void HandleInput();        
+protected:
 };
 
 #endif

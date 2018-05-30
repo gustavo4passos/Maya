@@ -88,6 +88,11 @@ bool Renderer::Init() {
 }
 
 void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
+  if(!tex){
+	  LOG_ERROR("Texture is NULL.");
+	  DEBUG_BREAK();
+	  return;
+  }
 
   _spriteVAO->Bind();
   _spriteShader->Bind();
@@ -105,11 +110,32 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
 }
 
 void Renderer::DrawRect(Rect* rect, Color* color) {
+  if(!rect){
+	  LOG_ERROR("Rect is NULL.");
+	  DEBUG_BREAK();
+	  return;
+  }
+  if(!color){
+	  LOG_ERROR("Color is NULL.");
+	  DEBUG_BREAK();
+	  return;
+  }
+		
   PreparePrimitiveForDrawing(rect, color);
   GLCall(glDrawArrays(GL_LINE_LOOP, 0, 4));
 }
 
 void Renderer::DrawFillRect(Rect* rect, Color* color) {
+  if(!rect){
+	  LOG_ERROR("Rect is NULL.");
+	  DEBUG_BREAK();
+	  return;
+  }
+  if(!color){
+	  LOG_ERROR("Color is NULL.");
+	  DEBUG_BREAK();
+	  return;
+  }
 
   PreparePrimitiveForDrawing(rect, color);
   GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));

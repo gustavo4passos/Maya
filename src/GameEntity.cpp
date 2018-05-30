@@ -17,7 +17,7 @@ void GameEntity::Load(int xPos, int yPos, int width, int height, std::string tex
     _position = Vector2D(xPos, yPos);
     _width = width;
     _height = height;
-    _texture = new Texture(textureFile);
+    _texture = NULL; //new Texture(textureFile);
     _scale = scale;
     _flip = flip;
  
@@ -28,7 +28,7 @@ bool GameEntity::Draw(Renderer* renderer)
 {
     if(_loaded){
         Rect src = Rect(0,0, _width, _height);
-        Rect dest = Rect(_position, _width, _height);        
+        Rect dest = Rect(_position, _width*_scale, _height*_scale);        
         renderer->Draw(_texture, &src, &dest);
         return true;
     }

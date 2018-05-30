@@ -76,9 +76,9 @@ void InputModule::Update()
 	// Reset joystick buttons
 	if (_joysticksInit)
 	{
-		for (int i = 0; i < _joyButtonStates.size(); i++)
+		for (unsigned int i = 0; i < _joyButtonStates.size(); i++)
 		{
-			for (int j = 0; j < _joyButtonStates[i].size(); j++)
+			for (unsigned int j = 0; j < _joyButtonStates[i].size(); j++)
 			{
 				_joyButtonStates[i][j].isUp = false;
 				_joyButtonStates[i][j].isDown = false;
@@ -249,7 +249,7 @@ void InputModule::Update()
 void InputModule::Clean()
 {
 	if (_joysticksInit)
-		for (unsigned int i = 0; i < SDL_NumJoysticks(); i++)
+		for (int i = 0; i < SDL_NumJoysticks(); i++)
 		{
 			SDL_JoystickClose(_joysticks[i]);
 		}
@@ -431,14 +431,19 @@ bool InputModule::IsMouseButtonPressed(MouseButton button)
 	return _mouseButtonStates[button].isDown;
 }
 
-Vector2D InputModule::mousePosition()
+const Vector2D& InputModule::GetMousePosition()
 {
 	return _mousePosition;
 }
 
-void InputModule::setMousePosition(int x, int y)
+void InputModule::SetMousePosition(int x, int y)
 {
 	SDL_WarpMouseInWindow(NULL, x, y);
+}
+
+void InputModule::SetMousePosition(Vector2D)
+{
+
 }
 
 // handle mouse events

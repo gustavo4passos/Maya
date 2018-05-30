@@ -6,7 +6,7 @@
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
 #include "../include/Maya.h"
-
+#include "../include/ResourceManager.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -36,7 +36,9 @@ bool Game::Init() {
     }
 
     _maya = new Maya();
-    _maya->Load(0, 270 / 2, 32, 39,"../res/sprites/maya.png", 3);
+    _maya->Load(0, 0, 36, 39, "../res/assets/Maya_More_Clothes.png");
+
+    ResourceManager::LoadTexture("../res/assets/Maya_More_Clothes.png");
     _running = false;
 
     return true;
@@ -45,30 +47,42 @@ bool Game::Init() {
 void Game::Run() {
     _running = true;
 
+    unsigned int previous = SDL_GetTicks();
+    unsigned int lag = 0.0;
+    const unsigned int MS_PER_UPDATE = 16;
     while(_running) {
-        Update();
-        Render();
+        unsigned int current =  SDL_GetTicks();
+        unsigned int elapsed = current - previous;
+
+        previous = current;
+        lag += elapsed;
+        
+        HandleEvents();        
+
+        while(lag>=MS_PER_UPDATE){
+            Update();
+            lag -= MS_PER_UPDATE;            
+        }
+
+        Render(float(lag) / MS_PER_UPDATE);
+
     }
+    
 }
 
-void Game::Render() {
+void Game::Render(float positionFactor) {
     _renderer->Clear();
 
     _maya->Draw(_renderer);
+    
+    Rect r(0, 0, 72, 76);
+    _renderer->Draw(ResourceManager::GetTexture("../res/assets/Maya_More_Clothes.png"), &r, &r);
 
     _window->Swap();
 }
 
 void Game::Update() {
-    unsigned int timePassed = SDL_GetTicks();
-	unsigned int frameTime = timePassed - _lastFrame;
-	_lastFrame = timePassed;
-
-    InputModule::Update();
-
-    _maya->Update(frameTime);
-
-    HandleEvents();
+    _maya->Update(5);
 }
 
 void Game::Clean() {
@@ -82,15 +96,21 @@ void Game::Clean() {
 }
 
 void Game::HandleEvents() {
-    if(InputModule::CloseWindowRequest()){
+    
+    InputModule::Update();
+
+    if(InputModule::CloseWindowRequest()) {
         _running = false;
     }
-    if(InputModule::WasKeyReleased(InputModule::ESC)){
+    if(InputModule::WasKeyReleased(InputModule::ESC)) {
         _running = false;
     }
-    if(InputModule::IsKeyPressed(InputModule::LALT) &&
-       InputModule::WasKeyReleased(InputModule::ENTER)){
+    if(InputModule::IsKeyPressed(InputModule::LALT) && 
+       InputModule::WasKeyReleased(InputModule::ENTER)) 
+    {
         _window->ToggleFullscreen();
-	_renderer->SetViewportSize(_window->width(), _window->height());
+ 	_renderer->SetViewportSize(_window->width(), _window->height());
     }
+
+    _maya->HandleInput();
 }

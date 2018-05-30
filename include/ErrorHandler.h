@@ -16,5 +16,4 @@
 #define LOG_ERROR(x)
 #endif
 
-
 #endif
