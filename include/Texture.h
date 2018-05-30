@@ -16,6 +16,7 @@ public:
     inline int w() const { return _w; }
     inline int h() const { return _h; }
     inline std::string filename() const { return _filename; }
+    inline unsigned int id() { return _textureID; }
 
 private:
     typedef unsigned char BYTE;

@@ -36,7 +36,7 @@ bool Game::Init() {
     }
 
     _maya = new Maya();
-    _maya->Load(0,height/2,36,39,"../res/assets/Maya_More_Clothes.png",5);
+    _maya->Load(0,height/2,36,39,"../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png",5);
 
     _running = false;
 

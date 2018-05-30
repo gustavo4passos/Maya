@@ -5,36 +5,31 @@ Player::Player() : GameEntity()
 {}
 
 Player::~Player()
+{}
+
+bool Player::Load(int xPos, int yPos, int width, int height, TextureID sprite, float scale, bool flip)
 {
-    if(_texture != NULL) delete _texture;
+    GameEntity::Load(xPos, yPos, width, height, sprite, scale, flip);
 }
 
-void Player::Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale, bool flip)
+void Player::Draw(Renderer* renderer, float positionFactor)
 {
-    GameEntity::Load(xPos, yPos, width, height, textureFile, scale, flip);
-}
-
- bool Player::Draw(Renderer* renderer)
- {
-    return GameEntity::Draw(renderer);
- }
-
-bool Player::Update(unsigned int frameTime)
-{
-    if(_loaded)
-    {
-        HandleInput();
-        GameEntity::Update(frameTime);        
-    }
-    return false;
+   GameEntity::Draw(renderer, positionFactor);
 }
 
 void Player::HandleInput()
 {
-    Vector2D vec = InputModule::mousePosition();
+    Vector2D vec = InputModule::GetMousePosition();
     _position.setX(vec.x()-(_scale*_width/2));
     _position.setY(vec.y()-(_scale*_height/2));
 }
+
+void Player::Update()
+{
+    GameEntity::Update();        
+}
+
+
 
 void Player::Clean()
 {

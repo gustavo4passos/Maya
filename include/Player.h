@@ -10,14 +10,12 @@ public:
     Player();
     ~Player();
     
-    virtual void Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale=1, bool flip=false);
-    virtual bool Draw(Renderer*);
-    virtual bool Update(unsigned int frameTime);
-    virtual void Clean();
-        
-protected:
-
+    virtual bool Load(int xPos, int yPos, int width, int height, TextureID sprite, float scale=1, bool flip=false);
+    virtual void Draw(Renderer*, float positionFactor);
     virtual void HandleInput();
+    virtual void Update();
+    virtual void Clean();
+    
 };
 
 #endif
