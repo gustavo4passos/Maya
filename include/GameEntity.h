@@ -14,7 +14,7 @@ public:
     GameEntity();
     virtual ~GameEntity();
 
-    virtual bool Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
+    virtual void Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
 	virtual void Draw(Renderer*, float positionFactor);
 	virtual void Update();
 	virtual void Clean();

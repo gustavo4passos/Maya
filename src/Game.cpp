@@ -34,15 +34,14 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
     }
-
    
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png")) {
+    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
         LOG_ERROR("Unbale to load texture.");
     }
 
     _maya = new Maya();
-    _maya->Load(270,100,36,39,"../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png");
-    
+    _maya->Load(270,100,36,39,"maya_running");
+
     _running = false;
 
     return true;
@@ -85,10 +84,11 @@ void Game::Update() {
 }
 
 void Game::Clean() {
+    InputModule::Clean();
+	ResourceManager::CleanTextures();
+
     delete _renderer;  
     delete _window;
-
-    InputModule::Clean();
 
     _renderer = NULL;
     _window = NULL;
@@ -98,17 +98,16 @@ void Game::HandleEvents() {
     
     InputModule::Update();
 
-    if(InputModule::CloseWindowRequest()) {
-        _running = false;
-    }
-    if(InputModule::WasKeyReleased(InputModule::ESC)) {
-        _running = false;
+    if(InputModule::CloseWindowRequest() ||
+       InputModule::WasKeyReleased(InputModule::ESC)){
+        _window->SetFullscreen(false);
+        _renderer->SetViewportSize(_window->width(), _window->height());
+        if(_window->ShowQuitMessageBox()) _running = false;
     }
     if(InputModule::IsKeyPressed(InputModule::LALT) && 
-       InputModule::WasKeyReleased(InputModule::ENTER)) 
-    {
-        _window->ToggleFullscreen();
- 	_renderer->SetViewportSize(_window->width(), _window->height());
+       InputModule::WasKeyReleased(InputModule::ENTER)) {
+           _window->ToggleFullscreen();
+           _renderer->SetViewportSize(_window->width(), _window->height());
     }
 
     _maya->HandleInput();

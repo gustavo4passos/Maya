@@ -14,7 +14,7 @@ GameEntity::~GameEntity()
 
 }
 
-bool GameEntity::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
+void GameEntity::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
 {
     _position = Vector2D(xPos, yPos);
     _width = width;
@@ -26,9 +26,6 @@ bool GameEntity::Load(int xPos, int yPos, int width, int height, std::string spr
     _currentFrame = 0;
     _currentRow = 0;
     _numFrames = 1;
-
-    // DBG("position = " << _position.x() << " " << _position.y());
-    return true;
 }
 
 void GameEntity::Draw(Renderer* renderer, float positionFactor)
@@ -42,7 +39,6 @@ void GameEntity::Draw(Renderer* renderer, float positionFactor)
 void GameEntity::Update()
 {
     _currentFrame = int(SDL_GetTicks()/80) % _numFrames;
-    DBG("currentFrame = " << _currentFrame);
     _velocity += _acceleration;
     _position += _velocity;
 }

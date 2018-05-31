@@ -8,7 +8,7 @@
 
 std::map<std::string, Texture*> ResourceManager::_textureMap;
 
-bool ResourceManager::LoadTexture(std::string filename) {
+bool ResourceManager::LoadTexture(const std::string& filename, const std::string& name) {
     
     int w, h, nChannels;
     unsigned char* textureData = stbi_load(filename.c_str(), &w, &h, &nChannels, 0);
@@ -19,7 +19,7 @@ bool ResourceManager::LoadTexture(std::string filename) {
     }
 
     Texture* tex = new Texture((const void*)textureData, w, h, nChannels);
-    _textureMap[filename] = tex; 
+    _textureMap[name.c_str()] = tex; 
    
     // Frees image data from RAM
     stbi_image_free(textureData);
@@ -27,16 +27,6 @@ bool ResourceManager::LoadTexture(std::string filename) {
     return true;
 }
 
-void ResourceManager::DeleteTexture(const std::string& textureName) {
-    std::map<std::string, Texture*>::iterator entry = _textureMap.find(textureName);
-    if(entry == _textureMap.end()){
-	    LOG_ERROR("Unable to delete texture, invalid texture name: " + textureName);
-    }
-    else{
-	    delete entry->second;
-	    _textureMap.erase(entry);
-    }
-} 
 
 // TODO For the release version, consider returning map[entry] instead of using find() 
 // However map[entry] will create a new item in map if 'entry' isn't a valid entry
@@ -53,6 +43,17 @@ Texture* const ResourceManager::GetTexture(const std::string& name){
     }
     return texEntry->second;
 }
+
+void ResourceManager::DeleteTexture(const std::string& textureName) {
+    std::map<std::string, Texture*>::iterator entry = _textureMap.find(textureName);
+    if(entry == _textureMap.end()){
+	    LOG_ERROR("Unable to delete texture, invalid texture name: " + textureName);
+    }
+    else{
+	    delete entry->second;
+	    _textureMap.erase(entry);
+    }
+} 
 
 void ResourceManager::CleanTextures() {
     for(std::map<std::string, Texture*>::iterator it = _textureMap.begin(); it != _textureMap.end(); it++)

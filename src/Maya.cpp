@@ -11,11 +11,10 @@ Maya::Maya() : Player()
 Maya::~Maya()
 {}
 
-bool Maya::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
+void Maya::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
 {
     Player::Load(xPos, yPos, width, height, sprite, scale, flip); 
     _numFrames = 8;
-    return true;
 }
 
 void Maya::Draw(Renderer* renderer, float positionFactor)

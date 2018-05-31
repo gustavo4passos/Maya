@@ -11,9 +11,9 @@ class ResourceManager {
 public:
 
     // Textures  
-    static bool LoadTexture(std::string filename); // Returns false if unable to load texture
+    static bool LoadTexture(const std::string& filename, const std::string& name); // Returns false if unable to load texture
     static void DeleteTexture(const std::string& textureName);    
-    static Texture* const GetTexture(const std::string& name); 
+    static Texture* const GetTexture(const std::string& textureName); 
     static void CleanTextures();   
 
 private:
