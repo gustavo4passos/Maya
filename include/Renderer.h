@@ -61,7 +61,8 @@ private:
   // Internal resolution data
   static const int INTERNAL_RESOLUTION_W = 480;
   static const int INTERNAL_RESOLUTION_H = 270;
-  static const float ASPECT_RATIO = (1.f * INTERNAL_RESOLUTION_W) / INTERNAL_RESOLUTION_H;
+  static const float ASPECT_RATIO;
+  // static const float ASPECT_RATIO = (1.f * INTERNAL_RESOLUTION_W) / INTERNAL_RESOLUTION_H;
 
   float _xScaleFactor, _yScaleFactor;
 };

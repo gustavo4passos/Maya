@@ -7,6 +7,8 @@
 #include "../include/GLCall.h"
 #include "../include/Window.h"
 
+const float Renderer::ASPECT_RATIO = (1.f * Renderer::INTERNAL_RESOLUTION_W) / Renderer::INTERNAL_RESOLUTION_H;
+
 Renderer::Renderer() :
   _spriteVAO(NULL),
   _spriteVBO(NULL),

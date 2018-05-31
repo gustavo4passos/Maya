@@ -51,7 +51,6 @@ Texture* const ResourceManager::GetTexture(const std::string& name){
 	    DEBUG_BREAK();
 	    return NULL;
     }
-
     return texEntry->second;
 }
 

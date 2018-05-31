@@ -35,10 +35,14 @@ bool Game::Init() {
         return false;
     }
 
-    _maya = new Maya();
-    _maya->Load(0,height/2,36,39,"../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png",5);
+   
+    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png")) {
+        LOG_ERROR("Unbale to load texture.");
+    }
 
-    ResourceManager::LoadTexture("../res/assets/Maya_More_Clothes.png");
+    _maya = new Maya();
+    _maya->Load(270,100,36,39,"../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png");
+    
     _running = false;
 
     return true;
@@ -72,17 +76,12 @@ void Game::Run() {
 
 void Game::Render(float positionFactor) {
     _renderer->Clear();
-
-    _maya->Draw(_renderer);
-    
-    Rect r(0, 0, 72, 76);
-    _renderer->Draw(ResourceManager::GetTexture("../res/assets/Maya_More_Clothes.png"), &r, &r);
-
+    _maya->Draw(_renderer, positionFactor);
     _window->Swap();
 }
 
 void Game::Update() {
-    _maya->Update(5);
+    _maya->Update();
 }
 
 void Game::Clean() {

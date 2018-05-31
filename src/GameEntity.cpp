@@ -14,7 +14,7 @@ GameEntity::~GameEntity()
 
 }
 
-bool GameEntity::Load(int xPos, int yPos, int width, int height, TextureID sprite, float scale, bool flip)
+bool GameEntity::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
 {
     _position = Vector2D(xPos, yPos);
     _width = width;
@@ -27,6 +27,7 @@ bool GameEntity::Load(int xPos, int yPos, int width, int height, TextureID sprit
     _currentRow = 0;
     _numFrames = 1;
 
+    // DBG("position = " << _position.x() << " " << _position.y());
     return true;
 }
 
@@ -34,14 +35,14 @@ void GameEntity::Draw(Renderer* renderer, float positionFactor)
 {
     Vector2D refacPosition = _position + (_velocity * positionFactor);
     Rect src = Rect(_currentFrame*_width,_currentRow*_height, _width, _height);              
-    Rect dest = Rect(refacPosition, _width*_scale, _height*_scale);       
-
-    renderer->Draw(ResourceManager::GetTexture(_defaultTexture), &src, &dest);
+    Rect dest = Rect(refacPosition, _width*_scale, _height*_scale);
+    renderer->Draw(ResourceManager::GetTexture(_defaultTexture), &src, &dest);    
 }
 
 void GameEntity::Update()
 {
     _currentFrame = int(SDL_GetTicks()/80) % _numFrames;
+    DBG("currentFrame = " << _currentFrame);
     _velocity += _acceleration;
     _position += _velocity;
 }
@@ -53,7 +54,7 @@ void GameEntity::Clean()
     _height = 0;
     _scale = 0;
     _flip = false;
-    _defaultTexture = 0;
+    _defaultTexture = "";
 }
 
 

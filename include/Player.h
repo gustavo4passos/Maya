@@ -10,7 +10,7 @@ public:
     Player();
     ~Player();
     
-    virtual bool Load(int xPos, int yPos, int width, int height, TextureID sprite, float scale=1, bool flip=false);
+    virtual bool Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
     virtual void Draw(Renderer*, float positionFactor);
     virtual void HandleInput();
     virtual void Update();

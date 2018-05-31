@@ -10,7 +10,7 @@ public:
     Maya();
     ~Maya();
     
-    bool Load(int xPos, int yPos, int width, int height, TextureID sprite, float scale=1, bool flip=false);
+    bool Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
     void Draw(Renderer*, float positionFactor);
     void HandleInput();
     void Update();
