@@ -53,6 +53,7 @@ void Game::Run() {
     unsigned int previous = SDL_GetTicks();
     unsigned int lag = 0.0;
     const unsigned int MS_PER_UPDATE = 16;
+  
     while(_running) {
         unsigned int current =  SDL_GetTicks();
         unsigned int elapsed = current - previous;
@@ -62,13 +63,12 @@ void Game::Run() {
         
         HandleEvents();        
 
-        while(lag>=MS_PER_UPDATE){
+        while(lag >= MS_PER_UPDATE){
             Update();
             lag -= MS_PER_UPDATE;            
         }
 
         Render(float(lag) / MS_PER_UPDATE);
-
     }
     
 }
@@ -85,7 +85,7 @@ void Game::Update() {
 
 void Game::Clean() {
     InputModule::Clean();
-	ResourceManager::CleanTextures();
+	  ResourceManager::CleanTextures();
 
     delete _renderer;  
     delete _window;
