@@ -6,7 +6,7 @@
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
 #include "../include/Maya.h"
-
+#include "../include/ResourceManager.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -28,7 +28,7 @@ bool Game::Init() {
     }
 
     _renderer->SetClearColor(0.f, .8f, 0.f, 1.f);
-    _renderer->SetViewportSize(width, height);
+    _renderer->SetViewportSize(_window->width(), _window->height());
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
@@ -38,6 +38,7 @@ bool Game::Init() {
     _maya = new Maya();
     _maya->Load(0,height/2,36,39,"../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png",5);
 
+    ResourceManager::LoadTexture("../res/assets/Maya_More_Clothes.png");
     _running = false;
 
     return true;
@@ -72,13 +73,16 @@ void Game::Run() {
 void Game::Render(float positionFactor) {
     _renderer->Clear();
 
-    _maya->Draw(_renderer, positionFactor);
+    _maya->Draw(_renderer);
+    
+    Rect r(0, 0, 72, 76);
+    _renderer->Draw(ResourceManager::GetTexture("../res/assets/Maya_More_Clothes.png"), &r, &r);
 
     _window->Swap();
 }
 
 void Game::Update() {
-    _maya->Update();
+    _maya->Update(5);
 }
 
 void Game::Clean() {
@@ -95,11 +99,17 @@ void Game::HandleEvents() {
     
     InputModule::Update();
 
-    if(InputModule::CloseWindowRequest()){
+    if(InputModule::CloseWindowRequest()) {
         _running = false;
     }
-    if(InputModule::WasKeyReleased(InputModule::ESC)){
+    if(InputModule::WasKeyReleased(InputModule::ESC)) {
         _running = false;
+    }
+    if(InputModule::IsKeyPressed(InputModule::LALT) && 
+       InputModule::WasKeyReleased(InputModule::ENTER)) 
+    {
+        _window->ToggleFullscreen();
+ 	_renderer->SetViewportSize(_window->width(), _window->height());
     }
 
     _maya->HandleInput();

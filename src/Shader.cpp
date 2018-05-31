@@ -15,6 +15,7 @@ Shader::Shader(const std::string& vsFilepath, const std::string& fsFilepath)
 }
 
 Shader::~Shader() {
+  Unbind(); 
   GLCall(glDeleteProgram(_programID));
 }
 

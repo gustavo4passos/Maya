@@ -62,7 +62,7 @@ public:
 	BF_Key;
 
 
-	inline static bool CloseWindowRequest();
+	static bool CloseWindowRequest();
 
 
 	// Main functions
@@ -82,7 +82,7 @@ public:
 	// Mouse
 	inline static bool WasMouseButtonReleased(MouseButton);
 	inline static bool IsMouseButtonPressed(MouseButton);
-	inline static const Vector2D& GetMousePosition();
+	static const Vector2D& GetMousePosition();
 	inline static void SetMousePosition(int x, int y);
 	inline static void SetMousePosition(Vector2D);
 

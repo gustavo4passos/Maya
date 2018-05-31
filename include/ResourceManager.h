@@ -6,24 +6,21 @@
 
 #include "Texture.h"
 
-// Texutre index
-typedef unsigned int TextureID;
-
 class ResourceManager {
 
 public:
 
     // Textures  
-    static TextureID LoadTexture(const std::string &filename);    // Returns 0 if unable to load texture
-    inline static Texture* const GetTexture(TextureID id);    
-    static void DeleteTexture(TextureID id);    
+    static bool LoadTexture(std::string filename); // Returns false if unable to load texture
+    static void DeleteTexture(const std::string& textureName);    
+    static Texture* const GetTexture(const std::string& name); 
     static void CleanTextures();   
 
 private:
 
     ResourceManager() {}
 
-    static std::map<TextureID, Texture*> _textureMap;
+    static std::map<std::string, Texture*> _textureMap;
 
 };
 
