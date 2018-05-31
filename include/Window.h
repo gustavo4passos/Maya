@@ -26,6 +26,8 @@ public:
   void SetFullscreen(bool fullscreen);
   void ToggleFullscreen();
 
+  bool ShowQuitMessageBox();
+
 private:
   const char* _title;
   int _width;
@@ -37,7 +39,7 @@ private:
   bool _vsync;
   bool _fullscreen;
 
-  SDL_Window* _windowPtr;
+  SDL_Window* _windowHndl;
   SDL_GLContext _openGLContext;
 
   bool InitSDLVideoSubsystem();

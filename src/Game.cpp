@@ -35,10 +35,10 @@ bool Game::Init() {
         return false;
     }
 
-    _maya = new Maya();
-    _maya->Load(0, 0, 36, 39, "../res/assets/Maya_More_Clothes.png");
+    // _maya = new Maya();
+    // _maya->Load(0, 0, 36, 39, "../res/assets/Maya_More_Clothes.png");
 
-    ResourceManager::LoadTexture("../res/assets/Maya_More_Clothes.png");
+    ResourceManager::LoadTexture("../res/assets/Maya_More_Clothes.png", "maya_standing");
     _running = false;
 
     return true;
@@ -73,23 +73,24 @@ void Game::Run() {
 void Game::Render(float positionFactor) {
     _renderer->Clear();
 
-    _maya->Draw(_renderer);
+    // _maya->Draw(_renderer);
     
     Rect r(0, 0, 72, 76);
-    _renderer->Draw(ResourceManager::GetTexture("../res/assets/Maya_More_Clothes.png"), &r, &r);
+    _renderer->Draw(ResourceManager::GetTexture("maya_standing"), &r, &r);
 
     _window->Swap();
 }
 
 void Game::Update() {
-    _maya->Update(5);
+    //_maya->Update(5);
 }
 
 void Game::Clean() {
+    InputModule::Clean();
+	ResourceManager::CleanTextures();
+
     delete _renderer;  
     delete _window;
-
-    InputModule::Clean();
 
     _renderer = NULL;
     _window = NULL;
@@ -99,18 +100,17 @@ void Game::HandleEvents() {
     
     InputModule::Update();
 
-    if(InputModule::CloseWindowRequest()) {
-        _running = false;
-    }
-    if(InputModule::WasKeyReleased(InputModule::ESC)) {
-        _running = false;
+    if(InputModule::CloseWindowRequest() ||
+       InputModule::WasKeyReleased(InputModule::ESC)){
+        _window->SetFullscreen(false);
+        _renderer->SetViewportSize(_window->width(), _window->height());
+        if(_window->ShowQuitMessageBox()) _running = false;
     }
     if(InputModule::IsKeyPressed(InputModule::LALT) && 
-       InputModule::WasKeyReleased(InputModule::ENTER)) 
-    {
-        _window->ToggleFullscreen();
- 	_renderer->SetViewportSize(_window->width(), _window->height());
+       InputModule::WasKeyReleased(InputModule::ENTER)) {
+           _window->ToggleFullscreen();
+           _renderer->SetViewportSize(_window->width(), _window->height());
     }
 
-    _maya->HandleInput();
+    //_maya->HandleInput();
 }
