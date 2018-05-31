@@ -5,6 +5,7 @@
 
 #include "Vector2D.h"
 #include "Renderer.h"
+#include "ResourceManager.h"
 
 class GameEntity
 {
@@ -13,9 +14,9 @@ public:
     GameEntity();
     virtual ~GameEntity();
 
-    virtual void Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale=1, bool flip=false);
-	virtual bool Draw(Renderer*);
-	virtual bool Update(unsigned int frameTime);
+    virtual void Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
+	virtual void Draw(Renderer*, float positionFactor);
+	virtual void Update();
 	virtual void Clean();
 
     // Getters
@@ -26,9 +27,7 @@ public:
 	int width() { return _width; }
 	float scale() { return _scale; }
     bool IsFlipped() { return _flip; }
-    bool IsLoaded() { return _loaded; }
 	
-
     // Setters
     void setPosition(int x, int y) { _position = Vector2D(x,y); }
 	void setVelocity(int x, int y) { _velocity = Vector2D(x,y); }
@@ -40,10 +39,8 @@ public:
 
 protected:
 
-    bool _loaded;
-
     // Body
-    Texture* _texture;
+    std::string _defaultTexture;
     int _width;
     int _height;
     float _scale;
@@ -57,7 +54,7 @@ protected:
     // Frame (We are not using them for now)
     int _currentRow;
 	int _currentFrame;
-    int _numFrames;  
+    int _numFrames; 
 };
 
 #endif

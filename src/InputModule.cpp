@@ -431,14 +431,19 @@ bool InputModule::IsMouseButtonPressed(MouseButton button)
 	return _mouseButtonStates[button].isDown;
 }
 
-Vector2D InputModule::mousePosition()
+const Vector2D& InputModule::GetMousePosition()
 {
 	return _mousePosition;
 }
 
-void InputModule::setMousePosition(int x, int y)
+void InputModule::SetMousePosition(int x, int y)
 {
 	SDL_WarpMouseInWindow(NULL, x, y);
+}
+
+void InputModule::SetMousePosition(Vector2D)
+{
+
 }
 
 // handle mouse events

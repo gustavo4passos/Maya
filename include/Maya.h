@@ -10,14 +10,12 @@ public:
     Maya();
     ~Maya();
     
-    void Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale=1, bool flip=false);
-    bool Draw(Renderer*);
-    bool Update(unsigned int frameTime);
-    void Clean();
-        
-private:
-
+    void Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
+    void Draw(Renderer*, float positionFactor);
     void HandleInput();
+    void Update();
+    void Clean();
+
 };
 
 #endif

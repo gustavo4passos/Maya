@@ -1,50 +1,46 @@
-#include <iostream>
-
 #include "../include/GameEntity.h"
+
+#include <iostream>
+#include <SDL2/SDL.h>
+
 #include "../include/ErrorHandler.h"
 #include "../include/Rect.h"
 
-GameEntity::GameEntity() : _loaded(false), _texture(NULL)
+GameEntity::GameEntity()
 {}
 
 GameEntity::~GameEntity()
 {
-    if(_texture != NULL) delete _texture;
+
 }
 
-void GameEntity::Load(int xPos, int yPos, int width, int height, std::string textureFile, float scale, bool flip)
+void GameEntity::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
 {
     _position = Vector2D(xPos, yPos);
     _width = width;
     _height = height;
-    _texture = new Texture(textureFile);
+    _defaultTexture = sprite;
     _scale = scale;
     _flip = flip;
- 
-    _loaded = true;
+
+    _currentFrame = 0;
+    _currentRow = 0;
+    _numFrames = 1;
 }
 
-bool GameEntity::Draw(Renderer* renderer)
+void GameEntity::Draw(Renderer* renderer, float positionFactor)
 {
-    if(_loaded){
-        Rect src = Rect(0,0, _width, _height);
-        Rect dest = Rect(_position, 72*2, 76*2);        
-        renderer->Draw(_texture, &src, &dest);
-        return true;
-    }
-    LOG_ERROR("Entity is not loaded");
-    return false;    
+    Vector2D refacPosition = _position + (_velocity * positionFactor);
+    Rect src = Rect(_currentFrame*_width,_currentRow*_height, _width, _height);              
+    Rect dest = Rect(refacPosition, _width*_scale, _height*_scale);
+    renderer->Draw(ResourceManager::GetTexture(_defaultTexture), &src, &dest);    
 }
 
-bool GameEntity::Update(unsigned int frameTime)
+void GameEntity::Update()
 {
-    if(_loaded){
-        _velocity += _acceleration;
-        _position += _velocity*((float)frameTime/1000);
-        return true;
-    }
-    LOG_ERROR("Entity is not loaded");
-    return false;    
+    _currentFrame = int(SDL_GetTicks()/80) % _numFrames;
+    _velocity += _acceleration;
+    _position += _velocity;
 }
 
 void GameEntity::Clean()
@@ -54,10 +50,7 @@ void GameEntity::Clean()
     _height = 0;
     _scale = 0;
     _flip = false;
-    delete _texture;
-    _texture = NULL;
-
-    _loaded = false;
+    _defaultTexture = "";
 }
 
 
