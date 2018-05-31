@@ -53,6 +53,7 @@ void Game::Run() {
     unsigned int previous = SDL_GetTicks();
     unsigned int lag = 0.0;
     const unsigned int MS_PER_UPDATE = 16;
+    
     while(_running) {
         unsigned int current =  SDL_GetTicks();
         unsigned int elapsed = current - previous;
