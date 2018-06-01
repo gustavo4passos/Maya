@@ -7,7 +7,7 @@
 
 class Texture {
 public:
-    Texture(std::string filename);
+    Texture(const void* data, int width, int height, int nChannels);
     ~Texture();
 
     void Bind();
@@ -15,14 +15,12 @@ public:
 
     inline int w() const { return _w; }
     inline int h() const { return _h; }
-    inline std::string filename() const { return _filename; }
 
 private:
     typedef unsigned char BYTE;
 
     // Texture information
     int _w, _h, _nChannels;
-    std::string _filename;
 
     // Texture buffer OpenGL name
     GLuint _textureID;

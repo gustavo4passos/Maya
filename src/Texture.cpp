@@ -1,21 +1,14 @@
 #include "../include/Texture.h"
 
-// TODO: stb_image is not robust enough; consider using SOIL or SDL_Image instead
-#define STB_IMAGE_IMPLEMENTATION
-#include "../extern/stb/stb_image.h"
-
 #include "../include/ErrorHandler.h"
 #include "../include/GLCall.h"
 
-Texture::Texture(std::string filename) :
-    _filename(filename)
+Texture::Texture(const void* data, int width, int height, int nChannels) :
+    _w(width),
+    _h(height),
+    _nChannels(nChannels),
+    _textureID(0)
 {  
-    // TODO: File loading should be done in ResourceManager
-    unsigned char* data = stbi_load(filename.c_str(), &_w, &_h, &_nChannels, 0);
-
-    if(data == NULL) {
-        LOG_ERROR("Unable to load image file. Filename\"" + _filename + "\"");
-    }    
 
     GLCall(glGenTextures(1, &_textureID));
     GLCall(glBindTexture(GL_TEXTURE_2D, _textureID));
@@ -23,9 +16,7 @@ Texture::Texture(std::string filename) :
     SetTexFiltering(false, false);
     SetTexRepeatBehavior(false);
 
-    UploadTexture(data);
-
-    stbi_image_free(data);
+    UploadTexture((BYTE*)data);
 }
 
 Texture::~Texture() {
@@ -72,4 +63,3 @@ void Texture::UploadTexture(BYTE* data) {
 
     GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, _w, _h, 0, format, GL_UNSIGNED_BYTE, (const void*)data));
 }
-

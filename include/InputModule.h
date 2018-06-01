@@ -1,9 +1,10 @@
-#ifndef __INPUT_MODULE__
-#define __INPUT_MODULE__
+#ifndef INPUTMODULE_H
+#define INPUTMODULE_H
 
-#include "../include/Vector2D.h"
-#include <SDL2/SDL.h>
 #include <vector>
+#include <SDL2/SDL.h>
+
+#include "Vector2D.h"
 
 class InputModule
 {
@@ -70,19 +71,20 @@ public:
 	static void Clean();
 
 	// Joysticks
-	static bool JoysticksInitialized();
 	static bool InitJoysticks();
-	static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
-	static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
+	inline static bool JoysticksInitialized();
+	inline static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
+	inline static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
 
 	static int StickXValue(int joyIndex, JoyAnalogStick);
 	static int StickYValue(int joyIndex, JoyAnalogStick);
 
 	// Mouse
-	static bool IsMouseButtonUp(MouseButton);
-	static bool IsMouseButtonDown(MouseButton);
-	static Vector2D *mousePosition();
-	static void setMousePosition(int x, int y);
+	inline static bool WasMouseButtonReleased(MouseButton);
+	inline static bool IsMouseButtonPressed(MouseButton);
+	static const Vector2D& GetMousePosition();
+	inline static void SetMousePosition(int x, int y);
+	inline static void SetMousePosition(Vector2D);
 
 	// Keyboard
 
@@ -106,9 +108,7 @@ private:
 	}
 	ButtonState;
 
-
 	static bool _closeWindow;
-
 
 	// Joystick atributes
 	static bool _joysticksInit;
@@ -122,9 +122,10 @@ private:
 	static void OnJoystickButtonUp(SDL_Event&);
 
 
-	// Mouse atributes
-	static Vector2D *_mousePosition;
-	static std::vector<ButtonState> _mouseButtonStates;
+	// Mouse atributes	
+	static Vector2D _mousePosition;
+	static std::vector<ButtonState> _mouseButtonStates;	
+  
 	// Mouse methods
 	static void OnMouseMove(SDL_Event&);
 	static void OnMouseButtonDown(SDL_Event&);
@@ -135,12 +136,10 @@ private:
 
 	// Bitfield of pressed keys on the moment
 	static uint32_t _bfPressed;
-
 	// Bitfield of keys that just got released
 	static uint32_t _bfReleased;
 	// Bitfield of keys that just got pressed
 	static uint32_t _bfWasPressed;
-
 
 };
 

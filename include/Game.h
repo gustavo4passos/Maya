@@ -3,7 +3,9 @@
 
 #include "Renderer.h"
 #include "Window.h"
+#include "Player.h"
 
+class Texture; 
 
 class Game {
 public:
@@ -12,17 +14,20 @@ public:
 
     bool Init();
     void Run();
-    void Render();
+    void Render(float positionFactor);
     void Update();
     void Clean();
     void HandleEvents();
     bool running() { return _running; }
 
 private:
-    
+
     Window* _window;
     Renderer* _renderer;
 
+    Player* _maya;
+
+    unsigned int _lastFrame;
 
     bool _running;
 };

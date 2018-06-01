@@ -27,6 +27,7 @@ bld/
 #Testing including the bin folder because the .dll files are as important as the lib files to run the application
 #[Bb]in/
 [Bb]in/*.exe
+[Bb]uild/*.o
 [Oo]bj/
 [Ll]og/
 

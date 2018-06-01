@@ -1,6 +1,8 @@
 #include "../include/GameStateMachine.h"
 #include "../include/ErrorHandler.h"
 
+std::stack<GameState*> GameStateMachine::_gameStates;
+
 void GameStateMachine::PushState(GameState* _state){
     _gameStates.push(_state);
     _gameStates.top()->OnEnter();

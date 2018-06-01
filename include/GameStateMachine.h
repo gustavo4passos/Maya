@@ -14,7 +14,7 @@ public:
 
 private:
 	GameStateMachine(){}
-    std::stack<GameState*> _gameStates;
+    static std::stack<GameState*> _gameStates;
 };
 
 #endif
