@@ -1,7 +1,7 @@
 #include "../include/Game.h"
 
 #include <SDL2/SDL.h>
-
+#include "../include/Tileset.h"
 #include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
@@ -40,7 +40,7 @@ bool Game::Init() {
     }
 
     _maya = new Maya();
-    _maya->Load(270,100,36,39,"maya_running");
+    _maya->Load(270, 100, 36, 39, "maya_running");
 
     _running = false;
 
@@ -53,7 +53,7 @@ void Game::Run() {
     unsigned int previous = SDL_GetTicks();
     unsigned int lag = 0.0;
     const unsigned int MS_PER_UPDATE = 16;
-    
+  
     while(_running) {
         unsigned int current =  SDL_GetTicks();
         unsigned int elapsed = current - previous;
@@ -63,13 +63,12 @@ void Game::Run() {
         
         HandleEvents();        
 
-        while(lag>=MS_PER_UPDATE){
+        while(lag >= MS_PER_UPDATE){
             Update();
             lag -= MS_PER_UPDATE;            
         }
 
         Render(float(lag) / MS_PER_UPDATE);
-
     }
     
 }
@@ -86,7 +85,7 @@ void Game::Update() {
 
 void Game::Clean() {
     InputModule::Clean();
-	ResourceManager::CleanTextures();
+	  ResourceManager::CleanTextures();
 
     delete _renderer;  
     delete _window;

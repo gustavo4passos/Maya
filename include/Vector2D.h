@@ -92,6 +92,9 @@ public:
 		this->_y /= rhs._y;
 		return *this;
 	}
+	
+	static Vector2D UnitX() { return Vector2D(1.f, 0.f); }
+	static Vector2D UnitY() { return Vector2D(0.f, 1.f); } 
 
 private:
 	float _x;
