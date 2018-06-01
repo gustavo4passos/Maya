@@ -62,3 +62,64 @@ void ResourceManager::CleanTextures() {
     }
     _textureMap.clear();
 }
+
+Level* ResourceManager::ParseLevel(const std::string& filename){
+    // create the XML document 
+	TiXmlDocument xmlDoc;
+
+	// load the XML document																														  
+	if (!xmlDoc.LoadFile(filename)) {
+        LOG_ERROR("Unable to open level file: " + std::string(xmlDoc.ErrorDesc()));
+		return NULL;
+	}
+
+	// get the root element
+	TiXmlElement* pRoot = xmlDoc.RootElement();
+
+	std::vector<int> tileLayer; // ints vector that will contain the tile values
+
+	TiXmlElement* e;
+
+    //looping the xml file to find the tileset
+	for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) { 
+		if(e->Value() == std::string("tileset")){
+			break;  
+        }    
+	}
+
+    if(e == NULL){
+        LOG_ERROR("Cannot find tileset node on xml file");
+        return NULL;
+    } 
+    else {
+        ParseTileset(e);
+    }
+    return new Level();
+
+}
+
+Tileset ResourceManager::ParseTileset(TiXmlElement* node){
+    TiXmlElement* imagenode = node->FirstChildElement();
+
+    std::string source;
+    std::string name;
+
+    int width, height;
+	int tileWidth, tileHeight;	
+    int margin, spacing;
+	int nColumns, nRows;
+    
+    name = std::string(node->Attribute("name"));
+    node->Attribute("tilewidth", &tileWidth);
+    node->Attribute("tileheight", &tileHeight);
+    node->Attribute("columns", &nColumns);
+    node->Attribute("margin", &margin);
+    node->Attribute("spacing", &spacing);
+    source = std::string(imagenode->Attribute("source"));
+    imagenode->Attribute("width", &width);
+    imagenode->Attribute("height", &height);
+    nRows = (height - 2*margin + spacing) / (tileHeight + spacing); 
+
+    return Tileset(source, name, width, height, tileWidth, tileHeight, margin, spacing, nColumns, nRows);
+
+}

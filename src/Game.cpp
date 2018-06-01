@@ -8,6 +8,7 @@
 #include "../include/Maya.h"
 #include "../include/ResourceManager.h"
 
+
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
     int width = lua.Get<int>("window.w");
