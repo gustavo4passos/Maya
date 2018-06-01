@@ -15,6 +15,11 @@ public:
     inline float y() const { return this->_position.y(); }
     inline int w() const { return _w; }
     inline int h() const { return _h; }
+	
+	inline int left() { return x(); }
+	inline int right() { return x() + _w; } 
+	inline int top() { return y(); }
+	inline int bottom() { return y() + _h; } 
 
     void setPosition(Vector2D& position) {
         this->_position.setX(position.x());

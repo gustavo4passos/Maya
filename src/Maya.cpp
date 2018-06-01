@@ -25,7 +25,7 @@ void Maya::Draw(Renderer* renderer, float positionFactor)
 void Maya::HandleInput()
 {
     _velocity.setX(0);
-    _velocity.setY(0);
+    //_velocity.setY(0);
 
     if(InputModule::IsKeyPressed(InputModule::RIGHT)) {
         _velocity.setX(_velocity.x()+2);

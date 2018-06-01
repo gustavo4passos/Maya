@@ -5,14 +5,13 @@
 
 #include "../include/ErrorHandler.h"
 #include "../include/Rect.h"
+#include "../include/PhysicsEngine.h"
 
 GameEntity::GameEntity()
 {}
 
 GameEntity::~GameEntity()
-{
-
-}
+{}
 
 void GameEntity::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
 {
@@ -41,6 +40,7 @@ void GameEntity::Update()
     _currentFrame = int(SDL_GetTicks()/80) % _numFrames;
     _velocity += _acceleration;
     _position += _velocity;
+    PhysicsEngine::ApplyGravity(this);
 }
 
 void GameEntity::Clean()
