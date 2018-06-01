@@ -6,13 +6,15 @@
 class Tileset {
 public:
 	Tileset(const std::string& source, const std::string& name, int width, int height, 
-	        int tileWidth, int tileHeight, int ncolumns, int nrows) :
+	        int tileWidth, int tileHeight, int margin, int spacing, int ncolumns, int nrows) :
 			_source(source.c_str()),
 			_name(name.c_str()),
 			_width(width),
 			_height(height),
 			_tileWidth(tileWidth),
 			_tileHeight(tileHeight),
+			_margin(margin),
+			_spacing(spacing),
 			_nColumns(ncolumns),
 			_nRows(nrows) 
 			{}
@@ -30,6 +32,7 @@ private:
 
 	int _width, _height;
 	int _tileWidth, _tileHeight;	
+	int _margin, _spacing;
 	int _nColumns, _nRows;
 };
 

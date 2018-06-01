@@ -8,6 +8,7 @@
 #include "../include/Maya.h"
 #include "../include/ResourceManager.h"
 
+
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
     int width = lua.Get<int>("window.w");
@@ -34,7 +35,7 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
     }
-   
+
     if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
         LOG_ERROR("Unbale to load texture.");
     }
@@ -53,24 +54,24 @@ void Game::Run() {
     unsigned int previous = SDL_GetTicks();
     unsigned int lag = 0.0;
     const unsigned int MS_PER_UPDATE = 16;
-  
+
     while(_running) {
         unsigned int current =  SDL_GetTicks();
         unsigned int elapsed = current - previous;
 
         previous = current;
         lag += elapsed;
-        
-        HandleEvents();        
+
+        HandleEvents();
 
         while(lag >= MS_PER_UPDATE){
             Update();
-            lag -= MS_PER_UPDATE;            
+            lag -= MS_PER_UPDATE;
         }
 
         Render(float(lag) / MS_PER_UPDATE);
     }
-    
+
 }
 
 void Game::Render(float positionFactor) {
@@ -87,7 +88,7 @@ void Game::Clean() {
     InputModule::Clean();
 	  ResourceManager::CleanTextures();
 
-    delete _renderer;  
+    delete _renderer;
     delete _window;
 
     _renderer = NULL;
@@ -95,7 +96,7 @@ void Game::Clean() {
 }
 
 void Game::HandleEvents() {
-    
+
     InputModule::Update();
 
     if(InputModule::CloseWindowRequest() ||
