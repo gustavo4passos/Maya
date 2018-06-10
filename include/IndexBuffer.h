@@ -6,17 +6,17 @@
 
 class IndexBuffer {
 public:
-  IndexBuffer(const GLuint* data, GLsizeiptr count);
-  ~IndexBuffer();
+	IndexBuffer(const GLuint* data, GLsizeiptr count);
+	~IndexBuffer();
 
-  void Bind() const;
-  void Unbind() const;
+	void Bind() const;
+	void Unbind() const;
 
-  inline unsigned int GetCount() const { return _count; }
+	inline unsigned int GetCount() const { return _count; }
 
 private:
-  GLuint _iboID;
-  GLsizeiptr _count;
+	GLuint _iboID;
+	GLsizeiptr _count;
 };
 
 #endif

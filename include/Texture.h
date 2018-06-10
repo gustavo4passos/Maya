@@ -13,9 +13,10 @@ public:
     void Bind();
     void Unbind();
 
-    inline int w() const { return _w; }
-    inline int h() const { return _h; }
+    inline int width() const { return _w; }
+    inline int height() const { return _h; }
 
+	inline GLuint textureID() const { return _textureID; }
 private:
     typedef unsigned char BYTE;
 

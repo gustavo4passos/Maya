@@ -5,7 +5,7 @@
 
 #include "GameObject.h"
 #include "Renderer.h"
-//#include "Tileset.h"
+#include "Tileset.h"
 
 class Level {
 public:
@@ -19,7 +19,7 @@ public:
 		
 private:
 	Level* _currentLevel;
-    //Tileset* _tileset;
+    Tileset* _tileset;
 
 	std::vector<GameObject*> _gameObjects;
 	std::vector<Rect*> _collisionRects;

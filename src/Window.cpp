@@ -74,7 +74,7 @@ bool Window::Init() {
       }
     }
   }
-
+	
   return true;
 }
 
@@ -145,6 +145,7 @@ void Window::SetVsync(bool vsync) {
   if(SDL_GL_SetSwapInterval((int)vsync) < 0) {
     LOG_ERROR("Unable to use Vsync. " + std::string(SDL_GetError()));
   }
+  _vsync = vsync;
 }
 
 void Window::ToggleFullscreen(){

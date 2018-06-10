@@ -4,10 +4,13 @@
 #include "Renderer.h"
 #include "Window.h"
 #include "Player.h"
+#include "VertexArray.h"
+#include "Camera.h"
 #include "Level.h"
 
-
 class Texture; 
+class Mesh;
+class InfoMenuGL3;
 
 class Game {
 public:
@@ -22,14 +25,16 @@ public:
     void HandleEvents();
     bool running() { return _running; }
 
-private:
+	friend class InfoMenuGL3;
 
+private:
     Window* _window;
     Renderer* _renderer;
 
+	GameObject* _object;
+	InfoMenuGL3* _infoMenu;;
+	Level* _level;
     Player* _maya;
-    GameObject* _gameObject;
-    Level* _level;
 
     unsigned int _lastFrame;
 

@@ -1,34 +1,40 @@
 #include "../include/GameObject.h"
 
+#include "../include/PhysicsEngine.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
 #include "../include/InputModule.h"
-#include "../include/PhysicsEngine.h"
 
 void GameObject::Update() {
-	PhysicsEngine::ApplyGravity(this);
-	if(PhysicsEngine::OnGround(this)){
-		if(_velocity.y()>0)
-			_velocity.setY(0);
+	if(!PhysicsEngine::OnGround(this)){
+		PhysicsEngine::ApplyGravity(this);
 	}
-    _position += _velocity;
-    _collisionRect.setPosition(_position);
+	else {
+		if(_velocity.y() > 0){
+			_velocity.setY(0.f);
+		}
+	}
+	_position += _velocity;
+	_collisionRect.setPosition(_position);
 }
 
 void GameObject::HandleInput() {
-    float speed = 2.f;
-    if(InputModule::WasKeyPressed(InputModule::LEFT)){
-        _velocity.setX(_velocity.x() - speed);
-    }
-    if(InputModule::WasKeyReleased(InputModule::LEFT)){
-        _velocity.setX(_velocity.x() + speed);
-    }
-    if(InputModule::WasKeyPressed(InputModule::RIGHT)){
-        _velocity.setX(_velocity.x() + speed);
-    }
-    if(InputModule::WasKeyReleased(InputModule::RIGHT)){
-        _velocity.setX(_velocity.x() - speed);
-    }
+	float speed = 4.f;
+	if(InputModule::WasKeyPressed(InputModule::LEFT)){
+		_velocity.setX(_velocity.x() - speed);
+	}
+	if(InputModule::WasKeyReleased(InputModule::LEFT)){
+		_velocity.setX(_velocity.x() + speed);
+	}
+	if(InputModule::WasKeyPressed(InputModule::RIGHT)){
+		_velocity.setX(_velocity.x() + speed);
+	}
+	if(InputModule::WasKeyReleased(InputModule::RIGHT)){
+		_velocity.setX(_velocity.x() - speed);
+	}
+	if(InputModule::WasKeyPressed(InputModule::SPACE) && PhysicsEngine::OnGround(this)){
+		_velocity.setY(-4.f);
+	}
 }
 
 void GameObject::Draw(Renderer* renderer, float positionInterpolation) {

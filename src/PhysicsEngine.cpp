@@ -1,6 +1,6 @@
 #include "../include/PhysicsEngine.h"
 
-Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.05); 
+Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.13); 
 Level* PhysicsEngine::_currentLevel = NULL;
 
 void PhysicsEngine::ApplyGravity(GameObject* gameObject){
@@ -21,8 +21,12 @@ bool PhysicsEngine::OnGround(GameObject* gameObject){
         LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
+
     Rect collisionObject = gameObject->collisionRect();
-    for( std::vector<Rect*>::iterator it= _currentLevel->collisionRects().begin(); it!=_currentLevel->collisionRects().end(); it++){
+	collisionObject.setY(collisionObject.y() + 1.f);
+
+    for(std::vector<Rect*>::iterator it = _currentLevel->collisionRects().begin(); 
+	    it!=_currentLevel->collisionRects().end(); it++){
         if(CheckCollision(&collisionObject, *it)){
             return true;
         }

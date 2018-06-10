@@ -5,7 +5,6 @@
 
 class Vector2D {
 public:
-
 	Vector2D();
 	Vector2D(const Vector2D&);
 	Vector2D(float x, float y);
@@ -45,16 +44,16 @@ public:
 
 	// Support for Vector2D * T operations
 	template<typename T>
-	Vector2D operator*(const T& scalar) const {
-		return Vector2D(this->_x * scalar, this->_y * scalar);
-	}
+		Vector2D operator*(const T& scalar) const {
+			return Vector2D(this->_x * scalar, this->_y * scalar);
+		}
 
 	template<typename T>
-	Vector2D& operator*=(const T& scalar) {
-		this->_x *= scalar;
-		this->_y *= scalar;
-		return *this;
-	}
+		Vector2D& operator*=(const T& scalar) {
+			this->_x *= scalar;
+			this->_y *= scalar;
+			return *this;
+		}
 
 	Vector2D& operator*=(const Vector2D& rhs) {
 		this->_x *= rhs._x;
@@ -63,25 +62,25 @@ public:
 	}
 
 	template<typename T>
-	Vector2D operator/(const T& scalar) const {
-		if(scalar == 0) throw std::overflow_error("Division by zero is forbidden");
-		return Vector2D(this->_x / scalar, this->_y / scalar);
-	}
+		Vector2D operator/(const T& scalar) const {
+			if(scalar == 0) throw std::overflow_error("Division by zero is forbidden");
+			return Vector2D(this->_x / scalar, this->_y / scalar);
+		}
 
 	Vector2D operator/(const Vector2D& rhs) const {
-			if(rhs._x == 0 || rhs._y == 0) {
-				throw std::overflow_error("Division by zero is forbidden");
-			}
-			return Vector2D(this->_x / rhs._x, this->_y / rhs._y);
+		if(rhs._x == 0 || rhs._y == 0) {
+			throw std::overflow_error("Division by zero is forbidden");
+		}
+		return Vector2D(this->_x / rhs._x, this->_y / rhs._y);
 	}
 
 	template<typename T>
-	Vector2D& operator/=(const T& scalar) {
-		if (scalar == 0) throw std::overflow_error("Division by zero is forbiddenn");
-		this->_x /= scalar;
-		this->_y /= scalar;
-		return *this;
-	}
+		Vector2D& operator/=(const T& scalar) {
+			if (scalar == 0) throw std::overflow_error("Division by zero is forbiddenn");
+			this->_x /= scalar;
+			this->_y /= scalar;
+			return *this;
+		}
 
 	Vector2D& operator/=(const Vector2D& rhs) {
 		if(rhs._x == 0 || rhs._y == 0) {
@@ -92,6 +91,9 @@ public:
 		this->_y /= rhs._y;
 		return *this;
 	}
+
+	static Vector2D UnitX() { return Vector2D(1.f, 0.f); }
+	static Vector2D UnitY() { return Vector2D(0.f, 1.f); } 
 
 private:
 	float _x;
