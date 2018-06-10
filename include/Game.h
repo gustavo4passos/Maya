@@ -4,6 +4,8 @@
 #include "Renderer.h"
 #include "Window.h"
 #include "Player.h"
+#include "Level.h"
+
 
 class Texture; 
 
@@ -26,8 +28,11 @@ private:
     Renderer* _renderer;
 
     Player* _maya;
+    GameObject* _gameObject;
+    Level* _level;
 
     unsigned int _lastFrame;
+
 
     bool _running;
 };

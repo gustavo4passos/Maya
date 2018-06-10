@@ -40,7 +40,6 @@ void GameEntity::Update()
     _currentFrame = int(SDL_GetTicks()/80) % _numFrames;
     _velocity += _acceleration;
     _position += _velocity;
-    PhysicsEngine::ApplyGravity(this);
 }
 
 void GameEntity::Clean()

@@ -7,6 +7,7 @@
 #include "../include/InputModule.h"
 #include "../include/Maya.h"
 #include "../include/ResourceManager.h"
+#include "../include/PhysicsEngine.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -39,9 +40,14 @@ bool Game::Init() {
         LOG_ERROR("Unbale to load texture.");
     }
 
+    if(!ResourceManager::LoadTexture("../res/sprites/grass.png", "grass")){
+        LOG_ERROR("Unbale to load texture emma.");
+    }
+    _level = new Level();
+    PhysicsEngine::setCurrentLevel(_level);
     _maya = new Maya();
     _maya->Load(270,100,36,39,"maya_running");
-
+    _gameObject = new GameObject(10,10,64,64);
     _running = false;
 
     return true;
@@ -75,12 +81,15 @@ void Game::Run() {
 
 void Game::Render(float positionFactor) {
     _renderer->Clear();
+    _level->DrawBackground(_renderer, positionFactor);
     _maya->Draw(_renderer, positionFactor);
+    _gameObject->Draw(_renderer, positionFactor);
     _window->Swap();
 }
 
 void Game::Update() {
     _maya->Update();
+    _gameObject->Update();
 }
 
 void Game::Clean() {
@@ -111,4 +120,5 @@ void Game::HandleEvents() {
     }
 
     _maya->HandleInput();
+    _gameObject->HandleInput();
 }
