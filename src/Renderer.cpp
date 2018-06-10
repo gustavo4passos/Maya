@@ -1,35 +1,39 @@
-#include "../include/Renderer.h"
-
-#include "../extern/glm/glm.hpp"
-#include "../extern/glm/gtc/matrix_transform.hpp"
-#include "../extern/glm/gtc/type_ptr.hpp"
+#include "../include/Renderer.h" 
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 
 #include "../include/GLCall.h"
 #include "../include/Window.h"
 
+const float Renderer::ASPECT_RATIO = (1.f * INTERNAL_RESOLUTION_W) / INTERNAL_RESOLUTION_H;
+
 Renderer::Renderer() :
-  _spriteVAO(NULL),
-  _spriteVBO(NULL),
-  _spriteShader(NULL) { }
+	_spriteVAO(NULL),
+	_spriteVBO(NULL),
+	_spriteShader(NULL),
+	_currentlyBoundShader(0),
+	_currentlyBoundTexture(0)
+{ }
 
 Renderer::~Renderer() {
-  delete _spriteVAO;
-  delete _primitivesVAO;
+	delete _spriteVAO;
+	delete _primitivesVAO;
 
-  delete _spriteVBO;
-  delete _primitivesVBO;
+	delete _spriteVBO;
+	delete _primitivesVBO;
 
-  delete _spriteShader;
-  delete _primitivesShader;
+	delete _spriteShader;
+	delete _primitivesShader;
 
-  _spriteVAO = NULL;
-  _spriteVBO = NULL;
+	_spriteVAO = NULL;
+	_spriteVBO = NULL;
 
-  _primitivesVAO = NULL;
-  _primitivesVBO = NULL;
+	_primitivesVAO = NULL;
+	_primitivesVBO = NULL;
 
-  _spriteShader = NULL;
-  _primitivesShader = NULL; 
+	_spriteShader = NULL;
+	_primitivesShader = NULL; 
 }
 
 bool Renderer::Init() {
@@ -65,24 +69,28 @@ bool Renderer::Init() {
   primitivesVertexDataLayout.Push<float>(2);
 
   _spriteVAO = new VertexArray();
-  _spriteVAO->AddBuffer((*_spriteVBO), spriteVertexDataLayout);
+  _spriteVAO->AddBuffer(_spriteVBO, &spriteVertexDataLayout);
 
   _primitivesVAO = new VertexArray();
-  _primitivesVAO->AddBuffer((*_primitivesVBO), primitivesVertexDataLayout);
+  _primitivesVAO->AddBuffer(_primitivesVBO, &primitivesVertexDataLayout);
 
   _spriteShader = new Shader("../res/shaders/sprite_shader.vert", "../res/shaders/sprite_shader.frag");
   _primitivesShader = new Shader("../res/shaders/primitives_shader.vert",
                                  "../res/shaders/primitives_shader.frag");
+  _meshShader = new Shader("../res/shaders/mesh_shader.vert", "../res/shaders/mesh_shader.frag");
 
   // Set orthographic projection to the standard normalized space
   // Setting a diferent projection requires a call to SetViewportSize()
   glm::mat4 ortho = glm::ortho(-1.f, 1.f, -1.f, 1.f);
   
-  _spriteShader->Bind();
+  BindShader(_spriteShader);
   _spriteShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
 
-  _primitivesShader->Bind();
+  BindShader(_primitivesShader);
   _primitivesShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
+
+  BindShader(_meshShader);
+  _meshShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
 
   return true;
 }
@@ -95,8 +103,8 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
   }
 
   _spriteVAO->Bind();
-  _spriteShader->Bind();
-  tex->Bind();
+  BindTexture(tex);
+  BindShader(_spriteShader);
 
   glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(dstRect->x() * _xScaleFactor,
                                                                  dstRect->y() * _yScaleFactor, 0.f));
@@ -141,6 +149,28 @@ void Renderer::DrawFillRect(Rect* rect, Color* color) {
   GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
 }
 
+void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture){
+  if(mesh == NULL) {
+    LOG_ERROR("Unable to draw textured mesh: mesh is null.");
+    DEBUG_BREAK();
+    return;
+  }
+
+  if(texture == NULL){
+    LOG_ERROR("Unable to draw texture mesh: texture is null.");
+    DEBUG_BREAK();
+    return;
+  }
+   
+  BindShader(_meshShader);
+  BindTexture(texture);
+  mesh->Bind();
+  glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(_xScaleFactor, _yScaleFactor, 1.f));
+  _meshShader->SetUniformMat4("model", glm::value_ptr(model));
+
+  GLCall(glDrawArrays(GL_TRIANGLES, 0, mesh->count()));
+}
+
 void Renderer::Clear() {
   GLCall(glClear(GL_COLOR_BUFFER_BIT));
 }
@@ -163,32 +193,49 @@ void Renderer::SetViewportSize(int w, int h) {
   int orthoX = (w - _viewportW) / 2;
   int orthoY = (h - _viewportH) / 2;
 
-  glm::mat4 ortho = glm::ortho(0.f, (float)w, (float)h, 0.f);
-
-  _spriteShader->Bind();
-  _spriteShader->SetUniformMat4("ortho", value_ptr(ortho));
-
-  _primitivesShader->Bind();
-  _primitivesShader->SetUniformMat4("ortho", value_ptr(ortho));
-
-  GLCall(glViewport(orthoX, orthoY, _viewportW, _viewportH));
-
   _xScaleFactor = ((float)w) / INTERNAL_RESOLUTION_W;
   _yScaleFactor = ((float)h) / INTERNAL_RESOLUTION_H;
+
+  glm::mat4 ortho = glm::ortho(0.f, (float)w, (float)h, 0.f);
+
+  BindShader(_spriteShader);
+  _spriteShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
+
+  BindShader(_primitivesShader);
+  _primitivesShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
+
+  BindShader(_meshShader);
+  _meshShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
+
+  GLCall(glViewport(orthoX, orthoY, _viewportW, _viewportH));
 }
 
 void Renderer::PreparePrimitiveForDrawing(Rect* rect, Color* color) {
-  _primitivesShader->Bind();
-  _primitivesVAO->Bind();
+	BindShader(_primitivesShader);
+	_primitivesVAO->Bind();
 
-  // Set transformation matrix
-  glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(rect->x() * _xScaleFactor,
-                                                                 rect->y() * _yScaleFactor, 0.f));
-  glm::mat4 scale = glm::scale(translate, glm::vec3(rect->w() * _xScaleFactor,
-                                                    rect->h() * _yScaleFactor,  0.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(rect->x() * _xScaleFactor,
+													  rect->y() * _yScaleFactor,
+													                        0.f));
+	glm::mat4 model = glm::scale(translate, glm::vec3(rect->w() * _xScaleFactor,
+												           rect->h() * _yScaleFactor,
+														                       1.f));
+	_primitivesShader->SetUniformMat4("model", glm::value_ptr(model));
+	_primitivesShader->SetUniform4f("fragcolor", color->r, color->g, color->b, color->a);
+}
 
-  _primitivesShader->SetUniformMat4("model", glm::value_ptr(scale));
-  _primitivesShader->SetUniform4f("fragcolor", color->r, color->g, color->b, color->a);
+void Renderer::BindShader(Shader* shader) {
+	if(_currentlyBoundShader != shader->programID()){
+		shader->Bind();
+		_currentlyBoundShader = shader->programID();
+	}
+}
+
+void Renderer::BindTexture(Texture* tex){
+	if(_currentlyBoundTexture != tex->textureID()){
+		tex->Bind();
+		_currentlyBoundTexture = tex->textureID();
+	}
 }
 
 void Renderer::PrintInfo() {

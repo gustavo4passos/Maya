@@ -1,13 +1,16 @@
 #include "../include/Game.h"
 
 #include <SDL2/SDL.h>
+
 #include "../include/Tileset.h"
 #include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
 #include "../include/Maya.h"
 #include "../include/ResourceManager.h"
-
+#include "../include/Mesh.h"
+#include "../include/PhysicsEngine.h"
+#include "../include/InfoMenu.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -40,11 +43,21 @@ bool Game::Init() {
         LOG_ERROR("Unbale to load texture.");
     }
 
+    if(!ResourceManager::LoadTexture("../res/sprites/grass.png", "grass")){
+		LOG_ERROR("Unable to load texture.");
+	}
+
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
+	
+	_object = new GameObject(10, 10, 64, 64);
 
     _running = false;
+  
+	_level = new Level();
+	PhysicsEngine::setCurrentLevel(_level);
 
+	_infoMenu = new InfoMenuGL3(this, _window, _maya, _object);
     return true;
 }
 
@@ -58,7 +71,6 @@ void Game::Run() {
     while(_running) {
         unsigned int current =  SDL_GetTicks();
         unsigned int elapsed = current - previous;
-
         previous = current;
         lag += elapsed;
 
@@ -71,28 +83,38 @@ void Game::Run() {
 
         Render(float(lag) / MS_PER_UPDATE);
     }
-
 }
 
 void Game::Render(float positionFactor) {
-    _renderer->Clear();
+
+	 _renderer->Clear();
+	
+	_level->DrawBackground(_renderer, positionFactor);
     _maya->Draw(_renderer, positionFactor);
+	_object->Draw(_renderer, positionFactor);
+	_infoMenu->Render(_renderer);
+	
     _window->Swap();
 }
 
 void Game::Update() {
+	_object->Update();
     _maya->Update();
 }
 
 void Game::Clean() {
+	delete _object;
+	delete _maya;
+	ResourceManager::CleanTextures();
+	ResourceManager::CleanMeshes();
     InputModule::Clean();
-	  ResourceManager::CleanTextures();
 
     delete _renderer;
     delete _window;
 
     _renderer = NULL;
     _window = NULL;
+
 }
 
 void Game::HandleEvents() {
@@ -111,5 +133,7 @@ void Game::HandleEvents() {
            _renderer->SetViewportSize(_window->width(), _window->height());
     }
 
+	_infoMenu->HandleInput();
     _maya->HandleInput();
+	_object->HandleInput();
 }

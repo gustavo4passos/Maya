@@ -25,13 +25,20 @@ public:
     // Levels
     static Level* ParseLevel(const std::string& filename); // Returns NULL if unable to load level
 
+	//Meshes
+	static bool LoadMesh(const void* data, std::size_t size, unsigned int count, const std::string& name);
+	static Mesh* const GetMesh(const std::string& name);
+	static void DeleteMesh(const std::string& name);
+	static void CleanMeshes();
+
 private:
 
     ResourceManager() {}
 
     static Tileset ParseTileset(TiXmlElement* node);
-    static std::map<std::string, Texture*> _textureMap;
 
+    static std::map<std::string, Texture*> _textureMap;
+	static std::map<std::string, Mesh*> _meshMap;
 };
 
 #endif

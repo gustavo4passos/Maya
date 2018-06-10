@@ -69,7 +69,7 @@ void LuaScript::StackDump() {
           std::cout << lua_tostring(L, i) << std::endl;
           break;
         case LUA_TBOOLEAN:
-          std::cout << ((lua_toboolean(L, i) == true) ? "true" : "false") << std::endl;
+          std::cout << (((bool)(lua_toboolean(L, i)) == true) ? "true" : "false") << std::endl;
           break;
         case LUA_TNUMBER:
           std::cout << lua_tonumber(L, i) << std::endl;

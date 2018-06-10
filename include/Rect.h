@@ -9,6 +9,7 @@ public:
         this->_position = Vector2D(x, y);
     }
     Rect(Vector2D position, int w, int h) : _position(position), _w(w), _h(h) { }
+    //Rect(const Rect& r) { Rect(r.x(), r.y(), r.w(), r.h()); }
 
     inline  Vector2D const& position() const { return this->_position; }
     inline float x() const { return this->_position.x(); }
