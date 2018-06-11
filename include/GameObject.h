@@ -22,6 +22,7 @@ public:
 	void setPosition(float x, float y) {
 		_position.setX(x);
 		_position.setY(y);
+		_collisionRect.setPosition(x, y);
 	}
 
 	void setVelocity(float x, float y) {

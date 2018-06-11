@@ -14,7 +14,7 @@ void GameObject::Update() {
 			_velocity.setY(0.f);
 		}
 	}
-	_position += _velocity;
+	PhysicsEngine::MoveAndCheckCollision(this);
 	_collisionRect.setPosition(_position);
 }
 
@@ -39,13 +39,10 @@ void GameObject::HandleInput() {
 
 void GameObject::Draw(Renderer* renderer, float positionInterpolation) {
 
-	Rect rect = Rect(0, 0, 32, 32);
+    Rect rect = Rect(0, 0, 32, 32);
 
-	Rect src = Rect(_collisionRect.x() + (_velocity.x() * positionInterpolation), 
-				    _collisionRect.y() + (_velocity.y() * positionInterpolation), 
-					                                          _collisionRect.w(), 
-					                                          _collisionRect.h());
+    Rect src = Rect(_collisionRect.x() + (_velocity.x() * positionInterpolation), _collisionRect.y() + (_velocity.y() * positionInterpolation), 
+     _collisionRect.w(),  _collisionRect.h());
 
-	renderer->Draw(ResourceManager::GetTexture("grass"), &rect, &src);
+    renderer->Draw(ResourceManager::GetTexture("grass"), &rect, &src);
 }
-

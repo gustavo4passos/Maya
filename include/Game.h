@@ -38,6 +38,7 @@ private:
 
     unsigned int _lastFrame;
 
+
     bool _running;
 };
 #endif
