@@ -14,7 +14,7 @@ void GameObject::Update() {
 			_velocity.setY(0.f);
 		}
 	}
-	_position += _velocity;
+	PhysicsEngine::MoveAndCheckCollision(this);
 	_collisionRect.setPosition(_position);
 }
 
