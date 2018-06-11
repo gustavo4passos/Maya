@@ -95,7 +95,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 	}
 
 	if(_showmenu){ 
-		ImGui::Begin("Emma");
+		ImGui::Begin("Grass");
 		ImGui::Text("Position");
 		static float x, y;
 		x = _object->position().x();	
@@ -106,6 +106,8 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 		if(ImGui::SliderFloat("Y", &y, 0, 270)){
 			_object->setPosition(_object->position().x(), y);
 		}
+		ImGui::Value("VelX", _object->velocity().x());
+		ImGui::Value("VelY", _object->velocity().y());
 	
 		ImGui::End();
 	}

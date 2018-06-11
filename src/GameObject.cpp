@@ -6,6 +6,9 @@
 #include "../include/InputModule.h"
 
 void GameObject::Update() {
+	if(PhysicsEngine::HitHead(this)){
+		_velocity.setY(0.f);
+	}
 	if(!PhysicsEngine::OnGround(this)){
 		PhysicsEngine::ApplyGravity(this);
 	}
@@ -15,11 +18,10 @@ void GameObject::Update() {
 		}
 	}
 	PhysicsEngine::MoveAndCheckCollision(this);
-	_collisionRect.setPosition(_position);
 }
 
 void GameObject::HandleInput() {
-	float speed = 4.f;
+	float speed = 3.f;
 	if(InputModule::WasKeyPressed(InputModule::LEFT)){
 		_velocity.setX(_velocity.x() - speed);
 	}

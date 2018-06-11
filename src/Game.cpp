@@ -50,7 +50,7 @@ bool Game::Init() {
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
 	
-	_object = new GameObject(10, 10, 64, 64);
+	_object = new GameObject(10, 10, 32, 32);
 
     _running = false;
   
@@ -58,6 +58,7 @@ bool Game::Init() {
 	PhysicsEngine::setCurrentLevel(_level);
 
 	_infoMenu = new InfoMenuGL3(this, _window, _maya, _object);
+
     return true;
 }
 
@@ -86,14 +87,19 @@ void Game::Run() {
 }
 
 void Game::Render(float positionFactor) {
-
-	 _renderer->Clear();
+	_renderer->UseOffscreenFramebuffer();
+	_renderer->Clear();
 	
 	_level->DrawBackground(_renderer, positionFactor);
-    _maya->Draw(_renderer, positionFactor);
+	_maya->Draw(_renderer, positionFactor);
 	_object->Draw(_renderer, positionFactor);
-	_infoMenu->Render(_renderer);
+
+	_renderer->UseDefaultFramebuffer();
+	_renderer->Clear();
 	
+	_renderer->RenderOffscreenFramebuffer();
+	_infoMenu->Render(_renderer);
+
     _window->Swap();
 }
 

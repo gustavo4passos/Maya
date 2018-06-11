@@ -42,18 +42,29 @@ public:
 	void DrawRect(Rect* rect, Color* color);
 	void DrawFillRect(Rect* rect, Color* color);
 
-	void SetViewportSize(int w, int h);
+	void UseOffscreenFramebuffer();
+	void UseDefaultFramebuffer();
+	void RenderOffscreenFramebuffer();	
 
+	void SetViewportSize(int w, int h);
+	
 private:
 	Window* _windowPtr;
 
 	VertexArray* _spriteVAO;
 	VertexArray* _primitivesVAO;
+	VertexArray* _offscreenVAO;
 	VertexBuffer* _spriteVBO;
 	VertexBuffer* _primitivesVBO;
+	VertexBuffer* _offscreenVBO;
+
+	GLuint osframebuffer;
+	Texture* fbtexture;
+
 	Shader* _spriteShader;
 	Shader* _primitivesShader;
 	Shader* _meshShader;
+	Shader* _offscreenRenderShader;
 
 	int _viewportW, _viewportH;  
 
