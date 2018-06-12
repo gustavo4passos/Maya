@@ -69,18 +69,21 @@ void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
                 Vector2D originalVelocity = gameObject->velocity();
                 int stepsLeft = nSteps - (i - 1);
 
-	            gameObject->setVelocity(0, (oneStep.y() * stepsLeft));
+	            gameObject->setVelocity(0.f, (oneStep.y() * stepsLeft));
                 MoveAndCheckCollision(gameObject);
 
-                gameObject->setVelocity((oneStep.x() * stepsLeft), 0);
+                gameObject->setVelocity((oneStep.x() * stepsLeft), 0.f);
                 MoveAndCheckCollision(gameObject);
 				
                 gameObject->setVelocity(originalVelocity.x(), originalVelocity.y());
-				return;
             }
-			else if(gameObject->velocity().y() != 0){
+			if(OnGround(gameObject)){ 
 				gameObject->setVelocity(gameObject->velocity().x(), 0.f);
 			}
+			else if(HitHead(gameObject)){
+			  	gameObject->setVelocity(gameObject->velocity().x(), gameObject->velocity().y() * 0.5f);
+			}
+			return;
         }
     }
 

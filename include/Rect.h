@@ -35,6 +35,7 @@ public:
     inline void setW(int w) { this->_w = w; }
     inline void setH(int h) { this->_h = h; }
 
+	friend class InfoMenuGL3;
 private:
     Vector2D _position;
     int _w, _h;

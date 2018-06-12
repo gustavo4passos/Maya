@@ -6,36 +6,36 @@
 #include "../include/InputModule.h"
 
 void GameObject::Update() {
-	if(PhysicsEngine::HitHead(this)){
-		_velocity.setY(0.f);
-	}
-	if(!PhysicsEngine::OnGround(this)){
-		PhysicsEngine::ApplyGravity(this);
-	}
-	else {
-		if(_velocity.y() > 0){
-			_velocity.setY(0.f);
-		}
-	}
+	static float speed = 3;
+
+	if(_movingright) _velocity.setX(speed);
+	else if(_movingleft) _velocity.setX(-speed);
+	else _velocity.setX(0);
+
+	PhysicsEngine::ApplyGravity(this);
 	PhysicsEngine::MoveAndCheckCollision(this);
 }
 
 void GameObject::HandleInput() {
-	float speed = 3.f;
-	if(InputModule::WasKeyPressed(InputModule::LEFT)){
-		_velocity.setX(_velocity.x() - speed);
+	if(InputModule::IsKeyPressed(InputModule::LEFT)){
+		_movingleft = true;
+		_movingright = false;
 	}
 	if(InputModule::WasKeyReleased(InputModule::LEFT)){
-		_velocity.setX(_velocity.x() + speed);
+		_movingleft = false;
 	}
-	if(InputModule::WasKeyPressed(InputModule::RIGHT)){
-		_velocity.setX(_velocity.x() + speed);
+	if(InputModule::IsKeyPressed(InputModule::RIGHT)){
+		_movingright = true;
+		_movingleft = false;
 	}
 	if(InputModule::WasKeyReleased(InputModule::RIGHT)){
-		_velocity.setX(_velocity.x() - speed);
+		_movingright = false;
+	}
+	if(InputModule::IsKeyPressed(InputModule::RIGHT) && InputModule::IsKeyPressed(InputModule::LEFT)){
+		_movingleft = _movingright = false;
 	}
 	if(InputModule::WasKeyPressed(InputModule::SPACE) && PhysicsEngine::OnGround(this)){
-		_velocity.setY(-4.f);
+		_velocity.setY(-4.2f);
 	}
 }
 

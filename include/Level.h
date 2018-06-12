@@ -17,6 +17,7 @@ public:
 	std::vector<Rect*>& collisionRects() { return _collisionRects; }
 	std::vector<GameObject*>& gameObjects() { return _gameObjects; }
 		
+	friend class InfoMenuGL3;
 private:
 	Level* _currentLevel;
     Tileset* _tileset;

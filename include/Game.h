@@ -21,8 +21,10 @@ public:
     void Run();
     void Render(float positionFactor);
     void Update();
-    void Clean();
     void HandleEvents();
+
+	void EndGameRequest();
+    void Clean();
     bool running() { return _running; }
 
 	friend class InfoMenuGL3;

@@ -4,7 +4,7 @@ Level::Level() {
 	_collisionRects.push_back(new Rect(-200.f, 200.f, 880, 670));
 	_collisionRects.push_back(new Rect(200.f, 139.f, 200.f, 10.f));
 	_collisionRects.push_back(new Rect( 50.f, 79.f, 100.f, 10.f));
-	_collisionRects.push_back(new Rect(400.f, 180.f, 20.f, 20.f));
+	_collisionRects.push_back(new Rect(0.f, 180.f, 70.f, 20.f));
 }
 
 void Level::DrawBackground(Renderer* renderer, float positionInterpolation){

@@ -50,14 +50,14 @@ bool Game::Init() {
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
 	
-	_object = new GameObject(10, 10, 32, 32);
+	_object = new GameObject(30, 0, 32, 32);
 
     _running = false;
   
 	_level = new Level();
 	PhysicsEngine::setCurrentLevel(_level);
 
-	_infoMenu = new InfoMenuGL3(this, _window, _maya, _object);
+	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
 
     return true;
 }
@@ -75,9 +75,9 @@ void Game::Run() {
         previous = current;
         lag += elapsed;
 
-        HandleEvents();
 
         while(lag >= MS_PER_UPDATE){
+        	HandleEvents();
             Update();
             lag -= MS_PER_UPDATE;
         }
@@ -123,15 +123,18 @@ void Game::Clean() {
 
 }
 
+void Game::EndGameRequest() {
+	_window->SetFullscreen(false);
+	_renderer->SetViewportSize(_window->width(), _window->height());
+	if(_window->ShowQuitMessageBox()) _running = false;
+}
+	
 void Game::HandleEvents() {
 
     InputModule::Update();
 
-    if(InputModule::CloseWindowRequest() ||
-       InputModule::WasKeyReleased(InputModule::ESC)){
-        _window->SetFullscreen(false);
-        _renderer->SetViewportSize(_window->width(), _window->height());
-        if(_window->ShowQuitMessageBox()) _running = false;
+    if(InputModule::CloseWindowRequest()) { 
+		EndGameRequest();
     }
     if(InputModule::IsKeyPressed(InputModule::LALT) && 
        InputModule::WasKeyReleased(InputModule::ENTER)) {
