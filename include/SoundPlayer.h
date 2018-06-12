@@ -4,9 +4,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-typedef Sound Mix_Chunk;
-typedef Music Mix_Music;
-
 class SoundPlayer
 {
 public:

@@ -38,8 +38,9 @@ bool SoundPlayer::PlaySFX(Sound* soundfx, bool loop = false) {
 void SoundPlayer::PlayBGM(Music* music, bool loop) {
 	if (Mix_PlayMusic(music, loop ? -1 : 0) < 0) {
 		LOG_ERROR("Unable to play song: " + std::string(Mix_GetError()));
-
+		return false;
 	} 
+	return true;
 }
 
 void SoundPlayer::Clean() {
