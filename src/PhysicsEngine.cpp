@@ -66,6 +66,7 @@ void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
         }
     }
     gameObject->setPosition( furthestPosition.x(), furthestPosition.y());
+
 }
 
 bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){

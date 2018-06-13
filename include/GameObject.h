@@ -12,7 +12,8 @@ public:
 		_velocity(0.f, 0.f),
 		_w(w),
 		_h(h),
-		_collisionRect(x, y, w, h)
+		_collisionRect(x, y, w, h),
+		_movingleft(false), _movingright(false)
 		{ }
 
 	inline const Rect& collisionRect() { return _collisionRect; }
@@ -39,5 +40,7 @@ private:
 	Vector2D _velocity;
 	float _w, _h;
 	Rect _collisionRect;
+
+	bool _movingleft, _movingright;
 };
 #endif
