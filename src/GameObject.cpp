@@ -19,14 +19,12 @@ void GameObject::Update() {
 void GameObject::HandleInput() {
 	if(InputModule::IsKeyPressed(InputModule::LEFT)){
 		_movingleft = true;
-		_movingright = false;
 	}
 	if(InputModule::WasKeyReleased(InputModule::LEFT)){
 		_movingleft = false;
 	}
 	if(InputModule::IsKeyPressed(InputModule::RIGHT)){
 		_movingright = true;
-		_movingleft = false;
 	}
 	if(InputModule::WasKeyReleased(InputModule::RIGHT)){
 		_movingright = false;
