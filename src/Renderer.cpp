@@ -90,8 +90,7 @@ bool Renderer::Init() {
 	_offscreenVAO->AddBuffer(_offscreenVBO, &offscreenVertexDataLayout);
 
 	_spriteShader = new Shader("../res/shaders/sprite_shader.vert", "../res/shaders/sprite_shader.frag");
-	_primitivesShader = new Shader("../res/shaders/primitives_shader.vert",
-			"../res/shaders/primitives_shader.frag");
+	_primitivesShader = new Shader("../res/shaders/primitives_shader.vert",	"../res/shaders/primitives_shader.frag");
 	_meshShader = new Shader("../res/shaders/mesh_shader.vert", "../res/shaders/mesh_shader.frag");
 	_offscreenRenderShader = new Shader("../res/shaders/offscreen_render.vert", "../res/shaders/offscreen_render.frag");
 
