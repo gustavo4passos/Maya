@@ -5,7 +5,7 @@
 SoundEffect::SoundEffect() {}
 SoundEffect::~SoundEffect() {}
 
-bool LoadSample(std::string name, std::string path) {
+bool LoadSoundEffect(std::string name, std::string path) {
 	Mix_Chunk* sample;
 	sample = LoadWAV(path.c_str());
 	if (!sample) {

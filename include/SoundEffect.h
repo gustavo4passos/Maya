@@ -13,7 +13,7 @@ public:
 	SoundEffect();
 	~SoundEffect();
 
-	static bool LoadSample(std::string name, std::string path);
+	static bool LoadSoundEffect(std::string name, std::string path);
 
 private:
 	std::map<std::string, Sound*> SoundEffectsMap;
