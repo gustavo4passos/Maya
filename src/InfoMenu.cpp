@@ -2,12 +2,12 @@
 
 #include <sstream>
 
-#include "../include/imgui.h"
-#include "../include/imgui_impl_sdl_gl3.h"
+#include "imgui_impl_sdl_gl3.h"
 
 #include "../include/Game.h"
 #include "../include/InputModule.h"
 #include "../include/Level.h"
+#include "../include/PhysicsEngine.h"
 
 #define LOCAL_PERSIST static
 
@@ -23,7 +23,10 @@ InfoMenuGL3::InfoMenuGL3(Game* game, Window* window, Level* level, Player* playe
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImGui::GetStyle().Alpha = 0.9f;
+	ImGui::GetStyle().WindowTitleAlign = ImVec2(0.5f, 0.5f);
 	ImGui_ImplSdlGL3_Init(_windowptr->_windowHndl);
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	ImGui::StyleColorsDark();
 
 	_clearColor[0] = 0.f;
@@ -131,25 +134,16 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 		if(_showCollisionBoxes){
 		  	RenderCollisionBoxes(renderer);
 		}
+		ImGui::Separator();
+		
+		ImGui::Dummy(ImVec2(30.f, 0.f));
+		ImGui::Text("Press tab to see player stats");
+		
 		ImGui::EndMainMenuBar();
 	}
 
 	if(_showmenu){ 
-		ImGui::Begin("Grass");
-		ImGui::Text("Position");
-		static float x, y;
-		x = _object->position().x();	
-		y = _object->position().y();
-		if(ImGui::SliderFloat("X", &x, 0, 480)){
-			_object->setPosition(x, _object->position().y());
-		}
-		if(ImGui::SliderFloat("Y", &y, 0, 270)){
-			_object->setPosition(_object->position().x(), y);
-		}
-		ImGui::Value("VelX", _object->velocity().x());
-		ImGui::Value("VelY", _object->velocity().y());
-
-		ImGui::End();
+		RenderGameObjectInfoMenu();
 	}
 
 	if(_currentMenu){
@@ -253,6 +247,40 @@ void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
 		renderer->DrawFillRect(*it, &red);
 	}
 
+}
+
+void InfoMenuGL3::RenderGameObjectInfoMenu(){
+		ImGui::Begin("Grass");
+		ImGui::Text("Position");
+		static float x, y;
+		x = _object->position().x();	
+		y = _object->position().y();
+		if(ImGui::SliderFloat("X", &x, 0, 480)){
+			_object->setPosition(x, _object->position().y());
+		}
+		if(ImGui::SliderFloat("Y", &y, 0, 270)){
+			_object->setPosition(_object->position().x(), y);
+		}
+
+		LOCAL_PERSIST float speed = _object->_speed;
+		if(ImGui::InputFloat("Speed", &speed)){
+		  _object->_speed = speed;
+		}
+
+		LOCAL_PERSIST float impulse = _object->_impulse;
+		if(ImGui::InputFloat("Impulse", &impulse)){
+		  	_object->_impulse = impulse;
+		}
+		ImGui::Value("VelX", _object->velocity().x());
+		ImGui::Value("VelY", _object->velocity().y());
+
+		ImGui::Spacing();
+		LOCAL_PERSIST float gravity = PhysicsEngine::_gravity.y();
+		if(ImGui::InputFloat("Gravity", &gravity)){
+		  	PhysicsEngine::_gravity.setY(gravity);
+		}
+
+		ImGui::End();
 }
 void InfoMenuGL3::Clean(){
 	ImGui_ImplSdlGL3_Shutdown();

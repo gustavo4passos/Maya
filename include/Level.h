@@ -12,6 +12,7 @@ public:
     Level();
     ~Level(){}
 	
+	void AddCollisionRect(Rect* rect);
 	void DrawBackground(Renderer* renderer, float positionInterpolation);
 	
 	std::vector<Rect*>& collisionRects() { return _collisionRects; }

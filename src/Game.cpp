@@ -25,8 +25,11 @@ bool Game::Init() {
         return false;
     }
 
+	_object = new GameObject(30, 0, 32, 32);
+	_camera = new Camera(_object->collisionRect(), 480, 270, 0, 800, -20, 270);
+
     _renderer = new Renderer();
-    if(!_renderer->Init()){
+    if(!_renderer->Init(_camera)){
         LOG_ERROR("Unable to initialize renderer.");
         return false;
     }
@@ -50,7 +53,6 @@ bool Game::Init() {
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
 	
-	_object = new GameObject(30, 0, 32, 32);
 
     _running = false;
   
@@ -106,6 +108,8 @@ void Game::Render(float positionFactor) {
 void Game::Update() {
 	_object->Update();
     _maya->Update();
+	_camera->FocusAt(_object->collisionRect());
+	_camera->Update();
 }
 
 void Game::Clean() {

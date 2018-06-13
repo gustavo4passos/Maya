@@ -30,7 +30,7 @@ public:
 	void Clean();
 
 	// Initializes the renderer data
-	bool Init();
+	bool Init(Camera* camera);
 	void Clear();
 	void SetClearColor(GLclampf r, GLclampf g, GLclampf b, GLclampf a);
 
@@ -49,7 +49,7 @@ public:
 	void SetViewportSize(int w, int h);
 	
 private:
-	Window* _windowPtr;
+	Camera* _camera;
 
 	VertexArray* _spriteVAO;
 	VertexArray* _primitivesVAO;

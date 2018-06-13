@@ -11,6 +11,8 @@ class GameObject;
 class Player;
 class Renderer;
 
+#include "imgui.h"
+
 class InfoMenuGL3 {
 public:
 	InfoMenuGL3(Game* game, Window* window, Level* level, Player* player, GameObject* object);
@@ -41,6 +43,7 @@ private:
 	bool _showCollisionBoxes;
 
 	void RenderCollisionBoxes(Renderer* renderer);
+	void RenderGameObjectInfoMenu();
 };
 
 #endif

@@ -33,6 +33,7 @@ private:
     Window* _window;
     Renderer* _renderer;
 
+	Camera* _camera;
 	GameObject* _object;
 	InfoMenuGL3* _infoMenu;;
 	Level* _level;

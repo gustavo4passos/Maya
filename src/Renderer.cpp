@@ -36,7 +36,7 @@ Renderer::~Renderer() {
 	_primitivesShader = NULL; 
 }
 
-bool Renderer::Init() {
+bool Renderer::Init(Camera* camera) {
 	PrintInfo();
 
 	// Enable blend
@@ -122,6 +122,8 @@ bool Renderer::Init() {
 
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
+	_camera = camera;
+
 	return true;
 }
 
@@ -136,7 +138,7 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
 	BindTexture(tex);
 	BindShader(_spriteShader);
 
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(dstRect->x(), dstRect->y(), 0.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(dstRect->x() - _camera->x(), dstRect->y() - _camera->y(), 0.f));
 	glm::mat4 scale = glm::scale(translate, glm::vec3(dstRect->w(), dstRect->h(), 1.f));
 
 	_spriteShader->SetUniformMat4("model", glm::value_ptr(scale));
@@ -272,7 +274,7 @@ void Renderer::PreparePrimitiveForDrawing(Rect* rect, Color* color) {
 	BindShader(_primitivesShader);
 	_primitivesVAO->Bind();
 
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(rect->x(), rect->y(), 0.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(rect->x() - _camera->x(), rect->y() - _camera->y(), 0.f));
 	glm::mat4 model = glm::scale(translate, glm::vec3(rect->w(), rect->h(), 1.f));
 	_primitivesShader->SetUniformMat4("model", glm::value_ptr(model));
 	_primitivesShader->SetUniform4f("fragcolor", color->r, color->g, color->b, color->a);
