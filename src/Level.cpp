@@ -19,3 +19,19 @@ void Level::DrawBackground(Renderer* renderer, float positionInterpolation){
 		renderer->DrawFillRect(*it, &red);
 	}
 }
+
+void Level::AddBackgroundLayer(Layer* layer){
+	if(layer == NULL){
+		LOG_ERROR("Unable to add Background Layer: Layer is NULL");
+		return;
+	}
+	_backgroundLayers.push_back(layer);
+}
+
+void Level::AddCollisionRect(Rect* rect){
+	if(rect == NULL){
+		LOG_ERROR("Unable to add rect: rect is NULL");
+		return;
+	}
+	_collisionRects.push_back(rect); 
+}

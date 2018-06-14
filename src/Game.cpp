@@ -54,10 +54,12 @@ bool Game::Init() {
 
     _running = false;
   
-	_level = new Level();
+	_level = ResourceManager::ParseLevel("../res/levels/ok.tmx");
 	PhysicsEngine::setCurrentLevel(_level);
 
 	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
+
+    
 
     return true;
 }

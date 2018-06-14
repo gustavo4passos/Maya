@@ -35,8 +35,12 @@ private:
 
     ResourceManager() {}
 
-    static Tileset ParseTileset(TiXmlElement* node);
+    static Tileset* ParseTileset(TiXmlElement* node);
 
+    static void ParseObjectGroup(TiXmlElement* objectsNode, Level* level);
+    static Rect* ParseRect(TiXmlElement* objectNode);
+    static Layer* ParseLayer(TiXmlElement* layerNode, Tileset* tileset);
+    static std::vector<int> ParseLayerData(TiXmlElement* dataNode);
     static std::map<std::string, Texture*> _textureMap;
 	static std::map<std::string, Mesh*> _meshMap;
 };
