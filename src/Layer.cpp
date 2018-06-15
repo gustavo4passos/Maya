@@ -2,7 +2,6 @@
 
 #include "../include/ResourceManager.h"
 
-
 Layer::Layer(const std::string& name, int width, int height, Tileset* tileset) :
 	_name(name.c_str()),
 	_width(width),

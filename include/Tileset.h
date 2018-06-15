@@ -19,10 +19,12 @@ public:
 			_nRows(nrows) 
 			{}
 	
-	inline int width() { return _width; }
-	inline int height() { return _height; }
-	inline int tileWidth() { return _tileWidth; }
-	inline int tileHeight() { return _tileHeight; }
+	inline int width() const { return _width; }
+	inline int height() const { return _height; }
+	inline int tileWidth() const { return _tileWidth; }
+	inline int tileHeight() const { return _tileHeight; }
+	inline int nRows() const { return _nRows; }
+	inline int nColumns() const { return _nColumns; } 
 	inline const std::string& source() { return _source; }
 	inline const std::string& name() { return _name; }
 

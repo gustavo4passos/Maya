@@ -295,11 +295,6 @@ void InfoMenuGL3::RenderGameObjectInfoMenu(){
 }
 
 void InfoMenuGL3::DrawCollisionBox(Rect* rect, Renderer* renderer) {
-	LOCAL_PERSIST Color red;
-	red.r = 1.f;
-	red.g = 0.f;
-	red.b = 0.f;
-	red.a = 0.4f;
-
+	LOCAL_PERSIST Color red = { 1.f, 0.f, 0.f, 0.4f };
 	renderer->DrawFillRect(rect, &red);
 }

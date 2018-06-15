@@ -24,6 +24,8 @@ void Camera::Update(){
 	FindCenter();
 	_velocity = Vector2D(_center.x() - _fovw / 2, _center.y() / _fovh / 2) - _pos;
 	_pos += _velocity;
+	_pos.setX(_center.x() - _fovw / 2);
+	_pos.setY(_center.y() - _fovh / 2);
 	
 	if(_pos.x() < _fovleft) _pos.setX(_fovleft);
 	if(_pos.x() > _fovright - _fovw) _pos.setX(_fovright - _fovw);

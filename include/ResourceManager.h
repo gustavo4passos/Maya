@@ -35,8 +35,18 @@ private:
 
     ResourceManager() {}
 
-    static Tileset ParseTileset(TiXmlElement* node);
+    static Tileset* ParseTileset(TiXmlElement* node);
 
+    static void ParseObjectGroup(TiXmlElement* objectsNode, Level* level);
+    static Rect* ParseRect(TiXmlElement* objectNode);
+    static Layer* ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset);
+    static std::vector<int> ParseLayerData(TiXmlElement* dataNode);
+
+	// Loads a mesh to video memory, and stores a pointer to it in _meshMap
+	// Use DeleteMesh(name) to free it
+	static void LoadLayerMesh(std::vector<int>& layerData, Level* level, Tileset* tileset, const std::string& name);
+
+	// Data maps
     static std::map<std::string, Texture*> _textureMap;
 	static std::map<std::string, Mesh*> _meshMap;
 };

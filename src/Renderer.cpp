@@ -165,8 +165,8 @@ void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture){
 	BindShader(_meshShader);
 	BindTexture(texture);
 	mesh->Bind();
-	glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(_xScaleFactor, _yScaleFactor, 1.f));
-	_meshShader->SetUniformMat4("model", glm::value_ptr(model));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	_meshShader->SetUniformMat4("model", glm::value_ptr(translate));
 
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, mesh->count()));
 }

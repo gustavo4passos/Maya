@@ -26,7 +26,8 @@ bool Game::Init() {
     }
 
 	_object = new GameObject(30, 0, 32, 32);
-	_camera = new Camera(480, 270, 0, 800, -20, 270, _object);
+	_level = ResourceManager::ParseLevel("../res/levels/mario.tmx");
+	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
 
     _renderer = new Renderer();
     if(!_renderer->Init(_camera)){
@@ -56,7 +57,6 @@ bool Game::Init() {
 
     _running = false;
   
-	_level = new Level();
 	PhysicsEngine::setCurrentLevel(_level);
 
 	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
