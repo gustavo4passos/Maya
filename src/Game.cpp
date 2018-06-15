@@ -26,7 +26,7 @@ bool Game::Init() {
     }
 
 	_object = new GameObject(30, 0, 32, 32);
-	_camera = new Camera(_object->collisionRect(), 480, 270, 0, 800, -20, 270);
+	_camera = new Camera(480, 270, 0, 800, -20, 270, _object);
 
     _renderer = new Renderer();
     if(!_renderer->Init(_camera)){
@@ -108,7 +108,6 @@ void Game::Render(float positionFactor) {
 void Game::Update() {
 	_object->Update();
     _maya->Update();
-	_camera->FocusAt(_object->collisionRect());
 	_camera->Update();
 }
 

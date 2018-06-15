@@ -88,15 +88,6 @@ void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
 				
                 gameObject->setVelocity(originalVelocity.x(), originalVelocity.y());
             }
-            if(OnGround(gameObject)){
-                gameObject->setVelocity(gameObject->velocity().x(), 0);
-            }
-            if(HitHead(gameObject)){
-                gameObject->setVelocity(gameObject->velocity().x(), gameObject->velocity().y() * 0.3f);
-            }
-			if(OnWall(gameObject) && gameObject->velocity().y() > 0.f){
-			  gameObject->setVelocity(gameObject->velocity().x(), gameObject->velocity().y() * 0.8f);
-			}
             return;
         }
     }

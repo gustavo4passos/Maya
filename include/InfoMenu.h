@@ -1,14 +1,17 @@
 #ifndef INFOMENUGL3_H
 #define INFOMENUGL3_h
 
+/* A Menu UI useful for showing and editing game attributes in real time */
 /* Needs a valid OpenGL context to run */
-/* Uses SDL for messaging */
+/* Uses SDL messaging system */
 
+class Camera;
 class Game;
 class Window;
 class Level;
 class GameObject;
 class Player;
+class Rect;
 class Renderer;
 
 #include "imgui.h"
@@ -36,14 +39,17 @@ private:
 	Level* _levelptr;
 	Player* _playerptr;
 	GameObject* _object;
+	Camera* _camera;
 
 	float _clearColor[4];
 	bool _showmenu;
 	MenuType _currentMenu;
 	bool _showCollisionBoxes;
 
+	void RenderMenuBar(Renderer* renderer);
 	void RenderCollisionBoxes(Renderer* renderer);
 	void RenderGameObjectInfoMenu();
+	void DrawCollisionBox(Rect* rect, Renderer* renderer);
 };
 
 #endif

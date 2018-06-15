@@ -22,6 +22,10 @@ public:
 	inline const Rect& collisionRect() { return _collisionRect; }
 	inline const Vector2D& position()  { return _position; }
 	inline const Vector2D& velocity()  { return _velocity; }
+	inline const float x() const { return _position.x(); }
+	inline const float y() const { return _position.y(); }
+	inline const float w() const { return _w; }
+	inline const float h() const { return _h; }
 
 	void setPosition(float x, float y) {
 		_position.setX(x);

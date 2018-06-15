@@ -13,8 +13,17 @@ void GameObject::Update() {
 	PhysicsEngine::ApplyGravity(this);
 	PhysicsEngine::MoveAndCheckCollision(this);
 
+	if(PhysicsEngine::OnGround(this)){
+		_velocity.setY(0.f);
+	}
+	if(PhysicsEngine::HitHead(this)){
+	  	_velocity.setY(_velocity.y() * 0.3f);
+	}
 	if(PhysicsEngine::OnWall(this)){
 		_velocity.setX(0.f);
+		if(_velocity.y() > 0.f){
+			_velocity.setY(_velocity.y() * 0.4f);
+		}
 	}
 }
 
@@ -42,13 +51,12 @@ void GameObject::HandleInput() {
 			_velocity.setY(-_impulse);
 		}
 		else if(PhysicsEngine::OnWall(this)){
-			_velocity.setY(-_impulse);
+			_velocity.setY(-_impulse * 0.8f);
 		}
 	}
 }
 
 void GameObject::Draw(Renderer* renderer, float positionInterpolation) {
-
     Rect rect = Rect(0, 0, 32, 32);
 
     Rect src = Rect(_collisionRect.x() + (_velocity.x() * positionInterpolation), _collisionRect.y() + (_velocity.y() * positionInterpolation), 
