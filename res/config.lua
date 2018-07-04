@@ -1,6 +1,6 @@
 window = {
   w = 1366,
-  h = 768,
+  h = 720,
   vsync = true,
   fullscreen = false
 }

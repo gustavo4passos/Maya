@@ -13,12 +13,19 @@ public:
 		_w(w),
 		_h(h),
 		_collisionRect(x, y, w, h),
-		_movingleft(false), _movingright(false)
+		_speed(2.5f),
+		_impulse(8.f),
+		_movingleft(false),
+		_movingright(false)
 		{ }
 
 	inline const Rect& collisionRect() { return _collisionRect; }
 	inline const Vector2D& position()  { return _position; }
 	inline const Vector2D& velocity()  { return _velocity; }
+	inline const float x() const { return _position.x(); }
+	inline const float y() const { return _position.y(); }
+	inline const float w() const { return _w; }
+	inline const float h() const { return _h; }
 
 	void setPosition(float x, float y) {
 		_position.setX(x);
@@ -35,12 +42,16 @@ public:
 	void Update();
 	void Draw(Renderer* renderer, float positionInterpolation);
 
+	friend class InfoMenuGL3;
+	
 private:
 	Vector2D _position;
 	Vector2D _velocity;
 	float _w, _h;
 	Rect _collisionRect;
 
+	float _speed;
+	float _impulse;
 	bool _movingleft, _movingright;
 };
 #endif

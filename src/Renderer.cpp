@@ -36,7 +36,7 @@ Renderer::~Renderer() {
 	_primitivesShader = NULL; 
 }
 
-bool Renderer::Init() {
+bool Renderer::Init(Camera* camera) {
 	PrintInfo();
 
 	// Enable blend
@@ -122,6 +122,8 @@ bool Renderer::Init() {
 
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
+	_camera = camera;
+
 	return true;
 }
 
@@ -137,7 +139,8 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
 	BindShader(_spriteShader);
 
 	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(dstRect->x(), dstRect->y(), 0.f));
-	glm::mat4 scale = glm::scale(translate, glm::vec3(dstRect->w(), dstRect->h(), 1.f));
+	glm::mat4 cameraTransform = glm::translate(translate, glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	glm::mat4 scale = glm::scale(cameraTransform, glm::vec3(dstRect->w(), dstRect->h(), 1.f));
 
 	_spriteShader->SetUniformMat4("model", glm::value_ptr(scale));
 	_spriteShader->SetUniform4f("srcrct", srcRect->x(), srcRect->y(), srcRect->w(), srcRect->h());
@@ -162,8 +165,8 @@ void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture){
 	BindShader(_meshShader);
 	BindTexture(texture);
 	mesh->Bind();
-	glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(_xScaleFactor, _yScaleFactor, 1.f));
-	_meshShader->SetUniformMat4("model", glm::value_ptr(model));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	_meshShader->SetUniformMat4("model", glm::value_ptr(translate));
 
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, mesh->count()));
 }
@@ -273,7 +276,8 @@ void Renderer::PreparePrimitiveForDrawing(Rect* rect, Color* color) {
 	_primitivesVAO->Bind();
 
 	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(rect->x(), rect->y(), 0.f));
-	glm::mat4 model = glm::scale(translate, glm::vec3(rect->w(), rect->h(), 1.f));
+	glm::mat4 cameraTransform = glm::translate(translate, glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	glm::mat4 model = glm::scale(cameraTransform,  glm::vec3(rect->w(), rect->h(), 1.f));
 	_primitivesShader->SetUniformMat4("model", glm::value_ptr(model));
 	_primitivesShader->SetUniform4f("fragcolor", color->r, color->g, color->b, color->a);
 }

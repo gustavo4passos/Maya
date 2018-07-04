@@ -1,11 +1,14 @@
 #include "../include/Level.h"
 
-Level::Level() {
-	_collisionRects.push_back(new Rect(-200.f, 200.f, 880, 670));
-	_collisionRects.push_back(new Rect(200.f, 139.f, 200.f, 10.f));
-	_collisionRects.push_back(new Rect( 50.f, 79.f, 100.f, 10.f));
-	_collisionRects.push_back(new Rect(0.f, 180.f, 70.f, 20.f));
-}
+#include "../include/Layer.h"
+
+Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight) :
+	_tileset(tileset), 
+	_width(width),
+	_height(height),
+	_tileWidth(tileWidth),
+	_tileHeight(tileHeight)
+{ }
 
 void Level::DrawBackground(Renderer* renderer, float positionInterpolation){
 	for(std::vector<Rect*>::iterator it = _collisionRects.begin(); 	
@@ -18,4 +21,23 @@ void Level::DrawBackground(Renderer* renderer, float positionInterpolation){
 		red.a = 0.5f;
 		renderer->DrawFillRect(*it, &red);
 	}
+	for(auto layer = _backgroundLayers.begin(); layer != _backgroundLayers.end(); layer++){
+		(*layer)->Draw(renderer);
+	}
+}
+
+void Level::AddBackgroundLayer(Layer* layer){
+	if(layer == NULL){
+		LOG_ERROR("Unable to add Background Layer: Layer is NULL");
+		return;
+	}
+	_backgroundLayers.push_back(layer);
+}
+
+void Level::AddCollisionRect(Rect* rect){
+	if(rect == NULL){
+		LOG_ERROR("Unable to add rect: rect is NULL");
+		return;
+	}
+	_collisionRects.push_back(rect); 
 }

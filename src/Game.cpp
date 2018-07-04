@@ -25,8 +25,12 @@ bool Game::Init() {
         return false;
     }
 
+	_object = new GameObject(30, 0, 32, 32);
+	_level = ResourceManager::ParseLevel("../res/levels/mario.tmx");
+	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
+
     _renderer = new Renderer();
-    if(!_renderer->Init()){
+    if(!_renderer->Init(_camera)){
         LOG_ERROR("Unable to initialize renderer.");
         return false;
     }
@@ -50,11 +54,9 @@ bool Game::Init() {
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
 	
-	_object = new GameObject(30, 0, 32, 32);
 
     _running = false;
   
-	_level = new Level();
 	PhysicsEngine::setCurrentLevel(_level);
 
 	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
@@ -106,6 +108,7 @@ void Game::Render(float positionFactor) {
 void Game::Update() {
 	_object->Update();
     _maya->Update();
+	_camera->Update();
 }
 
 void Game::Clean() {

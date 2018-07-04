@@ -1,6 +1,6 @@
 #include "../include/PhysicsEngine.h"
 
-Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.13); 
+Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.4); 
 Level* PhysicsEngine::_currentLevel = NULL;
 
 void PhysicsEngine::ApplyGravity(GameObject* gameObject){
@@ -33,6 +33,34 @@ bool PhysicsEngine::OnGround(GameObject* gameObject){
     }
 }
 
+bool PhysicsEngine::OnWall(GameObject* gameObject){
+  	Rect offsetRect = gameObject->collisionRect();
+
+	offsetRect.setPosition(offsetRect.x() + 1, offsetRect.y());
+	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+	
+	offsetRect.setPosition(offsetRect.x() - 2, offsetRect.y());
+	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+
+	return false;
+}
+
+bool PhysicsEngine::HitHead(GameObject* gameObject){
+	if(!_currentLevel){
+        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        DEBUG_BREAK();
+	}
+
+	Rect collisionObject = gameObject->collisionRect();
+	collisionObject.setY(collisionObject.y() - 1.f);
+
+	if(CheckCollisionAgainstLevel(&collisionObject)){
+		return true;
+	}
+
+	return false;
+}
+
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
     int nSteps=(int)(gameObject->velocity().Length() *2) + 1;
     Vector2D furthestPosition = gameObject->position();
@@ -58,12 +86,6 @@ void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
 
                 gameObject->setVelocity(originalVelocity.x(), originalVelocity.y());
             }
-            if(OnGround(gameObject)){
-                gameObject->setVelocity(gameObject->velocity().x(), 0);
-            }
-            if(HitHead(gameObject)){
-                gameObject->setVelocity(gameObject->velocity().x(), gameObject->velocity().y() * 0.3f);
-            }
             return;
         }
     }
@@ -82,20 +104,5 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
             return true;
         }
     }
-    return false;
-}
-bool PhysicsEngine::HitHead(GameObject* gameObject){
-    if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
-        DEBUG_BREAK();
-    }
-
-    Rect collisionObject = gameObject->collisionRect();
-    collisionObject.setY(collisionObject.y() - 1.f);
-
-    if(CheckCollisionAgainstLevel(&collisionObject)){
-        return true;
-    }
-
     return false;
 }
