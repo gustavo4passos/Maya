@@ -22,10 +22,9 @@ void Camera::FocusAt(const GameObject* subject){
 
 void Camera::Update(){
 	FindCenter();
-	_velocity = Vector2D(_center.x() - _fovw / 2, _center.y() / _fovh / 2) - _pos;
+
+	_velocity = Vector2D(_center.x() - _fovw / 2, _center.y() - _fovh / 2) - _pos;
 	_pos += _velocity;
-	_pos.setX(_center.x() - _fovw / 2);
-	_pos.setY(_center.y() - _fovh / 2);
 	
 	if(_pos.x() < _fovleft) _pos.setX(_fovleft);
 	if(_pos.x() > _fovright - _fovw) _pos.setX(_fovright - _fovw);
@@ -39,6 +38,7 @@ void Camera::SetFieldOfView(int fovleft, int fovright, int fovtop, int fovbottom
 	_fovtop = fovtop;
 	_fovbottom = fovbottom;
 }
+
 void Camera::FindCenter(){
 	if(_subject){
   		_center.setX(_subject->x() + (_subject->w() / 2.f));
@@ -49,4 +49,3 @@ void Camera::FindCenter(){
 		_center.setY(_fovh / 2);
 	}
 }
-

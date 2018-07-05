@@ -28,7 +28,7 @@ endif
 ifeq ($(OS), LINUX)
 endif
 
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lOpenGL32 -lglew32 -lglu32 -llua53 -ltinyxml2 -ltinyxml -limgui
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lOpenGL32 -lglew32 -lglu32 -llua53 -ltinyxml2 -ltinyxml -limgui -lComdlg32
 ifeq ($(OS), Windows_NT)
 COMPILER_FLAGS = -Wall -std=c++11
 endif

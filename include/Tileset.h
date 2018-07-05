@@ -13,20 +13,23 @@ public:
 			_height(height),
 			_tileWidth(tileWidth),
 			_tileHeight(tileHeight),
-			_margin(margin),
-			_spacing(spacing),
 			_nColumns(ncolumns),
-			_nRows(nrows) 
+			_nRows(nrows), 
+			_margin(margin),
+			_spacing(spacing)
 			{}
-	
+
+	// Tileset data
+	inline const std::string& source() { return _source; }
+	inline const std::string& name() { return _name; }
 	inline int width() const { return _width; }
 	inline int height() const { return _height; }
 	inline int tileWidth() const { return _tileWidth; }
 	inline int tileHeight() const { return _tileHeight; }
 	inline int nRows() const { return _nRows; }
 	inline int nColumns() const { return _nColumns; } 
-	inline const std::string& source() { return _source; }
-	inline const std::string& name() { return _name; }
+	inline int margin() const { return _margin; }
+	inline int spacing() const { return _spacing; }
 
 private:
 	std::string _source;
@@ -34,8 +37,8 @@ private:
 
 	int _width, _height;
 	int _tileWidth, _tileHeight;	
-	int _margin, _spacing;
 	int _nColumns, _nRows;
+	int _margin, _spacing;
 };
 
 #endif

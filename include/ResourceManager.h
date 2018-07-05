@@ -31,6 +31,7 @@ public:
 	static void DeleteMesh(const std::string& name);
 	static void CleanMeshes();
 
+	friend class Game;
 private:
 
     ResourceManager() {}

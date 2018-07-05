@@ -12,13 +12,18 @@ public:
 		_velocity(0.f, 0.f),
 		_w(w),
 		_h(h),
-		_collisionRect(x, y, w, h),
+		_collisionRect(x, y, 15, 32),
 		_speed(2.5f),
 		_impulse(8.f),
 		_movingleft(false),
-		_movingright(false)
-		{ }
+		_movingright(false),
+		_collisionOffsetX(13),
+		_collisionOffsetY(1),
+		_collisionW(13),
+		_collisionH(32)
+		{ setPosition(_position.x(), _position.y()); }
 
+	virtual ~GameObject() { }
 	inline const Rect& collisionRect() { return _collisionRect; }
 	inline const Vector2D& position()  { return _position; }
 	inline const Vector2D& velocity()  { return _velocity; }
@@ -28,8 +33,8 @@ public:
 	inline const float h() const { return _h; }
 
 	void setPosition(float x, float y) {
-		_position.setX(x);
-		_position.setY(y);
+		_position.setX(x - _collisionOffsetX);
+		_position.setY(y - _collisionOffsetY);
 		_collisionRect.setPosition(x, y);
 	}
 
@@ -38,20 +43,24 @@ public:
 		_velocity.setY(y);
 	}
 
-	void HandleInput();
-	void Update();
-	void Draw(Renderer* renderer, float positionInterpolation);
+	virtual void HandleInput();
+	virtual void Update();
+	virtual void Draw(Renderer* renderer, float positionInterpolation);
 
 	friend class InfoMenuGL3;
+	friend class Game;
 	
 private:
 	Vector2D _position;
 	Vector2D _velocity;
+
 	float _w, _h;
 	Rect _collisionRect;
 
 	float _speed;
 	float _impulse;
 	bool _movingleft, _movingright;
+
+	float _collisionOffsetX, _collisionOffsetY, _collisionW, _collisionH;
 };
 #endif

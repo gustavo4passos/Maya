@@ -64,11 +64,11 @@ bool PhysicsEngine::HitHead(GameObject* gameObject){
 
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
     int nSteps=(int)(gameObject->velocity().Length() *2) + 1;
-    Vector2D furthestPosition = gameObject->position();
+    Vector2D furthestPosition = gameObject->collisionRect().position();
     Vector2D oneStep = gameObject->velocity() / nSteps;
 
     for (int i = 1; i <= nSteps; i++){
-        Vector2D positionToTry = gameObject->position() + (oneStep * i);
+        Vector2D positionToTry = gameObject->collisionRect().position() + (oneStep * i);
         Rect newCollider(positionToTry, gameObject->collisionRect().w(), gameObject->collisionRect().h());
 
         if(!CheckCollisionAgainstLevel(&newCollider)){
@@ -100,7 +100,7 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
         DEBUG_BREAK();
     }
 
-    for(std::vector<Rect*>::iterator it = _currentLevel->collisionRects().begin(); 
+    for(std::vector<Rect*>::const_iterator it = _currentLevel->collisionRects().begin(); 
 	    it!=_currentLevel->collisionRects().end(); it++){
         if(CheckCollision(rect, *it)){
             return true;
