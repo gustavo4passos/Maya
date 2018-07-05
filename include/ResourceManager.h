@@ -11,6 +11,7 @@
 #include "Tileset.h"
 #include "Level.h"
 
+class Mesh;
 
 class ResourceManager {
 

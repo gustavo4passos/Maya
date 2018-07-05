@@ -1,5 +1,8 @@
 #include "../include/PhysicsEngine.h"
 
+#include "../include/ErrorHandler.h"
+#include "../include/GameEnemy.h"
+
 Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.4); 
 Level* PhysicsEngine::_currentLevel = NULL;
 
@@ -106,4 +109,25 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
         }
     }
     return false;
+}
+
+void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
+    if(!_currentLevel){
+        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        DEBUG_BREAK();
+    }
+    
+    for(std::vector<GameEnemy*>::const_iterator it = _currentLevel->enemies().begin(); 
+        it!=_currentLevel->enemies().begin(); it++){
+
+        if(CheckCollision(&gameObject->_collisionRect, &(*it)->_collisionRect)){
+            CollisionEvent enemyCollisionEvent = { NULL, CollisionEventType::ENEMY_COLLISION, (*it)->velocity(), 
+                 (*it)->damage() };
+            gameObject->EnqueueCollisionEvent(enemyCollisionEvent);
+            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_COLLISION, gameObject->velocity(), 
+                 gameObject->damage() };
+            (*it)->EnqueueCollisionEvent(mayaCollisionEvent);
+        }
+    }
+
 }
