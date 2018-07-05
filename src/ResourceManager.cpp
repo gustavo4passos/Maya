@@ -1,6 +1,6 @@
 #include "../include/ResourceManager.h"
 
-// NOTE(Gustavo) stb_image fails to load some png subformats; consider using SOIL 
+// NOTE(Gustavo): stb_image fails to load some png subformats; consider using SOIL 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../extern/stb/stb_image.h"
 
@@ -30,7 +30,7 @@ bool ResourceManager::LoadTexture(const std::string& filename, const std::string
 }
 
 
-// NOTE(Gustavo) For the release version, consider returning map[entry] instead of using find() 
+// NOTE(Gustavo): For the release version, consider returning map[entry] instead of using find() 
 // However map[entry] will create a new item in map if 'entry' isn't a valid entry
 // and the caller will never be notified that the index he's trying to access is invalid,
 // making the error hard to trace.
@@ -117,9 +117,10 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
 	
 	// load the XML document																														  
 	if (!xmlDoc.LoadFile(filename)) {
-        LOG_ERROR("Unable to open level file: " + std::string(xmlDoc.ErrorDesc()));
+        LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
 		return NULL;
 	}
+
 
 	// get the root element
 	TiXmlElement* pRoot = xmlDoc.RootElement();
@@ -143,7 +144,6 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
 		if(e->Value() == std::string("tileset")){
         	if(!(tileset = ParseTileset(e))){
 				LOG_ERROR("Tileset object is NULL");
-				DEBUG_BREAK();
 				return NULL;
 			}
 			break;  
@@ -160,9 +160,17 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
     for(e = pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
         if(e->Value() == std::string("layer")){
             layer = ParseLayer(e, level, tileset);
+
+			if(layer == NULL){
+			  	LOG_ERROR("Unable to parse layer " + std::string(e->Attribute("name")));
+				delete level;
+				return NULL;
+			}
+
 			level->AddBackgroundLayer(layer);
         }
     }
+
 	for(e=pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
 		if(e->Value() == std::string("objectgroup")){
 			ParseObjectGroup(e, level);
@@ -170,7 +178,6 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
 	}
 
     return level;
-
 }
 
 void ResourceManager::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
@@ -217,6 +224,11 @@ Rect* ResourceManager::ParseRect(TiXmlElement* objectNode){
 
 Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
     TiXmlElement* imagenode = node->FirstChildElement();
+	// Checks if image node is absent
+	if(imagenode == NULL || imagenode->Value() != std::string("image")){
+	  	LOG_ERROR("Tileset node missing image field.");
+		return NULL;
+	}
 
     std::string source;
     std::string name;
@@ -225,13 +237,22 @@ Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
 	int tileWidth, tileHeight;	
     int margin, spacing;
 	int nColumns, nRows;
-    
+
     name = std::string(node->Attribute("name"));
     node->Attribute("tilewidth", &tileWidth);
     node->Attribute("tileheight", &tileHeight);
     node->Attribute("columns", &nColumns);
-    node->Attribute("margin", &margin);
-    node->Attribute("spacing", &spacing);
+
+	// Checks if margin and spacing fields are present
+	const char* marginFieldCheck;
+	const char* spacingFieldCheck;
+    marginFieldCheck = node->Attribute("margin", &margin);
+    spacingFieldCheck = node->Attribute("spacing", &spacing);
+
+	// If margin and/or spacing fields are absent, set them to 0
+	if(marginFieldCheck == NULL) { margin = 0; }
+	if(spacingFieldCheck == NULL) { spacing = 0; }
+
     source = std::string(imagenode->Attribute("source"));
     imagenode->Attribute("width", &width);
     imagenode->Attribute("height", &height);
@@ -258,13 +279,32 @@ Layer* ResourceManager::ParseLayer(TiXmlElement* layerNode, Level* level, Tilese
 	layerNode->Attribute("width", &width);
 	layerNode->Attribute("height", &height);
 	
-	for(layerNode = layerNode->FirstChildElement(); layerNode != NULL; layerNode = layerNode->NextSiblingElement()) { 
-		if(layerNode->Value() == std::string("data")){ // find the dataNode and call ParseLayerData
-			layerData = ParseLayerData(layerNode);
+	TiXmlElement* propertiesNode = NULL;
+	for(propertiesNode = layerNode->FirstChildElement(); propertiesNode != NULL; propertiesNode = propertiesNode->NextSiblingElement()){
+	  	if(propertiesNode->Value() == std::string("properties")){
+		  	break;
+		}
+	}
+	
+	double zDistance = 1; // Sets zDistance to the default value, in case it isn't specified
+	if(propertiesNode != NULL){
+		TiXmlElement* zDistanceNode = NULL;
+		for(zDistanceNode = propertiesNode->FirstChildElement(); zDistanceNode != NULL; zDistanceNode = zDistanceNode->NextSiblingElement()){
+		  	if(std::string(zDistanceNode->Attribute("name")) == std::string("zdistance")){
+				zDistanceNode->Attribute("value", &zDistance);
+			}
+		}
+	}
+
+	TiXmlElement* dataNode = NULL;
+	for(dataNode = layerNode->FirstChildElement(); dataNode != NULL; dataNode = dataNode->NextSiblingElement()) { 
+		if(dataNode->Value() == std::string("data")){ // find the dataNode and call ParseLayerData
+			layerData = ParseLayerData(dataNode);
 			LoadLayerMesh(layerData, level, tileset, name);
 		}	
 	}
-	return new Layer(name, width, height, tileset);
+
+	return new Layer(name, width, height, tileset, zDistance);
 }
 
 std::vector<int> ResourceManager::ParseLayerData(TiXmlElement* dataNode){
@@ -306,11 +346,13 @@ void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, T
 	int levelWidth;
 	float tileWidth, tileHeight;
 	int nColumns;
+	int margin, spacing;
 	levelWidth = level->width();
 	tileWidth = (float)level->tileWidth();
 	tileHeight = (float)level->tileHeight();
 	nColumns = tileset->nColumns();
-
+	margin = tileset->margin();
+	spacing = tileset->spacing();
 	std::vector<float> meshData;
 
 	for(unsigned int i = 0; i < layerData.size(); i++){
@@ -332,20 +374,14 @@ void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, T
 		Vertex v3 = { tileColumn * tileWidth + tileWidth, tileRow * tileHeight + tileHeight };
 		Vertex v4 = { tileColumn * tileWidth, tileRow * tileHeight + tileHeight };
 		
-		UVcoordinate tex1 = { texColumn * tileWidth, texRow * tileHeight };
-		UVcoordinate tex2 = { texColumn * tileWidth + tileWidth, texRow * tileHeight };
-		UVcoordinate tex3 = { texColumn * tileWidth + tileWidth, texRow * tileHeight + tileHeight };
-		UVcoordinate tex4 = { texColumn * tileWidth, texRow * tileHeight + tileHeight };
-
-		tex1.x /= tileset->width();
-		tex1.y /= tileset->height();
-		tex2.x /= tileset->width();
-		tex2.y /= tileset->height();
-		tex3.x /= tileset->width();
-		tex3.y /= tileset->height();
-		tex4.x /= tileset->width();
-		tex4.y /= tileset->height();
+		UVcoordinate tex1 = { texColumn * tileWidth + margin + spacing * texColumn, texRow * tileHeight + margin + spacing * texRow };
+		UVcoordinate tex2 = { texColumn * tileWidth + tileWidth + spacing * texColumn, texRow * tileHeight + margin + spacing * texRow };
+		UVcoordinate tex3 = { texColumn * tileWidth + tileWidth + spacing * texColumn, texRow * tileHeight + tileHeight + spacing * texRow};
+		UVcoordinate tex4 = { texColumn * tileWidth + margin + spacing * texColumn, texRow * tileHeight + tileHeight + spacing * texRow };
 		
+		// NOTE(Gustavo): Should the UV coordinates be calculated on the CPU or GPU?
+		// (Check mesh_shader.frag mat2 transform)
+
 		// Stores vertices and tex coordinates in ram memory
 		// Upper triangle
 		meshData.push_back(v1.x); // Top left vertex
@@ -381,5 +417,4 @@ void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, T
 	}
 
 	LoadMesh((const void*)(&meshData[0]), meshData.size() * sizeof(float), meshData.size() / 4, name);
-	std::cout << "Mesh map size is " << _meshMap.size() << std::endl;
 }

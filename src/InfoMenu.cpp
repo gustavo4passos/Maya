@@ -33,7 +33,6 @@ InfoMenuGL3::InfoMenuGL3(Game* game, Window* window, Level* level, Player* playe
 	_clearColor[1] = 1.f;
 	_clearColor[2] = 0.f;
 	_clearColor[3] = 1.f;
-	
 }	
 
 InfoMenuGL3::~InfoMenuGL3() { }
@@ -255,6 +254,20 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		
 		ImGui::Dummy(ImVec2(30.f, 0.f));
 		ImGui::Text("Press tab to see player stats");
+
+		ImGui::Separator();
+		ImGui::Dummy(ImVec2(30.f, 0.f));
+		if(ImGui::BeginMenu("Load level")){
+			std::vector<std::string> levels = GetFilenamesInLevelsFolder();
+			for(auto level = levels.begin(); level != levels.end(); level++){
+				if(ImGui::Button((*level).c_str())){
+					delete _levelptr;
+					(*level).insert(0, "../res/levels/");
+					_levelptr = ResourceManager::ParseLevel((*level).c_str());
+				}
+			}
+			ImGui::EndMenu();
+		}
 		
 		ImGui::EndMainMenuBar();
 	}
@@ -298,3 +311,44 @@ void InfoMenuGL3::DrawCollisionBox(Rect* rect, Renderer* renderer) {
 	LOCAL_PERSIST Color red = { 1.f, 0.f, 0.f, 0.4f };
 	renderer->DrawFillRect(rect, &red);
 }
+
+#ifdef _WIN32
+#include <windows.h>
+
+std::string InfoMenuGL3::OpenFileDialog(){
+	char filename[255];
+	OPENFILENAME c = { };
+	c.lStructSize = sizeof(c);
+	c.hInstance = NULL;
+	c.lpstrFilter = "TMX Files (.tmx)\0*.tmx\0";
+	c.lpstrFile = filename;
+	c.lpstrFile[0] = '\0';
+	c.lpstrTitle = "Select level file";
+	c.nMaxFile = sizeof(filename);
+	c.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+
+	GetOpenFileName(&c);
+	
+	return std::string(filename);
+}
+
+std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
+  WIN32_FIND_DATA data;
+  std::vector<std::string> files;
+  HANDLE hFind = FindFirstFile("..\\res\\levels\\*", &data);
+  if(hFind != INVALID_HANDLE_VALUE){
+		do {
+			files.push_back(data.cFileName);
+		} while(FindNextFile(hFind, &data));
+		FindClose(hFind);
+  }
+  return files;
+}
+
+#else 
+
+const char * InfoMenuGL3::OpenFileDialog() {
+  return NULL;
+}
+
+#endif

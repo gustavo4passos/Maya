@@ -6,8 +6,6 @@
 #include "../include/GLCall.h"
 #include "../include/Window.h"
 
-const float Renderer::ASPECT_RATIO = (1.f * INTERNAL_RESOLUTION_W) / INTERNAL_RESOLUTION_H;
-
 Renderer::Renderer() :
 	_spriteVAO(NULL),
 	_spriteVBO(NULL),
@@ -149,7 +147,7 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
 }
 
 
-void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture){
+void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax){
 	if(mesh == NULL) {
 		LOG_ERROR("Unable to draw textured mesh: mesh is null.");
 		DEBUG_BREAK();
@@ -165,7 +163,7 @@ void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture){
 	BindShader(_meshShader);
 	BindTexture(texture);
 	mesh->Bind();
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x() * parallax, -_camera->y() * parallax, 0.f));
 	_meshShader->SetUniformMat4("model", glm::value_ptr(translate));
 
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, mesh->count()));
