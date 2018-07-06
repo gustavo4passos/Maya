@@ -3,12 +3,13 @@
 
 #include <vector>
 
-#include "GameObject.h"
-#include "Renderer.h"
+#include "Rect.h"
 #include "Tileset.h"
 
 class Layer;
 class GameEnemy;
+class GameObject;
+class Renderer;
 
 class Level {
 public:

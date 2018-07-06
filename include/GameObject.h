@@ -1,7 +1,10 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
+#include <queue>
+
 #include "Rect.h"
+#include "PhysicsEngine.h"
 
 class Renderer; 
 
@@ -31,6 +34,7 @@ public:
 	inline const float y() const { return _position.y(); }
 	inline const float w() const { return _w; }
 	inline const float h() const { return _h; }
+	inline int const damage() { return _damage; }
 
 	void setPosition(float x, float y) {
 		_position.setX(x - _collisionOffsetX);
@@ -47,8 +51,12 @@ public:
 	virtual void Update();
 	virtual void Draw(Renderer* renderer, float positionInterpolation);
 
+	inline void EnqueueCollisionEvent(CollisionEvent collisionEvent) { _unresolvedCollisionEvents.push(collisionEvent); }
+
 	friend class InfoMenuGL3;
 	friend class Game;
+	// Grants access to the collision rect inside the physics engine, to avoid creating a copy at each frame
+	friend class PhysicsEngine; 
 	
 private:
 	Vector2D _position;
@@ -59,8 +67,12 @@ private:
 
 	float _speed;
 	float _impulse;
+	int _damage;
 	bool _movingleft, _movingright;
 
 	float _collisionOffsetX, _collisionOffsetY, _collisionW, _collisionH;
+
+
+	std::queue<CollisionEvent> _unresolvedCollisionEvents;
 };
 #endif

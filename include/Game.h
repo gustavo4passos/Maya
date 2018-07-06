@@ -1,11 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Renderer.h"
 #include "Window.h"
 #include "Player.h"
-#include "VertexArray.h"
-#include "Camera.h"
 #include "Level.h"
 
 class Texture; 

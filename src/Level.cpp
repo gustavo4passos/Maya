@@ -3,6 +3,7 @@
 #include "../include/Layer.h"
 #include "../include/ResourceManager.h"
 #include "../include/GameEnemy.h"
+#include "../include/Renderer.h"
 
 Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight) :
 	_tileset(tileset), 
