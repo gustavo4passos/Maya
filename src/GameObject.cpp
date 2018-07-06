@@ -12,6 +12,7 @@ void GameObject::Update() {
 
 	PhysicsEngine::ApplyGravity(this);
 	PhysicsEngine::MoveAndCheckCollision(this);
+	PhysicsEngine::CheckCollisionAgainstEnemies(this);
 
 	if(PhysicsEngine::OnGround(this)){
 		_velocity.setY(0.f);

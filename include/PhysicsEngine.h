@@ -29,6 +29,7 @@ public:
     inline static void setCurrentLevel(Level* currentLevel){ _currentLevel = currentLevel; }
     static void MoveAndCheckCollision(GameObject* gameObject);
 	static Vector2D MoveAndCheckCollision(Rect* origin, Rect* destination);
+    static void CheckCollisionAgainstEnemies(GameObject* gameObject);
 
 	friend class InfoMenuGL3;
 private:
@@ -37,7 +38,6 @@ private:
     ~PhysicsEngine(){}
     static Level* _currentLevel;
     static bool CheckCollisionAgainstLevel(Rect* rect);
-    static void CheckCollisionAgainstEnemies(GameObject* gameObject);
     static Vector2D _gravity;
 };
 

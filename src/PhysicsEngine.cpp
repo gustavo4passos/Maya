@@ -116,7 +116,7 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
         LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
-    
+
     for(std::vector<GameEnemy*>::const_iterator it = _currentLevel->enemies().begin(); 
         it!=_currentLevel->enemies().begin(); it++){
 
@@ -124,6 +124,7 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
             CollisionEvent enemyCollisionEvent = { NULL, CollisionEventType::ENEMY_COLLISION, (*it)->velocity(), 
                  (*it)->damage() };
             gameObject->EnqueueCollisionEvent(enemyCollisionEvent);
+            //Como sera determinado o dano da maya em relacao aos diferentes estados e equipamentos ?
             CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_COLLISION, gameObject->velocity(), 
                  gameObject->damage() };
             (*it)->EnqueueCollisionEvent(mayaCollisionEvent);
