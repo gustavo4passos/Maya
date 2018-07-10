@@ -12,6 +12,7 @@ void GameObject::Update() {
 
 	PhysicsEngine::ApplyGravity(this);
 	PhysicsEngine::MoveAndCheckCollision(this);
+	PhysicsEngine::CheckCollisionAgainstEnemies(this);
 
 	if(PhysicsEngine::OnGround(this)){
 		_velocity.setY(0.f);
@@ -57,10 +58,18 @@ void GameObject::HandleInput() {
 }
 
 void GameObject::Draw(Renderer* renderer, float positionInterpolation) {
-    Rect rect = Rect(0, 0, 32, 32);
+    Rect src = Rect(_position.x() + (_velocity.x() * positionInterpolation), _position.y() + (_velocity.y() * positionInterpolation), 
+     _w,  _h);
 
-    Rect src = Rect(_collisionRect.x() + (_velocity.x() * positionInterpolation), _collisionRect.y() + (_velocity.y() * positionInterpolation), 
-     _collisionRect.w(),  _collisionRect.h());
+	Rect rect = Rect(0, 0, _w, _h);
 
-    renderer->Draw(ResourceManager::GetTexture("grass"), &rect, &src);
+	if(_velocity.x() != 0.f || _velocity.y() != 0.f){
+		int frame = (SDL_GetTicks() / 80) % 8;
+		rect.setX(rect.x() + frame * _w);
+
+		renderer->Draw(ResourceManager::GetTexture("maya_running"), &rect, &src);
+	}
+	else {
+	 	renderer->Draw(ResourceManager::GetTexture("maya_standing"), &rect, &src);
+	}
 }

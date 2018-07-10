@@ -62,10 +62,10 @@ public:
 	}
 
 	template<typename T>
-		Vector2D operator/(const T& scalar) const {
-			if(scalar == 0) throw std::overflow_error("Division by zero is forbidden");
-			return Vector2D(this->_x / scalar, this->_y / scalar);
-		}
+	Vector2D operator/(const T& scalar) const {
+		if(scalar == 0) throw std::overflow_error("Division by zero is forbidden");
+		return Vector2D(this->_x / scalar, this->_y / scalar);
+	}
 
 	Vector2D operator/(const Vector2D& rhs) const {
 		if(rhs._x == 0 || rhs._y == 0) {

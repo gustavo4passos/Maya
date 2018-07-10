@@ -5,6 +5,11 @@
 /* Needs a valid OpenGL context to run */
 /* Uses SDL messaging system */
 
+#include <string>
+#include <vector>
+
+#include <imgui.h>
+
 class Camera;
 class Game;
 class Window;
@@ -13,8 +18,6 @@ class GameObject;
 class Player;
 class Rect;
 class Renderer;
-
-#include "imgui.h"
 
 class InfoMenuGL3 {
 public:
@@ -50,6 +53,9 @@ private:
 	void RenderCollisionBoxes(Renderer* renderer);
 	void RenderGameObjectInfoMenu();
 	void DrawCollisionBox(Rect* rect, Renderer* renderer);
+	
+	std::string OpenFileDialog();
+	std::vector<std::string> GetFilenamesInLevelsFolder();
 };
 
 #endif

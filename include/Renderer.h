@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
+// Represents a RGBA color. Attributes should ragen from 0.0 ~ 1.0
 struct Color {
 	float r;
 	float g;
@@ -37,7 +38,8 @@ public:
 	void Draw(Texture* tex, Rect* srcRect, Rect* dstRect);
 	void Draw(Texture tex, Rect srcRect, Rect dstRect, float scale, float angle = 0);
 
-	void DrawTexturedMesh(Mesh* mesh, Texture* texture);
+	// TODO(Gustavo): The mesh rendering should not implement parallax.
+	void DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax = 1.f);
 
 	void DrawRect(Rect* rect, Color* color);
 	void DrawFillRect(Rect* rect, Color* color);
@@ -69,23 +71,22 @@ private:
 	int _viewportW, _viewportH;  
 
 	void PreparePrimitiveForDrawing(Rect* rect, Color* color);
-	void BindShader(Shader* shader); //Only binds if not already bound
-	void BindTexture(Texture* texture); //Only binds if not already bound
+	void BindShader(Shader* shader); //Only binds shader if not already bound
+	void BindTexture(Texture* texture); //Only binds texture if not already bound
 
-	//Print info about the current graphics device and glsl version
+	//Prints info about the current graphics device and glsl version
 	void PrintInfo();
 
 	// Internal resolution data
 	static const int INTERNAL_RESOLUTION_W = 480;
 	static const int INTERNAL_RESOLUTION_H = 270;
-	static const float ASPECT_RATIO; 
+	static constexpr float ASPECT_RATIO = (1.f * INTERNAL_RESOLUTION_W) / INTERNAL_RESOLUTION_H; 
 
+	// TODO(Gustavo): Buffer scaling is deprecated. Remove it.
 	float _xScaleFactor, _yScaleFactor;
 	
-	//The currenly bound shader and texture id is stored to avoid binding 
-	//an object that is already bound to the current state. This is done in
-	//order to try to decrease the latency caused by  changing the OpenGL 
-	//state unnecesserily
+	// The currenly bound shader and texture id is stored in order to avoid  
+	// unnecessary binding. Changing the OpenGL context is costly.
 	unsigned int _currentlyBoundShader, _currentlyBoundTexture;
 };
 

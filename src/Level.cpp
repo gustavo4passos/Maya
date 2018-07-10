@@ -1,6 +1,9 @@
 #include "../include/Level.h"
 
 #include "../include/Layer.h"
+#include "../include/ResourceManager.h"
+#include "../include/GameEnemy.h"
+#include "../include/Renderer.h"
 
 Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight) :
 	_tileset(tileset), 
@@ -10,17 +13,37 @@ Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHei
 	_tileHeight(tileHeight)
 { }
 
-void Level::DrawBackground(Renderer* renderer, float positionInterpolation){
-	for(std::vector<Rect*>::iterator it = _collisionRects.begin(); 	
-	    it != _collisionRects.end();
-		it++) {
-		Color red;
-		red.r = 1.f;
-		red.g = 0.f;
-		red.b = 0.f;
-		red.a = 0.5f;
-		renderer->DrawFillRect(*it, &red);
+Level::~Level() {
+	// Delete collision rects
+	for(auto rect = _collisionRects.begin(); rect !=  _collisionRects.end(); rect++){
+		delete *rect;
+		*rect = NULL;
 	}
+	_collisionRects.clear();
+
+	// Delete background layers
+	for(auto backgroundLayer = _backgroundLayers.begin(); backgroundLayer != _backgroundLayers.end(); backgroundLayer++){
+		delete *backgroundLayer;
+		*backgroundLayer = NULL;
+	}
+	_backgroundLayers.clear();
+
+	// Delete game objects
+	for(auto gameObject = _gameObjects.begin(); gameObject != _gameObjects.end(); gameObject++){
+		delete *gameObject;
+		*gameObject = NULL;
+	}
+	_gameObjects.clear();
+
+	// Deletes tileset texture
+	ResourceManager::DeleteTexture(_tileset->name());
+	
+	// Delete tileset
+	delete _tileset;
+	_tileset = NULL;
+}
+
+void Level::DrawBackground(Renderer* renderer, float velocityInterpolation){
 	for(auto layer = _backgroundLayers.begin(); layer != _backgroundLayers.end(); layer++){
 		(*layer)->Draw(renderer);
 	}

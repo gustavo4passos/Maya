@@ -6,8 +6,6 @@
 #include "../include/GLCall.h"
 #include "../include/Window.h"
 
-const float Renderer::ASPECT_RATIO = (1.f * INTERNAL_RESOLUTION_W) / INTERNAL_RESOLUTION_H;
-
 Renderer::Renderer() :
 	_spriteVAO(NULL),
 	_spriteVBO(NULL),
@@ -90,7 +88,7 @@ bool Renderer::Init(Camera* camera) {
 	_offscreenVAO->AddBuffer(_offscreenVBO, &offscreenVertexDataLayout);
 
 	_spriteShader = new Shader("../res/shaders/sprite_shader.vert", "../res/shaders/sprite_shader.frag");
-	_primitivesShader = new Shader("../res/shaders/primitives_shader.vert",	"../res/shaders/primitives_shader.frag");
+	_primitivesShader = new Shader("../res/shaders/primitives_shader.vert",	"../res/shaders/primitives_shader.frag");	
 	_meshShader = new Shader("../res/shaders/mesh_shader.vert", "../res/shaders/mesh_shader.frag");
 	_offscreenRenderShader = new Shader("../res/shaders/offscreen_render.vert", "../res/shaders/offscreen_render.frag");
 
@@ -149,7 +147,7 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
 }
 
 
-void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture){
+void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax){
 	if(mesh == NULL) {
 		LOG_ERROR("Unable to draw textured mesh: mesh is null.");
 		DEBUG_BREAK();
@@ -165,7 +163,7 @@ void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture){
 	BindShader(_meshShader);
 	BindTexture(texture);
 	mesh->Bind();
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x() * parallax, -_camera->y() * parallax, 0.f));
 	_meshShader->SetUniformMat4("model", glm::value_ptr(translate));
 
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, mesh->count()));

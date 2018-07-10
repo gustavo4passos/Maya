@@ -1,5 +1,8 @@
 #include "../include/PhysicsEngine.h"
 
+#include "../include/ErrorHandler.h"
+#include "../include/GameEnemy.h"
+
 Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.4); 
 Level* PhysicsEngine::_currentLevel = NULL;
 
@@ -25,7 +28,6 @@ bool PhysicsEngine::OnGround(GameObject* gameObject){
 
     Rect collisionObject = gameObject->collisionRect();
 	collisionObject.setY(collisionObject.y() + 1.f);
-
     if(CheckCollisionAgainstLevel(&collisionObject)){
         return true;
     }
@@ -64,13 +66,12 @@ bool PhysicsEngine::HitHead(GameObject* gameObject){
 
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
     int nSteps=(int)(gameObject->velocity().Length() *2) + 1;
-    Vector2D furthestPosition = gameObject->position();
+    Vector2D furthestPosition = gameObject->collisionRect().position();
     Vector2D oneStep = gameObject->velocity() / nSteps;
 
     for (int i = 1; i <= nSteps; i++){
-        Vector2D positionToTry = gameObject->position() + (oneStep * i);
+        Vector2D positionToTry = gameObject->collisionRect().position() + (oneStep * i);
         Rect newCollider(positionToTry, gameObject->collisionRect().w(), gameObject->collisionRect().h());
-
         if(!CheckCollisionAgainstLevel(&newCollider)){
             furthestPosition = positionToTry;
         }
@@ -80,18 +81,19 @@ void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
                 Vector2D originalVelocity = gameObject->velocity();
                 int stepsLeft = nSteps - (i - 1);
 
-	            gameObject->setVelocity(0.f, (oneStep.y() * stepsLeft));
+                gameObject->setVelocity((oneStep.x() * stepsLeft) , 0);
                 MoveAndCheckCollision(gameObject);
 
-                gameObject->setVelocity((oneStep.x() * stepsLeft), 0.f);
+                gameObject->setVelocity(0 , (oneStep.y() * stepsLeft));
                 MoveAndCheckCollision(gameObject);
-				
+
                 gameObject->setVelocity(originalVelocity.x(), originalVelocity.y());
             }
             return;
         }
     }
     gameObject->setPosition( furthestPosition.x(), furthestPosition.y());
+
 }
 
 bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
@@ -100,11 +102,33 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
         DEBUG_BREAK();
     }
 
-    for(std::vector<Rect*>::iterator it = _currentLevel->collisionRects().begin(); 
+    for(std::vector<Rect*>::const_iterator it = _currentLevel->collisionRects().begin(); 
 	    it!=_currentLevel->collisionRects().end(); it++){
         if(CheckCollision(rect, *it)){
             return true;
         }
     }
     return false;
+}
+
+void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
+    if(!_currentLevel){
+        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        DEBUG_BREAK();
+    }
+
+    for(std::vector<GameEnemy*>::const_iterator it = _currentLevel->enemies().begin(); 
+        it!=_currentLevel->enemies().end(); it++){
+
+        if(CheckCollision(&gameObject->_collisionRect, &(*it)->_collisionRect)){
+            CollisionEvent enemyCollisionEvent = { NULL, CollisionEventType::ENEMY_COLLISION, (*it)->velocity(), 
+                 (*it)->damage() };
+            gameObject->EnqueueCollisionEvent(enemyCollisionEvent);
+            //Como sera determinado o dano da maya em relacao aos diferentes estados e equipamentos ?
+            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_COLLISION, gameObject->velocity(), 
+                 gameObject->damage() };
+            (*it)->EnqueueCollisionEvent(mayaCollisionEvent);
+        }
+    }
+
 }

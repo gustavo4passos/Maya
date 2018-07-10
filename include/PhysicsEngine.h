@@ -2,8 +2,20 @@
 #define PHYSICSENGINE_H
 
 #include "Vector2D.h"
-#include "GameEntity.h"
 #include "Level.h"
+
+enum class CollisionEventType {
+    ENEMY_COLLISION,
+    EVENT_COLLISION,
+    PLAYER_COLLISION
+};
+
+struct CollisionEvent {
+    GameObject* gameObject;
+    CollisionEventType collisionEventType;
+    Vector2D velocity;
+    int damage;
+};
 
 class PhysicsEngine {
 public:
@@ -17,6 +29,7 @@ public:
     inline static void setCurrentLevel(Level* currentLevel){ _currentLevel = currentLevel; }
     static void MoveAndCheckCollision(GameObject* gameObject);
 	static Vector2D MoveAndCheckCollision(Rect* origin, Rect* destination);
+    static void CheckCollisionAgainstEnemies(GameObject* gameObject);
 
 	friend class InfoMenuGL3;
 private:
@@ -27,6 +40,7 @@ private:
     static bool CheckCollisionAgainstLevel(Rect* rect);
     static Vector2D _gravity;
 };
+
 
 
 

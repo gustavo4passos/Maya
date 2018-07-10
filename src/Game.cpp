@@ -11,6 +11,7 @@
 #include "../include/Mesh.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/InfoMenu.h"
+#include "../include/GameEnemy.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -25,8 +26,12 @@ bool Game::Init() {
         return false;
     }
 
-	_object = new GameObject(30, 0, 32, 32);
-	_level = ResourceManager::ParseLevel("../res/levels/mario.tmx");
+	_level = ResourceManager::ParseLevel("../res/levels/forest.tmx");
+	if(_level == NULL){
+	 	return false;
+	}
+
+	_object = new GameObject(30, 0, 36, 39);
 	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
 
     _renderer = new Renderer();
@@ -47,20 +52,17 @@ bool Game::Init() {
         LOG_ERROR("Unbale to load texture.");
     }
 
-    if(!ResourceManager::LoadTexture("../res/sprites/grass.png", "grass")){
-		LOG_ERROR("Unable to load texture.");
+	if(!ResourceManager::LoadTexture("../res/assets/Maya_Standing.png", "maya_standing")){
+	 	LOG_ERROR("Unable to load texture \"Maya_Standing\"");
 	}
 
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
 	
-
-    _running = false;
-  
+	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
 	PhysicsEngine::setCurrentLevel(_level);
 
-	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
-
+    _running = false;
     return true;
 }
 
@@ -77,29 +79,33 @@ void Game::Run() {
         previous = current;
         lag += elapsed;
 
-
         while(lag >= MS_PER_UPDATE){
         	HandleEvents();
             Update();
             lag -= MS_PER_UPDATE;
         }
+		
+		float i = float(lag) / MS_PER_UPDATE;
+		Vector2D pos = _object->_position;
 
-        Render(float(lag) / MS_PER_UPDATE);
+		//TODO(Gustavo): Below is a temporary solution for the camera position interpolation problem.
+		// This solution must be integrated properly withing the camera code
+		_object->_position.setX(pos.x() + _object->_velocity.x() * i);
+		_object->_position.setY(pos.y() + _object->_velocity.y() * i);
+		_camera->Update();
+		Render(float(lag) / MS_PER_UPDATE);
+		_object->_position.setX(pos.x());
+		_object->_position.setY(pos.y());
     }
 }
 
 void Game::Render(float positionFactor) {
-	_renderer->UseOffscreenFramebuffer();
 	_renderer->Clear();
 	
 	_level->DrawBackground(_renderer, positionFactor);
 	_maya->Draw(_renderer, positionFactor);
 	_object->Draw(_renderer, positionFactor);
 
-	_renderer->UseDefaultFramebuffer();
-	_renderer->Clear();
-	
-	_renderer->RenderOffscreenFramebuffer();
 	_infoMenu->Render(_renderer);
 
     _window->Swap();
@@ -114,6 +120,8 @@ void Game::Update() {
 void Game::Clean() {
 	delete _object;
 	delete _maya;
+	delete _level;
+
 	ResourceManager::CleanTextures();
 	ResourceManager::CleanMeshes();
     InputModule::Clean();
@@ -123,7 +131,6 @@ void Game::Clean() {
 
     _renderer = NULL;
     _window = NULL;
-
 }
 
 void Game::EndGameRequest() {
@@ -139,6 +146,7 @@ void Game::HandleEvents() {
     if(InputModule::CloseWindowRequest()) { 
 		EndGameRequest();
     }
+
     if(InputModule::IsKeyPressed(InputModule::LALT) && 
        InputModule::WasKeyReleased(InputModule::ENTER)) {
            _window->ToggleFullscreen();

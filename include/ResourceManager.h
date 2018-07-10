@@ -11,6 +11,7 @@
 #include "Tileset.h"
 #include "Level.h"
 
+class Mesh;
 
 class ResourceManager {
 
@@ -31,6 +32,7 @@ public:
 	static void DeleteMesh(const std::string& name);
 	static void CleanMeshes();
 
+	friend class Game;
 private:
 
     ResourceManager() {}
