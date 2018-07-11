@@ -136,11 +136,20 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
 	BindTexture(tex);
 	BindShader(_spriteShader);
 
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(dstRect->x(), dstRect->y(), 0.f));
-	glm::mat4 cameraTransform = glm::translate(translate, glm::vec3(-_camera->x(), -_camera->y(), 0.f));
-	glm::mat4 scale = glm::scale(cameraTransform, glm::vec3(dstRect->w(), dstRect->h(), 1.f));
+	glm::mat4 model = glm::mat4(1.f);
 
-	_spriteShader->SetUniformMat4("model", glm::value_ptr(scale));
+	// Translate
+	model = glm::translate(model, glm::vec3(dstRect->x(), dstRect->y(), 0.f));
+
+	// Camera translation
+	if(_camera != NULL){
+		model = glm::translate(model, glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	}
+
+	// Model translation
+	model = glm::scale(model, glm::vec3(dstRect->w(), dstRect->h(), 1.f));
+
+	_spriteShader->SetUniformMat4("model", glm::value_ptr(model));
 	_spriteShader->SetUniform4f("srcrct", srcRect->x(), srcRect->y(), srcRect->w(), srcRect->h());
 
 	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
@@ -163,7 +172,12 @@ void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax){
 	BindShader(_meshShader);
 	BindTexture(texture);
 	mesh->Bind();
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x() * parallax, -_camera->y() * parallax, 0.f));
+
+	// Camera translation
+	glm::mat4 translate = glm::mat4(1.f);
+	if(_camera){
+		translate = glm::translate(glm::mat4(1.f), glm::vec3(-_camera->x() * parallax, -_camera->y() * parallax, 0.f));
+	}
 	_meshShader->SetUniformMat4("model", glm::value_ptr(translate));
 
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, mesh->count()));
@@ -264,8 +278,6 @@ void Renderer::SetViewportSize(int w, int h) {
 	BindShader(_meshShader);
 	_meshShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
 
-
-
 	GLCall(glViewport(orthoX, orthoY, _viewportW, _viewportH));
 }
 
@@ -273,9 +285,17 @@ void Renderer::PreparePrimitiveForDrawing(Rect* rect, Color* color) {
 	BindShader(_primitivesShader);
 	_primitivesVAO->Bind();
 
-	glm::mat4 translate = glm::translate(glm::mat4(1.f), glm::vec3(rect->x(), rect->y(), 0.f));
-	glm::mat4 cameraTransform = glm::translate(translate, glm::vec3(-_camera->x(), -_camera->y(), 0.f));
-	glm::mat4 model = glm::scale(cameraTransform,  glm::vec3(rect->w(), rect->h(), 1.f));
+	// Transformation matrix
+	glm::mat4 model = glm::mat4(1.f);	
+	// Translation
+	model = glm::translate(model, glm::vec3(rect->x(), rect->y(), 0.f));
+	// Camera translation
+	if(_camera) {
+		model = glm::translate(model, glm::vec3(-_camera->x(), -_camera->y(), 0.f));
+	}
+	// Model translation
+	model = glm::scale(model,  glm::vec3(rect->w(), rect->h(), 1.f));
+
 	_primitivesShader->SetUniformMat4("model", glm::value_ptr(model));
 	_primitivesShader->SetUniform4f("fragcolor", color->r, color->g, color->b, color->a);
 }

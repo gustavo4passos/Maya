@@ -31,18 +31,21 @@ public:
 	void Clean();
 
 	// Initializes the renderer data
-	bool Init(Camera* camera);
+	bool Init(Camera* camera = NULL);
 	void Clear();
 	void SetClearColor(GLclampf r, GLclampf g, GLclampf b, GLclampf a);
 
 	void Draw(Texture* tex, Rect* srcRect, Rect* dstRect);
 	void Draw(Texture tex, Rect srcRect, Rect dstRect, float scale, float angle = 0);
 
-	// TODO(Gustavo): The mesh rendering should not implement parallax.
+	// TODO(Gustavo): The mesh rendering should not implement parallax
 	void DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax = 1.f);
 
 	void DrawRect(Rect* rect, Color* color);
 	void DrawFillRect(Rect* rect, Color* color);
+
+	// Set up a camera for use. If NULL, render using the default view space
+	void UseCamera(Camera* camera = NULL);
 
 	void UseOffscreenFramebuffer();
 	void UseDefaultFramebuffer();

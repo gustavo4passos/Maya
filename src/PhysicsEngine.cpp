@@ -118,7 +118,7 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
     }
 
     for(std::vector<GameEnemy*>::const_iterator it = _currentLevel->enemies().begin(); 
-        it!=_currentLevel->enemies().begin(); it++){
+        it != _currentLevel->enemies().end(); it++){
 
         if(CheckCollision(&gameObject->_collisionRect, &(*it)->_collisionRect)){
             CollisionEvent enemyCollisionEvent = { NULL, CollisionEventType::ENEMY_COLLISION, (*it)->velocity(), 

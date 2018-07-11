@@ -16,10 +16,12 @@ public:
     Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight);
     ~Level();
 	
+	void Update();
 	void DrawBackground(Renderer* renderer, float positionInterpolation);
 	
 	void AddBackgroundLayer(Layer* layer);
 	void AddCollisionRect(Rect* rect);
+	void AddEnemy(GameEnemy* enemy);
 	
 	const std::vector<Rect*>& collisionRects() { return _collisionRects; }
 	const std::vector<GameObject*>& gameObjects() { return _gameObjects; }
@@ -44,6 +46,7 @@ private:
 
 	int _width, _height;
 	int _tileWidth, _tileHeight;
+
 };
 
 #endif

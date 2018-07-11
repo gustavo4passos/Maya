@@ -23,7 +23,7 @@ public:
 		_collisionOffsetX(13),
 		_collisionOffsetY(1),
 		_collisionW(13),
-		_collisionH(32)
+		_collisionH(26)
 		{ setPosition(_position.x(), _position.y()); }
 
 	virtual ~GameObject() { }
@@ -58,13 +58,12 @@ public:
 	// Grants access to the collision rect inside the physics engine, to avoid creating a copy at each frame
 	friend class PhysicsEngine; 
 	
-private:
+protected:
 	Vector2D _position;
 	Vector2D _velocity;
 
 	float _w, _h;
 	Rect _collisionRect;
-
 	float _speed;
 	float _impulse;
 	int _damage;
