@@ -43,9 +43,19 @@ Level::~Level() {
 	_tileset = NULL;
 }
 
+void Level::Update() {
+	for(auto enemy = _enemies.begin(); enemy != _enemies.end(); enemy++){
+		(*enemy)->Update();
+	}
+}
+
 void Level::DrawBackground(Renderer* renderer, float velocityInterpolation){
 	for(auto layer = _backgroundLayers.begin(); layer != _backgroundLayers.end(); layer++){
 		(*layer)->Draw(renderer);
+	}
+
+	for(auto enemy = _enemies.begin(); enemy != _enemies.end(); enemy++){
+		(*enemy)->Draw(renderer, velocityInterpolation);
 	}
 }
 
@@ -63,4 +73,10 @@ void Level::AddCollisionRect(Rect* rect){
 		return;
 	}
 	_collisionRects.push_back(rect); 
+
 }
+
+void Level::AddEnemy(GameEnemy* enemy){
+	_enemies.push_back(enemy);
+}
+

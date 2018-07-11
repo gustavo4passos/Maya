@@ -24,7 +24,7 @@ public:
 private:
     Camera* _camera;
 	GameObject* _object;
-	InfoMenuGL3* _infoMenu;;
+	InfoMenuGL3* _infoMenu;
 	Level* _level;
 
     static const std::string _playID;

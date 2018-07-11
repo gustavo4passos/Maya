@@ -8,6 +8,7 @@
 #include "../include/InputModule.h"
 #include "../include/Level.h"
 #include "../include/PhysicsEngine.h"
+#include "../include/GameEnemy.h"
 
 #define LOCAL_PERSIST static
 
@@ -161,7 +162,12 @@ void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
 	{	  
 		DrawCollisionBox(*it, renderer);
 	}
+	
+	for(auto enemy = _levelptr->_enemies.begin(); enemy != _levelptr->_enemies.end(); enemy++){
+		Rect enemyrct = (*enemy)->collisionRect();
+		DrawCollisionBox(&enemyrct, renderer);
 
+	}
 }
 
 void InfoMenuGL3::RenderMenuBar(Renderer* renderer){

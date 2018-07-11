@@ -11,7 +11,7 @@
 #include "../include/Mesh.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/InfoMenu.h"
-#include "../include/GameEnemy.h"
+#include "../include/EvilSonic.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -74,7 +74,7 @@ void Game::Run() {
     const unsigned int MS_PER_UPDATE = 16;
 
     while(_running) {
-        unsigned int current =  SDL_GetTicks();
+        unsigned int current = SDL_GetTicks();
         unsigned int elapsed = current - previous;
         previous = current;
         lag += elapsed;
@@ -112,6 +112,7 @@ void Game::Render(float positionFactor) {
 }
 
 void Game::Update() {
+	_level->Update();
 	_object->Update();
     _maya->Update();
 	_camera->Update();

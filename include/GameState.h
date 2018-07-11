@@ -9,8 +9,9 @@ public:
     GameState(){}
     virtual ~GameState(){}
     
+    virtual void HandleInput() = 0;
     virtual void Update() = 0;
-    virtual void Render() = 0;
+    virtual void Render(Renderer* renderer) = 0;
 
     virtual bool OnEnter() = 0;
 
