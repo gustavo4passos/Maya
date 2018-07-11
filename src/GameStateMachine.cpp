@@ -47,6 +47,12 @@ void GameStateMachine::ChangeState(GameState* _state){
     _state->OnEnter();
 }
 
+void GameStateMachine::HandleInput(){
+    if(!_gameStates.empty()){
+        _gameStates.top()->Update();
+    }
+}
+
 void GameStateMachine::Update(){
     if(!_gameStates.empty()){
         _gameStates.top()->Update();

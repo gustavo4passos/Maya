@@ -9,6 +9,7 @@ public:
 	static void PushState(GameState* _state); 
 	static void PopState();
 	static void ChangeState(GameState* _state); 
+	static void HandleInput();
 	static void Update(); 
 	static void Render();
 
