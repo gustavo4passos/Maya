@@ -13,7 +13,7 @@ public:
 
     virtual void HandleInput();
     virtual void Update();
-    virtual void Render(Renderer* renderer);
+    virtual void Render(Renderer* renderer, float deltatime);
     virtual bool OnEnter();
     virtual bool OnExit();
 

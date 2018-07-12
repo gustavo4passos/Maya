@@ -11,7 +11,7 @@ public:
 	static void ChangeState(GameState* _state); 
 	static void HandleInput();
 	static void Update(); 
-	static void Render();
+	static void Render(Renderer* renderer, float deltatime);
 
 private:
 	GameStateMachine(){}

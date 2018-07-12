@@ -215,6 +215,10 @@ void Renderer::DrawFillRect(Rect* rect, Color* color) {
 	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
 }
 
+void Renderer::UseCamera(Camera* camera){
+	_camera = camera;
+}
+
 void Renderer::UseOffscreenFramebuffer(){
 	GLCall(glViewport(0, 0, INTERNAL_RESOLUTION_W, INTERNAL_RESOLUTION_H));
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, osframebuffer));

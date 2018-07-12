@@ -1,12 +1,16 @@
 #include "../include/PlayState.h"
 #include "../include/InputModule.h"
 #include "../include/GameStateMachine.h"
-#include "../include/Game.h"
+#include "../include/ResourceManager.h"
+#include "../include/ServiceLocator.h"
+#include "../include/Renderer.h"
 
 const std::string PlayState::_playID = "PLAY";
 
 void PlayState::HandleInput(){
 	_object->HandleInput();
+	_infoMenu->HandleInput();
+
 }
 
 void PlayState::Update(){
@@ -16,12 +20,22 @@ void PlayState::Update(){
     //---------incomplete---------
 }
 
-void PlayState::Render(Renderer* renderer){
-	
-	_level->DrawBackground(renderer, 1.f);
-	_object->Draw(renderer, 1.f);
+void PlayState::Render(Renderer* renderer, float deltatime){
+	//Vector2D pos = Vector2D(_object->x(), _object->y());
 
-    //-----------waiting for vinicius------------
+	//TODO(Gustavo): Below is a temporary solution for the camera position interpolation problem.
+	// This solution must be integrated properly withing the camera code
+	
+	//_object->setPosition(pos.x() + _object->velocity().x() * deltatime, 
+	//			  		 pos.y() + _object->velocity().y() * deltatime); 
+	//_camera->Update();
+	//_object->setPosition(pos.x(), pos.y()); 
+
+	_level->DrawBackground(renderer, deltatime);
+	_object->Draw(renderer, deltatime);
+	_infoMenu->Render(renderer);
+
+
 }
 
 bool PlayState::OnEnter(){
@@ -43,6 +57,12 @@ bool PlayState::OnEnter(){
 	}
 
 	PhysicsEngine::setCurrentLevel(_level);
+	ServiceLocator::ProvideCurrentLevel(_level);
+	ServiceLocator::ProvidePlayer(_object);
+
+	ServiceLocator::GetRenderer()->UseCamera(_camera);
+
+	_infoMenu = new InfoMenuGL3();
 
     return true;
     //----------waiting for gustavo to teach us how to use LuaScript---------

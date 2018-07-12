@@ -49,7 +49,7 @@ void GameStateMachine::ChangeState(GameState* _state){
 
 void GameStateMachine::HandleInput(){
     if(!_gameStates.empty()){
-        _gameStates.top()->Update();
+        _gameStates.top()->HandleInput();
     }
 }
 
@@ -59,8 +59,8 @@ void GameStateMachine::Update(){
     }
 }
 
-void GameStateMachine::Render(){
+void GameStateMachine::Render(Renderer* renderer, float deltatime){
     if(!_gameStates.empty()){
-        _gameStates.top()->Update();
+        _gameStates.top()->Render(renderer, deltatime);
     }
 }
