@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+class Renderer;
+
 class GameState{
 public:
     GameState(){}

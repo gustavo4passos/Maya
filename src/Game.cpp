@@ -12,6 +12,7 @@
 #include "../include/PhysicsEngine.h"
 #include "../include/InfoMenu.h"
 #include "../include/EvilSonic.h"
+#include "../include/ServiceLocator.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -31,6 +32,7 @@ bool Game::Init() {
 	 	return false;
 	}
 
+    
 	_object = new GameObject(30, 0, 36, 39);
 	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
 
@@ -42,6 +44,7 @@ bool Game::Init() {
 
     _renderer->SetClearColor(0.f, .8f, 0.f, 1.f);
     _renderer->SetViewportSize(_window->width(), _window->height());
+
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
@@ -59,7 +62,13 @@ bool Game::Init() {
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
 	
-	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
+    ServiceLocator::ProvideCurrentLevel(_level);
+    ServiceLocator::ProvideWindow(_window);
+    ServiceLocator::ProvideRenderer(_renderer);
+    ServiceLocator::ProvideGame(this);
+    ServiceLocator::ProvideWindow(_window);
+
+	_infoMenu = new InfoMenuGL3();
 	PhysicsEngine::setCurrentLevel(_level);
 
     _running = false;
