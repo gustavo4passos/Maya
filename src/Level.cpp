@@ -73,8 +73,10 @@ void Level::AddCollisionRect(Rect* rect){
 		return;
 	}
 	_collisionRects.push_back(rect); 
+
 }
 
 void Level::AddEnemy(GameEnemy* enemy){
 	_enemies.push_back(enemy);
 }
+
