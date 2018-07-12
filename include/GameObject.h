@@ -15,14 +15,14 @@ public:
 		_velocity(0.f, 0.f),
 		_w(w),
 		_h(h),
-		_collisionRect(x, y, 15, 32),
+		_collisionRect(x, y, 10, 32),
 		_speed(2.5f),
 		_impulse(8.f),
 		_movingleft(false),
 		_movingright(false),
-		_collisionOffsetX(13),
-		_collisionOffsetY(1),
-		_collisionW(13),
+		_collisionOffsetX(12),
+		_collisionOffsetY(5),
+		_collisionW(10),
 		_collisionH(26)
 		{ setPosition(_position.x(), _position.y()); }
 
@@ -54,7 +54,7 @@ public:
 	inline void EnqueueCollisionEvent(CollisionEvent collisionEvent) { _unresolvedCollisionEvents.push(collisionEvent); }
 
 	friend class InfoMenuGL3;
-	friend class Game;
+	
 	// Grants access to the collision rect inside the physics engine, to avoid creating a copy at each frame
 	friend class PhysicsEngine; 
 	

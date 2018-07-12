@@ -10,6 +10,8 @@
 #include "../include/Level.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/ServiceLocator.h"
+#include "../include/GameStateMachine.h"
+#include "../include/PlayState.h"
 
 #define LOCAL_PERSIST static
 

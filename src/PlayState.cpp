@@ -1,4 +1,6 @@
 #include "../include/PlayState.h"
+
+#include "../include/InfoMenu.h"
 #include "../include/InputModule.h"
 #include "../include/GameStateMachine.h"
 #include "../include/ResourceManager.h"
@@ -16,26 +18,21 @@ void PlayState::HandleInput(){
 void PlayState::Update(){
     _object->Update();
 	_camera->Update();
-
-    //---------incomplete---------
 }
 
 void PlayState::Render(Renderer* renderer, float deltatime){
-	//Vector2D pos = Vector2D(_object->x(), _object->y());
-
 	//TODO(Gustavo): Below is a temporary solution for the camera position interpolation problem.
 	// This solution must be integrated properly withing the camera code
+	Vector2D pos = _object->collisionRect().position();
+	_object->setPosition(pos.x() + _object->velocity().x() * deltatime, 
+				  		 pos.y() + _object->velocity().y() * deltatime); 
+	_camera->Update();
 	
-	//_object->setPosition(pos.x() + _object->velocity().x() * deltatime, 
-	//			  		 pos.y() + _object->velocity().y() * deltatime); 
-	//_camera->Update();
-	//_object->setPosition(pos.x(), pos.y()); 
-
+	_object->setPosition(pos.x(), pos.y()); 
+	
 	_level->DrawBackground(renderer, deltatime);
 	_object->Draw(renderer, deltatime);
 	_infoMenu->Render(renderer);
-
-
 }
 
 bool PlayState::OnEnter(){
@@ -47,13 +44,14 @@ bool PlayState::OnEnter(){
 	_object = new GameObject(30, 0, 36, 39);
 	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
 
-
     if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
         LOG_ERROR("Unbale to load texture.");
+		return false;
     }
 
 	if(!ResourceManager::LoadTexture("../res/assets/Maya_Standing.png", "maya_standing")){
 	 	LOG_ERROR("Unable to load texture \"Maya_Standing\"");
+		 return false;
 	}
 
 	PhysicsEngine::setCurrentLevel(_level);
@@ -65,10 +63,16 @@ bool PlayState::OnEnter(){
 	_infoMenu = new InfoMenuGL3();
 
     return true;
-    //----------waiting for gustavo to teach us how to use LuaScript---------
 }
 
 bool PlayState::OnExit(){
+	delete _level;
+	delete _object;
+	delete _camera;
+	delete _infoMenu;
+
+	ResourceManager::DeleteTexture("maya_running");
+	ResourceManager::DeleteTexture("maya_standing");
+	
     return true;
-    //----------clear the textures------------
 }

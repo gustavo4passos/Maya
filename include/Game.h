@@ -24,8 +24,6 @@ public:
     void Clean();
     bool running() { return _running; }
 
-	friend class InfoMenuGL3;
-
 private:
     Window* _window;
     Renderer* _renderer;

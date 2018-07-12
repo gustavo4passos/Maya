@@ -29,7 +29,7 @@ public:
 	bool ShowQuitMessageBox();
 	
 	friend class InfoMenuGL3;
-
+	
 private:
 	const char* _title;
 	int _width;

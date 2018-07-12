@@ -3,8 +3,9 @@
 
 #include <string>
 #include "GameState.h"
-#include "InfoMenu.h"
 #include "Renderer.h"
+
+class InfoMenuGL3;
 
 class PlayState : public GameState{
 public:    

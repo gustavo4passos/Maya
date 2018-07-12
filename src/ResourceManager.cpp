@@ -69,7 +69,7 @@ bool ResourceManager::LoadMesh(const void* data, std::size_t size, unsigned int 
 	std::map<std::string, Mesh*>::const_iterator it = _meshMap.find(name.c_str());
 	if(it != _meshMap.end()){
 		LOG_ERROR("Unable to load mesh into mesh map: " + name + ". A mesh with the same name already exists.");
-		DEBUG_BREAK();
+		//DEBUG_BREAK();
 		return false;
 	}
 

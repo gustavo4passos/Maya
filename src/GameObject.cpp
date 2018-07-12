@@ -22,9 +22,6 @@ void GameObject::Update() {
 	}
 	if(PhysicsEngine::OnWall(this)){
 		_velocity.setX(0.f);
-		if(_velocity.y() > 0.f){
-			_velocity.setY(_velocity.y() * 0.4f);
-		}
 	}
 }
 
@@ -58,18 +55,18 @@ void GameObject::HandleInput() {
 }
 
 void GameObject::Draw(Renderer* renderer, float positionInterpolation) {
-    Rect src = Rect(_position.x() + (_velocity.x() * positionInterpolation), _position.y() + (_velocity.y() * positionInterpolation), 
+    Rect dst = Rect(_position.x() + (_velocity.x() * positionInterpolation), _position.y() + (_velocity.y() * positionInterpolation), 
      _w,  _h);
 
-	Rect rect = Rect(0, 0, _w, _h);
+	Rect src = Rect(0, 0, _w, _h);
 
 	if(_velocity.x() != 0.f || _velocity.y() != 0.f){
 		int frame = (SDL_GetTicks() / 80) % 8;
-		rect.setX(rect.x() + frame * _w);
+		src.setX(src.x() + frame * _w);
 
-		renderer->Draw(ResourceManager::GetTexture("maya_running"), &rect, &src);
+		renderer->Draw(ResourceManager::GetTexture("maya_running"), &src, &dst);
 	}
 	else {
-	 	renderer->Draw(ResourceManager::GetTexture("maya_standing"), &rect, &src);
+	 	renderer->Draw(ResourceManager::GetTexture("maya_standing"), &src, &dst);
 	}
 }

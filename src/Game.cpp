@@ -1,16 +1,14 @@
 #include "../include/Game.h"
 
 #include <SDL2/SDL.h>
+#include "imgui.h"
+#include "imgui_impl_sdl_gl3.h"
 
-#include "../include/Tileset.h"
 #include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
 #include "../include/InputModule.h"
-#include "../include/Maya.h"
 #include "../include/ResourceManager.h"
-#include "../include/Mesh.h"
 #include "../include/PhysicsEngine.h"
-#include "../include/EvilSonic.h"
 #include "../include/ServiceLocator.h"
 #include "../include/GameStateMachine.h"
 #include "../include/PlayState.h"
@@ -27,16 +25,7 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize window.");
         return false;
     }
-/*
-	_level = ResourceManager::ParseLevel("../res/levels/forest.tmx");
-	if(_level == NULL){
-	 	return false;
-	}
 
-    
-	_object = new GameObject(30, 0, 36, 39);
-	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
-*/
     _renderer = new Renderer();
     if(!_renderer->Init()){
         LOG_ERROR("Unable to initialize renderer.");
@@ -51,28 +40,14 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
     }
-/*
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
-        LOG_ERROR("Unbale to load texture.");
-    }
 
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Standing.png", "maya_standing")){
-	 	LOG_ERROR("Unable to load texture \"Maya_Standing\"");
-	}
-
-    _maya = new Maya();
-    _maya->Load(270, 100, 36, 39, "maya_running");
-	
-    ServiceLocator::ProvideCurrentLevel(_level);*/
     ServiceLocator::ProvideWindow(_window); 
     ServiceLocator::ProvideRenderer(_renderer);
     ServiceLocator::ProvideGame(this);
     ServiceLocator::ProvideWindow(_window);
-/*
-	_infoMenu = new InfoMenuGL3();
-	PhysicsEngine::setCurrentLevel(_level);
-*/
+
     GameStateMachine::PushState(new PlayState());
+    
     _running = false;
     return true;
 }
@@ -89,6 +64,7 @@ void Game::Run() {
         unsigned int elapsed = current - previous;
         previous = current;
         lag += elapsed;
+
         while(lag >= MS_PER_UPDATE){
         	HandleEvents();
             Update();
@@ -101,30 +77,19 @@ void Game::Run() {
 
 void Game::Render(float positionFactor) {
 	_renderer->Clear();
-/*	
-	_level->DrawBackground(_renderer, positionFactor);
-	_maya->Draw(_renderer, positionFactor);
-	_object->Draw(_renderer, positionFactor);
 
-	_infoMenu->Render(_renderer);
-*/
     GameStateMachine::Render(_renderer, positionFactor);
+
     _window->Swap();
+
 }
 
 void Game::Update() {
-	/*_level->Update();
-	_object->Update();
-    _maya->Update();
-	_camera->Update();*/
     GameStateMachine::Update();
 }
 
 void Game::Clean() {
-	/*delete _object;
-	delete _maya;
-	delete _level;*/
-
+    GameStateMachine::Clean();
 	ResourceManager::CleanTextures();
 	ResourceManager::CleanMeshes();
     InputModule::Clean();
@@ -155,8 +120,5 @@ void Game::HandleEvents() {
            _renderer->SetViewportSize(_window->width(), _window->height());
     }
 
-	/*_infoMenu->HandleInput();
-    _maya->HandleInput();
-	_object->HandleInput();*/
     GameStateMachine::HandleInput();
 }
