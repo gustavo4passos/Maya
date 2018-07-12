@@ -21,7 +21,7 @@ class Renderer;
 
 class InfoMenuGL3 {
 public:
-	InfoMenuGL3(Game* game, Window* window, Level* level, Player* player, GameObject* object);
+	InfoMenuGL3(Game* game, Window* window, Player* player, GameObject* object);
 	~InfoMenuGL3();
 
 	void Update();

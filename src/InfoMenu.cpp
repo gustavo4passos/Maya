@@ -5,23 +5,25 @@
 #include "imgui_impl_sdl_gl3.h"
 
 #include "../include/Game.h"
+#include "../include/GameEnemy.h"
 #include "../include/InputModule.h"
 #include "../include/Level.h"
 #include "../include/PhysicsEngine.h"
-#include "../include/GameEnemy.h"
+#include "../include/ServiceLocator.h"
 
 #define LOCAL_PERSIST static
 
-InfoMenuGL3::InfoMenuGL3(Game* game, Window* window, Level* level, Player* player, GameObject* object) :
+InfoMenuGL3::InfoMenuGL3(Game* game, Window* window, Player* player, GameObject* object) :
 	_gameptr(game),
 	_windowptr(window),
-	_levelptr(level),
 	_playerptr(player),
 	_object(object),
 	_showmenu(false),
 	_currentMenu(NO_MENU),
 	_showCollisionBoxes(false)
 {
+	_levelptr = ServiceLocator::GetCurrentLevel();
+
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::GetStyle().Alpha = 0.9f;

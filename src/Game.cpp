@@ -12,6 +12,7 @@
 #include "../include/PhysicsEngine.h"
 #include "../include/InfoMenu.h"
 #include "../include/EvilSonic.h"
+#include "../include/ServiceLocator.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -30,6 +31,8 @@ bool Game::Init() {
 	if(_level == NULL){
 	 	return false;
 	}
+
+    ServiceLocator::ProvideCurrentLevel(_level);
 
 	_object = new GameObject(30, 0, 36, 39);
 	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
@@ -59,7 +62,7 @@ bool Game::Init() {
     _maya = new Maya();
     _maya->Load(270, 100, 36, 39, "maya_running");
 	
-	_infoMenu = new InfoMenuGL3(this, _window, _level, _maya, _object);
+	_infoMenu = new InfoMenuGL3(this, _window, _maya, _object);
 	PhysicsEngine::setCurrentLevel(_level);
 
     _running = false;
