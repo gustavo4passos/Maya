@@ -7,8 +7,7 @@ VertexArray::VertexArray() {
 }
 
 VertexArray::~VertexArray() {
-    Unbind();
-    GLCall(glDeleteVertexArrays(1, &_vaoID));
+	Clean();
 }
 
 void VertexArray::Bind() const {
@@ -19,16 +18,21 @@ void VertexArray::Unbind() const {
     GLCall(glBindVertexArray(0));
 }
 
-void VertexArray::AddBuffer(VertexBuffer& vbo, VertexBufferLayout& layout) {
+void VertexArray::AddBuffer(VertexBuffer* vbo, VertexBufferLayout* layout) {
     Bind();
-    vbo.Bind();
+    vbo->Bind();
 
     unsigned int offset = 0;
 
-    for(unsigned int i = 0; i < layout.elements().size(); i++) {
-        VertexBufferLayoutElement element = layout.elements()[i];
+    for(unsigned int i = 0; i < layout->elements().size(); i++) {
+        VertexBufferLayoutElement element = layout->elements()[i];
         GLCall(glEnableVertexAttribArray(i));
-        GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.stride(), (const void*)offset));
+        GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout->stride(), (const void*)offset));
         offset += element.count * VertexBufferLayoutElement::GetSizeOfType(element.type);
     } 
+}
+
+void VertexArray::Clean() {
+	Unbind();
+	GLCall(glDeleteVertexArrays(1, &_vaoID));
 }

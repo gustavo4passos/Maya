@@ -1,6 +1,7 @@
 #include "../include/InputModule.h"
 #include "../include/ErrorHandler.h"
-
+#include "../include/imgui.h"
+#include "../include/imgui_impl_sdl_gl3.h"
 #include <iostream>
 
 InputModule::InputModule() {}
@@ -90,6 +91,7 @@ void InputModule::Update()
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
 	{
+		ImGui_ImplSdlGL3_ProcessEvent(&e);
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.scancode)
 			{

@@ -21,7 +21,7 @@ public:
 
     // Getters
     Vector2D position() { return _position; }	
-	Vector2D velocity() { return _velocity; }
+	Vector2D& velocity() { return _velocity; }
 	Vector2D acceleration() { return _acceleration; }
     int height() { return _height; }
 	int width() { return _width; }

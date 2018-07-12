@@ -11,6 +11,7 @@
 #include "Tileset.h"
 #include "Level.h"
 
+class Mesh;
 
 class ResourceManager {
 
@@ -25,13 +26,30 @@ public:
     // Levels
     static Level* ParseLevel(const std::string& filename); // Returns NULL if unable to load level
 
+	//Meshes
+	static bool LoadMesh(const void* data, std::size_t size, unsigned int count, const std::string& name);
+	static Mesh* const GetMesh(const std::string& name);
+	static void DeleteMesh(const std::string& name);
+	static void CleanMeshes();
+
 private:
 
     ResourceManager() {}
 
-    static Tileset ParseTileset(TiXmlElement* node);
-    static std::map<std::string, Texture*> _textureMap;
+    static Tileset* ParseTileset(TiXmlElement* node);
 
+    static void ParseObjectGroup(TiXmlElement* objectsNode, Level* level);
+    static Rect* ParseRect(TiXmlElement* objectNode);
+    static Layer* ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset);
+    static std::vector<int> ParseLayerData(TiXmlElement* dataNode);
+
+	// Loads a mesh to video memory, and stores a pointer to it in _meshMap
+	// Use DeleteMesh(name) to free it
+	static void LoadLayerMesh(std::vector<int>& layerData, Level* level, Tileset* tileset, const std::string& name);
+
+	// Data maps
+    static std::map<std::string, Texture*> _textureMap;
+	static std::map<std::string, Mesh*> _meshMap;
 };
 
 #endif

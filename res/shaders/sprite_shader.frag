@@ -10,9 +10,8 @@ vec2 finalTex;
 
 void main(void) {
     vec2 texDimensions = textureSize(texdata, 0);
+    finalTex.x = texcoorddata.x * (srcrct.z / texDimensions.x) + (srcrct.x / texDimensions.x);
+    finalTex.y = texcoorddata.y * (srcrct.w / texDimensions.y) + (srcrct.y / texDimensions.y);
    
-   finalTex.x = texcoorddata.x * (srcrct.z / texDimensions.x) + (srcrct.x / texDimensions.x);
-   finalTex.y = texcoorddata.y * (srcrct.w / texDimensions.y) + (srcrct.y / texDimensions.y);
-
     fragcolor = texture(texdata, finalTex);
 }

@@ -9,12 +9,18 @@ public:
         this->_position = Vector2D(x, y);
     }
     Rect(Vector2D position, int w, int h) : _position(position), _w(w), _h(h) { }
+    //Rect(const Rect& r) { Rect(r.x(), r.y(), r.w(), r.h()); }
 
     inline  Vector2D const& position() const { return this->_position; }
     inline float x() const { return this->_position.x(); }
     inline float y() const { return this->_position.y(); }
     inline int w() const { return _w; }
     inline int h() const { return _h; }
+	
+	inline float left() { return x(); }
+	inline float right() { return x() + _w; } 
+	inline float top() { return y(); }
+	inline float bottom() { return y() + _h; } 
 
     void setPosition(Vector2D& position) {
         this->_position.setX(position.x());
@@ -29,6 +35,7 @@ public:
     inline void setW(int w) { this->_w = w; }
     inline void setH(int h) { this->_h = h; }
 
+	friend class InfoMenuGL3;
 private:
     Vector2D _position;
     int _w, _h;
