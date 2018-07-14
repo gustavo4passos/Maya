@@ -1,16 +1,17 @@
 #include "../include/Game.h"
 
+#include <thread>
+
 #include <SDL2/SDL.h>
 #include "imgui.h"
 #include "imgui_impl_sdl_gl3.h"
 
-#include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
-#include "../include/InputModule.h"
-#include "../include/ResourceManager.h"
-#include "../include/PhysicsEngine.h"
-#include "../include/ServiceLocator.h"
 #include "../include/GameStateMachine.h"
+#include "../include/InputModule.h"
+#include "../include/LuaScript.h"
+#include "../include/ResourceManager.h"
+#include "../include/ServiceLocator.h"
 #include "../include/PlayState.h"
 
 bool Game::Init() {
@@ -90,8 +91,7 @@ void Game::Update() {
 
 void Game::Clean() {
     GameStateMachine::Clean();
-	ResourceManager::CleanTextures();
-	ResourceManager::CleanMeshes();
+	ResourceManager::Clean();
     InputModule::Clean();
 
     delete _renderer;

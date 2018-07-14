@@ -35,7 +35,7 @@ public:
 	void Clear();
 	void SetClearColor(GLclampf r, GLclampf g, GLclampf b, GLclampf a);
 
-	void Draw(Texture* tex, Rect* srcRect, Rect* dstRect);
+	void Draw(Texture* tex, Rect* srcRect, Rect* dstRect, bool flip = false);
 	void Draw(Texture tex, Rect srcRect, Rect dstRect, float scale, float angle = 0);
 
 	// TODO(Gustavo): The mesh rendering should not implement parallax

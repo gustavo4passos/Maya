@@ -5,9 +5,10 @@
 #include "GameState.h"
 #include "Renderer.h"
 
+class GameEnemy;
 class InfoMenuGL3;
 
-class PlayState : public GameState{
+class PlayState : public GameState {
 public:    
     PlayState(){}
     ~PlayState(){}

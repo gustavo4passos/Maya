@@ -1,5 +1,6 @@
 #include "../include/GameObject.h"
 
+#include "../include/Event.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
@@ -11,9 +12,9 @@ void GameObject::Update() {
 	else _velocity.setX(0);
 
 	PhysicsEngine::ApplyGravity(this);
-	PhysicsEngine::MoveAndCheckCollision(this);
 	PhysicsEngine::CheckCollisionAgainstEnemies(this);
-
+	PhysicsEngine::MoveAndCheckCollision(this);
+	
 	if(PhysicsEngine::OnGround(this)){
 		_velocity.setY(0.f);
 	}
@@ -21,6 +22,8 @@ void GameObject::Update() {
 	  	_velocity.setY(_velocity.y() * 0.3f);
 	}
 	if(PhysicsEngine::OnWall(this)){
+		if(_movingright) _facingright = true;
+		if(_movingleft) _facingright = false;
 		_velocity.setX(0.f);
 	}
 }
@@ -31,6 +34,7 @@ void GameObject::HandleInput() {
 		_movingright = false;
 	}
 	if(InputModule::WasKeyReleased(InputModule::LEFT)){
+		if(_movingleft) _facingright = false;
 		_movingleft = false;
 	}
 	if(InputModule::IsKeyPressed(InputModule::RIGHT)){
@@ -38,6 +42,7 @@ void GameObject::HandleInput() {
 		_movingleft = false;
 	}
 	if(InputModule::WasKeyReleased(InputModule::RIGHT)){
+		if(_movingright) _facingright = true;
 		_movingright = false;
 	}
 	if(InputModule::IsKeyPressed(InputModule::RIGHT) && InputModule::IsKeyPressed(InputModule::LEFT)){
@@ -64,9 +69,19 @@ void GameObject::Draw(Renderer* renderer, float positionInterpolation) {
 		int frame = (SDL_GetTicks() / 80) % 8;
 		src.setX(src.x() + frame * _w);
 
-		renderer->Draw(ResourceManager::GetTexture("maya_running"), &src, &dst);
+		if(_movingright) renderer->Draw(ResourceManager::GetTexture("maya_running"), &src, &dst);
+		else renderer->Draw(ResourceManager::GetTexture("maya_running"), &src, &dst, true);
 	}
 	else {
-	 	renderer->Draw(ResourceManager::GetTexture("maya_standing"), &src, &dst);
+	 	if(_facingright) renderer->Draw(ResourceManager::GetTexture("maya_standing"), &src, &dst);
+		else renderer->Draw(ResourceManager::GetTexture("maya_standing"), &src, &dst, true);
 	}
 }
+
+bool GameObject::OnNotify(std::unique_ptr<Event>& event){
+	if(event->type() == EventType::PLAYER_ENEMY_COLLISION) {
+		_velocity.setX(0.f);
+		_velocity += Vector2D(10.f, -10.f);
+	}
+	return false;
+}  

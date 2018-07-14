@@ -7,7 +7,7 @@
 enum class CollisionEventType {
     ENEMY_COLLISION,
     EVENT_COLLISION,
-    PLAYER_COLLISION
+    PLAYER_ENEMY_COLLISION
 };
 
 struct CollisionEvent {

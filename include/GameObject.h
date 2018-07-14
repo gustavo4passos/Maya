@@ -3,27 +3,28 @@
 
 #include <queue>
 
+#include "EventListener.h"
 #include "Rect.h"
 #include "PhysicsEngine.h"
 
 class Renderer; 
 
-class GameObject {
+class GameObject : public EventListener {
 public:
-	GameObject(float x, float y, float w, float h) :
-		_position(x, y),
+	GameObject(float x, float y, float w, float h, float collisionOffsetX = 12, float collisionOffsetY = 5, float collisionRectW = 10, float collisionRectH = 30)
+	:	_position(x, y),
 		_velocity(0.f, 0.f),
 		_w(w),
 		_h(h),
-		_collisionRect(x, y, 10, 32),
+		_collisionRect(x, y, collisionRectW, collisionRectH),
 		_speed(2.5f),
 		_impulse(8.f),
 		_movingleft(false),
 		_movingright(false),
-		_collisionOffsetX(12),
-		_collisionOffsetY(5),
-		_collisionW(10),
-		_collisionH(26)
+		_collisionOffsetX(collisionOffsetX),
+		_collisionOffsetY(collisionOffsetY),
+		_collisionW(collisionRectW),
+		_collisionH(collisionRectH)
 		{ setPosition(_position.x(), _position.y()); }
 
 	virtual ~GameObject() { }
@@ -51,6 +52,8 @@ public:
 	virtual void Update();
 	virtual void Draw(Renderer* renderer, float positionInterpolation);
 
+	virtual bool OnNotify(std::unique_ptr<Event>& event);
+
 	inline void EnqueueCollisionEvent(CollisionEvent collisionEvent) { _unresolvedCollisionEvents.push(collisionEvent); }
 
 	friend class InfoMenuGL3;
@@ -68,9 +71,9 @@ protected:
 	float _impulse;
 	int _damage;
 	bool _movingleft, _movingright;
+	bool  _facingright;
 
 	float _collisionOffsetX, _collisionOffsetY, _collisionW, _collisionH;
-
 
 	std::queue<CollisionEvent> _unresolvedCollisionEvents;
 };

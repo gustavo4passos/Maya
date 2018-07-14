@@ -32,6 +32,7 @@ public:
 	static void DeleteMesh(const std::string& name);
 	static void CleanMeshes();
 
+    static void Clean();
 private:
 
     ResourceManager() {}

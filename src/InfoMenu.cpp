@@ -30,7 +30,7 @@ InfoMenuGL3::InfoMenuGL3() :
 	ImGui::GetStyle().Alpha = 0.9f;
 	ImGui::GetStyle().WindowTitleAlign = ImVec2(0.5f, 0.5f);
 	ImGui_ImplSdlGL3_Init(_windowptr->_windowHndl);
-	//ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	//ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad | ImGuiBackendFlags_HasGamepad;
 	ImGui::StyleColorsDark();
 
 	_clearColor[0] = 0.f;
@@ -236,12 +236,12 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		  	RenderCollisionBoxes(renderer);
 		}
 		ImGui::Separator();
-		
+	
 		ImGui::Dummy(ImVec2(30.f, 0.f));
 		ImGui::Text("Press tab to see player stats");
-
-		ImGui::Separator();
 		ImGui::Dummy(ImVec2(30.f, 0.f));
+		ImGui::Separator();
+
 		if(ImGui::BeginMenu("Load level")){
 			std::vector<std::string> levels = GetFilenamesInLevelsFolder();
 			for(auto level = levels.begin(); level != levels.end(); level++){
@@ -253,21 +253,25 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 			}
 			ImGui::EndMenu();
 		}
+		ImGui::Separator();
 		
 		ImGui::EndMainMenuBar();
 	}
 }
 
 void InfoMenuGL3::RenderGameObjectInfoMenu(){
-		ImGui::Begin("Grass");
+		ImGui::Begin("Maya");
 		ImGui::Text("Position");
 		LOCAL_PERSIST float x, y;
 		x = _object->position().x();	
 		y = _object->position().y();
-		if(ImGui::SliderFloat("X", &x, 0, 480)){
+		Level* currentLevel = ServiceLocator::GetCurrentLevel();
+		float maxLevelPositionX = currentLevel->width() * currentLevel->tileWidth() - ServiceLocator::GetPlayer()->w();
+		float maxLevelPositionY = currentLevel->height() * currentLevel->tileHeight() - ServiceLocator::GetPlayer()->w();
+		if(ImGui::SliderFloat("X", &x, 0, maxLevelPositionX)){
 			_object->setPosition(x, _object->position().y());
 		}
-		if(ImGui::SliderFloat("Y", &y, 0, 270)){
+		if(ImGui::SliderFloat("Y", &y, 0, maxLevelPositionY)){
 			_object->setPosition(_object->position().x(), y);
 		}
 

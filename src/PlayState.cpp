@@ -1,11 +1,14 @@
 #include "../include/PlayState.h"
 
+#include "../include/EventManager.h"
 #include "../include/InfoMenu.h"
 #include "../include/InputModule.h"
 #include "../include/GameStateMachine.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/Renderer.h"
+#include "../include/EvilSonic.h"
+#include "../include/GameSwitches.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -16,6 +19,7 @@ void PlayState::HandleInput(){
 }
 
 void PlayState::Update(){
+	_level->Update();
     _object->Update();
 	_camera->Update();
 }
@@ -36,12 +40,13 @@ void PlayState::Render(Renderer* renderer, float deltatime){
 }
 
 bool PlayState::OnEnter(){
-    _level = ResourceManager::ParseLevel("../res/levels/forest.tmx");
+	
+	_level = ResourceManager::ParseLevel("../res/levels/forest.tmx");
 	if(_level == NULL){
 	 	return false;
-	}
+	}                                   
 
-	_object = new GameObject(30, 0, 36, 39);
+	_object = new GameObject(30, 0, 36, 39, 12, 5);
 	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
 
     if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
@@ -54,6 +59,9 @@ bool PlayState::OnEnter(){
 		 return false;
 	}
 
+	;
+	_level->AddEnemy(new EvilSonic(10, 10, 36, 39, 0, 0, 36, 39));
+
 	PhysicsEngine::setCurrentLevel(_level);
 	ServiceLocator::ProvideCurrentLevel(_level);
 	ServiceLocator::ProvidePlayer(_object);
@@ -62,6 +70,7 @@ bool PlayState::OnEnter(){
 
 	_infoMenu = new InfoMenuGL3();
 
+	EventManager::AddListener(_object, EventType::PLAYER_ENEMY_COLLISION);
     return true;
 }
 

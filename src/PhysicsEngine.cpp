@@ -1,7 +1,12 @@
 #include "../include/PhysicsEngine.h"
 
+#include <memory> 
+
 #include "../include/ErrorHandler.h"
+#include "../include/EventManager.h"
 #include "../include/GameEnemy.h"
+#include "../include/PlayerCollisionEvent.h"
+#include "../include/ActivateSwitchEvent.h"
 
 Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.4); 
 Level* PhysicsEngine::_currentLevel = NULL;
@@ -125,9 +130,12 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
                  (*it)->damage() };
             gameObject->EnqueueCollisionEvent(enemyCollisionEvent);
             //Como sera determinado o dano da maya em relacao aos diferentes estados e equipamentos ?
-            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_COLLISION, gameObject->velocity(), 
+            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_ENEMY_COLLISION, gameObject->velocity(), 
                  gameObject->damage() };
             (*it)->EnqueueCollisionEvent(mayaCollisionEvent);
+
+            std::unique_ptr<Event> playerCollision(new PlayerCollisionEvent(100, Vector2D(0, 0), Vector2D(0, 0)));
+            EventManager::Notify(playerCollision);
         }
     }
 

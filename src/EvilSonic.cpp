@@ -11,7 +11,6 @@ void EvilSonic::Update(){
 
 	if(!_unresolvedCollisionEvents.empty()){
 		while(!_unresolvedCollisionEvents.empty()){
-			std::cout << "Enemy collided! " ;
 			_unresolvedCollisionEvents.pop();
 		}
 	}
@@ -21,5 +20,5 @@ void EvilSonic::Draw(Renderer* renderer, float positionInterpolation) {
 	Rect src = Rect(0, 0, _w, _h);
 	Rect dest = Rect(_position.x(), _position.y(), _w, _h);
 
-	renderer->Draw(ResourceManager::GetTexture("sonic"), &src, &dest);
+	renderer->Draw(ResourceManager::GetTexture("maya_standing"), &src, &dest);
 }

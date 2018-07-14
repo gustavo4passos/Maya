@@ -111,6 +111,10 @@ void ResourceManager::CleanMeshes(){
 	_meshMap.clear();
 }
 		
+void ResourceManager::Clean() {
+	CleanMeshes();
+	CleanTextures();
+}
 Level* ResourceManager::ParseLevel(const std::string& filename){
     // create the XML document 
 	TiXmlDocument xmlDoc;

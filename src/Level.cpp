@@ -5,8 +5,8 @@
 #include "../include/GameEnemy.h"
 #include "../include/Renderer.h"
 
-Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight) :
-	_tileset(tileset), 
+Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight) 
+:	_tileset(tileset), 
 	_width(width),
 	_height(height),
 	_tileWidth(tileWidth),
@@ -34,6 +34,12 @@ Level::~Level() {
 		*gameObject = NULL;
 	}
 	_gameObjects.clear();
+
+	// Delete enemies
+	for(auto enemy = _enemies.begin(); enemy != _enemies.end(); enemy++) {
+		delete *enemy;
+		*enemy = NULL;
+	}
 
 	// Deletes tileset texture
 	ResourceManager::DeleteTexture(_tileset->name());
