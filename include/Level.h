@@ -13,11 +13,11 @@ class Renderer;
 
 class Level {
 public:
-    Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight);
+    Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight, const std::string& filename);
     ~Level();
 	
 	void Update();
-	void DrawBackground(Renderer* renderer, float positionInterpolation);
+	void DrawBackground(Renderer* renderer, float deltaTime);
 	
 	void AddBackgroundLayer(Layer* layer);
 	void AddCollisionRect(Rect* rect);
@@ -33,6 +33,8 @@ public:
 	inline int height() const { return _height; }
 	inline int tileWidth() const { return _tileWidth; }
 	inline int tileHeight() const { return _tileHeight; }
+
+	const std::string& filename() const { return _filename; }
 		
 	friend class InfoMenuGL3;
 
@@ -47,6 +49,8 @@ private:
 	int _width, _height;
 	int _tileWidth, _tileHeight;
 
+	// Filename for debugging purposes
+	std::string _filename;
 };
 
 #endif

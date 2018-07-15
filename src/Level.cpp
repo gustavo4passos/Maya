@@ -5,12 +5,13 @@
 #include "../include/GameEnemy.h"
 #include "../include/Renderer.h"
 
-Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight) 
+Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight, const std::string& filename) 
 :	_tileset(tileset), 
 	_width(width),
 	_height(height),
 	_tileWidth(tileWidth),
-	_tileHeight(tileHeight)
+	_tileHeight(tileHeight),
+	_filename(filename)
 { }
 
 Level::~Level() {

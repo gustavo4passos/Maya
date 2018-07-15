@@ -10,3 +10,4 @@ GameObject* ServiceLocator::_player = nullptr;
 Level* ServiceLocator::_currentLevel = nullptr;
 Renderer* ServiceLocator::_renderer = nullptr;
 Window* ServiceLocator::_window = nullptr;
+Region* ServiceLocator::_currentRegion = nullptr;

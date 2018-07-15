@@ -4,12 +4,12 @@
 #include <string>
 
 #include "Event.h"
-#include "EventManager.h"
+#include "EventDispatcher.h"
 
 class ActivateSwitchEvent : public Event {
 public:
     ActivateSwitchEvent(const std::string& switchID) 
-    : Event(EventType::ACTIVATE_SWITCH),
+    : Event(EventType::SWITCH_ACTIVATED),
      _switchID(switchID)
     { }
 

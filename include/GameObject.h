@@ -11,23 +11,9 @@ class Renderer;
 
 class GameObject : public EventListener {
 public:
-	GameObject(float x, float y, float w, float h, float collisionOffsetX = 12, float collisionOffsetY = 5, float collisionRectW = 10, float collisionRectH = 30)
-	:	_position(x, y),
-		_velocity(0.f, 0.f),
-		_w(w),
-		_h(h),
-		_collisionRect(x, y, collisionRectW, collisionRectH),
-		_speed(2.5f),
-		_impulse(8.f),
-		_movingleft(false),
-		_movingright(false),
-		_collisionOffsetX(collisionOffsetX),
-		_collisionOffsetY(collisionOffsetY),
-		_collisionW(collisionRectW),
-		_collisionH(collisionRectH)
-		{ setPosition(_position.x(), _position.y()); }
+	GameObject(float x, float y, float w, float h, float collisionOffsetX = 12, float collisionOffsetY = 5, float collisionRectW = 10, float collisionRectH = 30);
+	virtual ~GameObject();
 
-	virtual ~GameObject() { }
 	inline const Rect& collisionRect() { return _collisionRect; }
 	inline const Vector2D& position()  { return _position; }
 	inline const Vector2D& velocity()  { return _velocity; }
@@ -50,9 +36,9 @@ public:
 
 	virtual void HandleInput();
 	virtual void Update();
-	virtual void Draw(Renderer* renderer, float positionInterpolation);
+	virtual void Draw(Renderer* renderer, float deltaTime);
 
-	virtual bool OnNotify(std::unique_ptr<Event>& event);
+	virtual bool OnNotify(Event* event);
 
 	inline void EnqueueCollisionEvent(CollisionEvent collisionEvent) { _unresolvedCollisionEvents.push(collisionEvent); }
 

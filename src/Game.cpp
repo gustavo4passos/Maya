@@ -82,7 +82,6 @@ void Game::Render(float positionFactor) {
     GameStateMachine::Render(_renderer, positionFactor);
 
     _window->Swap();
-
 }
 
 void Game::Update() {

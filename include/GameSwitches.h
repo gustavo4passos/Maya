@@ -17,7 +17,7 @@ public:
     bool CheckSwitch(std::string id);
     void PushSwitch(std::string id, bool state = false);
 
-    bool OnNotify(std::unique_ptr<Event>& event);
+    bool OnNotify(Event* event);
 
 private:
     std::map<std::string, bool> _switches;

@@ -4,14 +4,15 @@
 
 #include "imgui_impl_sdl_gl3.h"
 
+#include "../include/Event.h"
+#include "../include/EventDispatcher.h"
 #include "../include/Game.h"
 #include "../include/GameEnemy.h"
-#include "../include/InputModule.h"
-#include "../include/Level.h"
-#include "../include/PhysicsEngine.h"
-#include "../include/ServiceLocator.h"
 #include "../include/GameStateMachine.h"
-#include "../include/PlayState.h"
+#include "../include/InputModule.h"
+#include "../include/PhysicsEngine.h"
+#include "../include/Region.h"
+#include "../include/ServiceLocator.h"
 
 #define LOCAL_PERSIST static
 
@@ -37,9 +38,14 @@ InfoMenuGL3::InfoMenuGL3() :
 	_clearColor[1] = 1.f;
 	_clearColor[2] = 0.f;
 	_clearColor[3] = 1.f;
+
+	EventDispatcher::AddListener(this, EventType::LEVEL_CHANGED);
 }	
 
-InfoMenuGL3::~InfoMenuGL3() { }
+InfoMenuGL3::~InfoMenuGL3() {
+	EventDispatcher::RemoveListener(this, EventType::LEVEL_CHANGED);
+}
+
 void InfoMenuGL3::HandleInput(){
 	if(InputModule::WasKeyReleased(InputModule::ESC)){
 		if(_currentMenu == NO_MENU) _currentMenu = OPTIONS_MENU;
@@ -156,20 +162,31 @@ void InfoMenuGL3::Clean(){
 	ImGui::DestroyContext();
 }	
 
+bool InfoMenuGL3::OnNotify(Event* event) {
+	if(event->type() == EventType::LEVEL_CHANGED) {
+		_levelptr = ServiceLocator::GetCurrentLevel();
+		return false;
+	}
+	
+	return false;
+}
+
 void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
 	Rect rct = _object->collisionRect();
 	DrawCollisionBox(&rct, renderer);
 
-	for(std::vector<Rect*>::iterator it = _levelptr->_collisionRects.begin();  
-	    it != _levelptr->_collisionRects.end(); ++it)
-	{	  
-		DrawCollisionBox(*it, renderer);
-	}
-	
-	for(auto enemy = _levelptr->_enemies.begin(); enemy != _levelptr->_enemies.end(); enemy++){
-		Rect enemyrct = (*enemy)->collisionRect();
-		DrawCollisionBox(&enemyrct, renderer);
+	if(_levelptr != NULL) {
+		for(std::vector<Rect*>::iterator it = _levelptr->_collisionRects.begin();  
+			it != _levelptr->_collisionRects.end(); ++it)
+		{	  
+			DrawCollisionBox(*it, renderer);
+		}
+		
+		for(auto enemy = _levelptr->_enemies.begin(); enemy != _levelptr->_enemies.end(); enemy++){
+			Rect enemyrct = (*enemy)->collisionRect();
+			DrawCollisionBox(&enemyrct, renderer);
 
+		}
 	}
 }
 
@@ -192,6 +209,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		ImGui::Separator();
 		ImGui::Spacing();
 
+	if(_levelptr != NULL) {
 		if(ImGui::BeginMenu("Collision rects")){
 			for(unsigned int i = 0; i < _levelptr->_collisionRects.size(); i++){
 				std::stringstream objectname;
@@ -222,6 +240,10 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 			}
 			ImGui::EndMenu();
 		}
+	}
+	else {
+		ImGui::Text("No active level");
+	}
 
 		ImGui::Separator();
 
@@ -242,6 +264,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		ImGui::Dummy(ImVec2(30.f, 0.f));
 		ImGui::Separator();
 
+		ImGui::Dummy(ImVec2(10.f, 0.f));
 		if(ImGui::BeginMenu("Load level")){
 			std::vector<std::string> levels = GetFilenamesInLevelsFolder();
 			for(auto level = levels.begin(); level != levels.end(); level++){
@@ -253,8 +276,29 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 			}
 			ImGui::EndMenu();
 		}
+		ImGui::Dummy(ImVec2(10.f, 0.f));
 		ImGui::Separator();
 		
+		ImGui::Dummy(ImVec2(10.f, 0.f));
+		if(ServiceLocator::GetCurrentRegion() != nullptr) {
+			if(ImGui::BeginMenu("Change Subregion")) {
+				std::vector<std::string> subRegionList = ServiceLocator::GetCurrentRegion()->SubRegionList();
+
+				for(auto subRegion = subRegionList.begin(); subRegion != subRegionList.end(); subRegion++) {
+					if(*subRegion != ServiceLocator::GetCurrentRegion()->currentSubRegion()){
+						if(ImGui::Button(subRegion->c_str())){
+							ServiceLocator::GetCurrentRegion()->ChangeCurrentLevel(*subRegion);
+						}
+					}
+				}
+
+				ImGui::End();
+			}
+		}
+		else {
+			ImGui::Text("No active region");
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 }
@@ -262,6 +306,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 void InfoMenuGL3::RenderGameObjectInfoMenu(){
 		ImGui::Begin("Maya");
 		ImGui::Text("Position");
+
 		LOCAL_PERSIST float x, y;
 		x = _object->position().x();	
 		y = _object->position().y();

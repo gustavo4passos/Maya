@@ -10,6 +10,8 @@
 
 #include <imgui.h>
 
+#include "EventListener.h"
+
 class Camera;
 class Game;
 class Window;
@@ -19,7 +21,7 @@ class Player;
 class Rect;
 class Renderer;
 
-class InfoMenuGL3 {
+class InfoMenuGL3 : public EventListener {
 public:
 	InfoMenuGL3();
 	~InfoMenuGL3();
@@ -28,6 +30,8 @@ public:
 	void HandleInput();
 	void Render(Renderer* renderer);
 	void Clean();
+
+	bool OnNotify(Event* event) override;
 
 private:
 

@@ -3,11 +3,14 @@
 
 enum class EventType {
     // Collision events
-    PLAYER_ENEMY_COLLISION,
-    ENEMY_COLLISION,
+    PLAYER_ENEMY_COLLIDED,
+    ENEMY_COLLIDED,
 
     // Switch events
-    ACTIVATE_SWITCH
+    SWITCH_ACTIVATED,
+
+    // Level events
+    LEVEL_CHANGED
 };
 
 class Event {

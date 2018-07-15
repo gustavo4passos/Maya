@@ -1,10 +1,34 @@
 #include "../include/GameObject.h"
 
 #include "../include/Event.h"
+#include "../include/EventDispatcher.h"
+#include "../include/InputModule.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
-#include "../include/InputModule.h"
+
+GameObject::GameObject(float x, float y, float w, float h, float collisionOffsetX, float collisionOffsetY, float collisionRectW, float collisionRectH)
+	:	_position(x, y),
+		_velocity(0.f, 0.f),
+		_w(w),
+		_h(h),
+		_collisionRect(x, y, collisionRectW, collisionRectH),
+		_speed(2.5f),
+		_impulse(8.f),
+		_movingleft(false),
+		_movingright(false),
+		_collisionOffsetX(collisionOffsetX),
+		_collisionOffsetY(collisionOffsetY),
+		_collisionW(collisionRectW),
+		_collisionH(collisionRectH)
+		{ 
+			setPosition(_position.x(), _position.y());
+			EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+		}
+
+GameObject::~GameObject() {
+	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+}
 
 void GameObject::Update() {
 	if(_movingright) _velocity.setX(_speed);
@@ -53,14 +77,11 @@ void GameObject::HandleInput() {
 		if(PhysicsEngine::OnGround(this)){
 			_velocity.setY(-_impulse);
 		}
-		else if(PhysicsEngine::OnWall(this)){
-			_velocity.setY(-_impulse * 0.8f);
-		}
 	}
 }
 
-void GameObject::Draw(Renderer* renderer, float positionInterpolation) {
-    Rect dst = Rect(_position.x() + (_velocity.x() * positionInterpolation), _position.y() + (_velocity.y() * positionInterpolation), 
+void GameObject::Draw(Renderer* renderer, float deltaTime) {
+    Rect dst = Rect(_position.x() + (_velocity.x() * deltaTime), _position.y() + (_velocity.y() * deltaTime), 
      _w,  _h);
 
 	Rect src = Rect(0, 0, _w, _h);
@@ -78,10 +99,11 @@ void GameObject::Draw(Renderer* renderer, float positionInterpolation) {
 	}
 }
 
-bool GameObject::OnNotify(std::unique_ptr<Event>& event){
-	if(event->type() == EventType::PLAYER_ENEMY_COLLISION) {
+bool GameObject::OnNotify(Event* event){
+	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
 		_velocity.setX(0.f);
 		_velocity += Vector2D(10.f, -10.f);
 	}
+
 	return false;
 }  
