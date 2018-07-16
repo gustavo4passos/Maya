@@ -187,6 +187,11 @@ void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
 			DrawCollisionBox(&enemyrct, renderer);
 
 		}
+
+		for(auto gameObject = _levelptr->_gameObjects.begin(); gameObject != _levelptr->_gameObjects.end(); gameObject++){
+			Rect gameObjectRect = (*gameObject)->collisionRect();
+			DrawCollisionBox(&gameObjectRect, renderer);
+		}
 	}
 }
 

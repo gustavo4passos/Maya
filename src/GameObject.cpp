@@ -8,23 +8,23 @@
 #include "../include/ResourceManager.h"
 
 GameObject::GameObject(float x, float y, float w, float h, float collisionOffsetX, float collisionOffsetY, float collisionRectW, float collisionRectH)
-	:	_position(x, y),
-		_velocity(0.f, 0.f),
-		_w(w),
-		_h(h),
-		_collisionRect(x, y, collisionRectW, collisionRectH),
-		_speed(2.5f),
-		_impulse(8.f),
-		_movingleft(false),
-		_movingright(false),
-		_collisionOffsetX(collisionOffsetX),
-		_collisionOffsetY(collisionOffsetY),
-		_collisionW(collisionRectW),
-		_collisionH(collisionRectH)
-		{ 
-			setPosition(_position.x(), _position.y());
-			EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
-		}
+:	_position(x, y),
+	_velocity(0.f, 0.f),
+	_w(w),
+	_h(h),
+	_collisionRect(x, y, collisionRectW, collisionRectH),
+	_speed(2.5f),
+	_impulse(8.f),
+	_movingleft(false),
+	_movingright(false),
+	_collisionOffsetX(collisionOffsetX),
+	_collisionOffsetY(collisionOffsetY),
+	_collisionW(collisionRectW),
+	_collisionH(collisionRectH)
+{ 
+	setPosition(_position.x() + collisionOffsetX, _position.y() + collisionOffsetY);
+	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+}
 
 GameObject::~GameObject() {
 	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);

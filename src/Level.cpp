@@ -51,18 +51,26 @@ Level::~Level() {
 }
 
 void Level::Update() {
+	for(auto gameObject = _gameObjects.begin(); gameObject != _gameObjects.end(); gameObject++) {
+		(*gameObject)->Update();
+	}
+
 	for(auto enemy = _enemies.begin(); enemy != _enemies.end(); enemy++){
 		(*enemy)->Update();
 	}
 }
 
-void Level::DrawBackground(Renderer* renderer, float velocityInterpolation){
+void Level::DrawBackground(Renderer* renderer, float deltaTime){
 	for(auto layer = _backgroundLayers.begin(); layer != _backgroundLayers.end(); layer++){
 		(*layer)->Draw(renderer);
 	}
 
+	for(auto gameObject = _gameObjects.begin(); gameObject != _gameObjects.end(); gameObject++) {
+		(*gameObject)->Draw(renderer, deltaTime);
+	}
+
 	for(auto enemy = _enemies.begin(); enemy != _enemies.end(); enemy++){
-		(*enemy)->Draw(renderer, velocityInterpolation);
+		(*enemy)->Draw(renderer, deltaTime);
 	}
 }
 
@@ -87,3 +95,6 @@ void Level::AddEnemy(GameEnemy* enemy){
 	_enemies.push_back(enemy);
 }
 
+void Level::AddGameObject(GameObject* gameObject) {
+	_gameObjects.push_back(gameObject);
+}

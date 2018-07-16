@@ -69,6 +69,16 @@ bool PhysicsEngine::HitHead(GameObject* gameObject){
 	return false;
 }
 
+bool PhysicsEngine::IsOnTop(Rect* bottom, Rect* top) {
+    Rect topOffset = *top;
+    topOffset.setY(topOffset.y() + 1);
+
+    if(CheckCollision(bottom, &topOffset)) {
+        return true;
+    }
+    return false;
+}
+
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
     int nSteps=(int)(gameObject->velocity().Length() *2) + 1;
     Vector2D furthestPosition = gameObject->collisionRect().position();
@@ -113,6 +123,14 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
             return true;
         }
     }
+
+    for(auto gameObject = _currentLevel->gameObjects().begin(); gameObject != _currentLevel->gameObjects().end(); gameObject++) {
+        Rect collisionRect = (*gameObject)->collisionRect();
+        if(CheckCollision(rect, &collisionRect)) {
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -138,5 +156,4 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
             EventDispatcher::Notify(playerCollision.get());
         }
     }
-
 }

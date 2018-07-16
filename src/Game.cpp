@@ -8,6 +8,7 @@
 
 #include "../include/ErrorHandler.h"
 #include "../include/GameStateMachine.h"
+#include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
 #include "../include/LuaScript.h"
 #include "../include/ResourceManager.h"
@@ -42,11 +43,12 @@ bool Game::Init() {
         return false;
     }
 
-    ServiceLocator::ProvideWindow(_window); 
-    ServiceLocator::ProvideRenderer(_renderer);
     ServiceLocator::ProvideGame(this);
+    ServiceLocator::ProvideRenderer(_renderer);
     ServiceLocator::ProvideWindow(_window);
 
+    ServiceLocator::ProvideGameSwitches(new GameSwitches());
+    ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;

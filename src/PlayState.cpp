@@ -1,5 +1,7 @@
 #include "../include/PlayState.h"
 
+#include "../include/Button.h"
+#include "../include/Door.h"
 #include "../include/EventDispatcher.h"
 #include "../include/EvilSonic.h"
 #include "../include/GameSwitches.h"
@@ -50,17 +52,30 @@ bool PlayState::OnEnter(){
 	 	LOG_ERROR("Unable to load texture \"Maya_Standing\"");
 		 return false;
 	}
+
+	if(!ResourceManager::LoadTexture("../res/sprites/button.png", "button")) {
+		LOG_ERROR("Unable to load texture \"button\"");
+		return false;
+	}
+
+	if(!ResourceManager::LoadTexture("../res/sprites/door.png", "door")) {
+		LOG_ERROR("Unable to load texture \"Door\"");
+		return false;
+	}
 	
 	_region = new Region();
 	ServiceLocator::ProvideCurrentRegion(_region);
 	
-	_object = new GameObject(80, 0, 36, 39, 12, 5);
+	_object = new GameObject(200, 0, 36, 39, 12, 7);
 	ServiceLocator::ProvidePlayer(_object);
 
 	_infoMenu = new InfoMenuGL3();
 
 	Level* forest = ResourceManager::ParseLevel("../res/levels/forest.tmx");
 	forest->AddEnemy(new EvilSonic(10, 100, 36, 39, 12, 5));
+	forest->AddGameObject(new Button(130, 514, 32, 32, 1, 10, 31, 22, "forest-button-1", false));
+	forest->AddGameObject(new Door(384, 450, 32, 32, 0, 0, 32, 32, "forest-button-1"));
+
 	if(forest == NULL) return false;
 
 	Level* mountain = ResourceManager::ParseLevel("../res/levels/mountain.tmx");

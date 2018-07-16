@@ -22,6 +22,7 @@ public:
 	void AddBackgroundLayer(Layer* layer);
 	void AddCollisionRect(Rect* rect);
 	void AddEnemy(GameEnemy* enemy);
+	void AddGameObject(GameObject* gameObject);
 	
 	const std::vector<Rect*>& collisionRects() { return _collisionRects; }
 	const std::vector<GameObject*>& gameObjects() { return _gameObjects; }

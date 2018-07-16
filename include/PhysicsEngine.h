@@ -25,6 +25,7 @@ public:
     static bool OnGround(GameObject* gameObject);
 	static bool OnWall(GameObject* gameObject);
 	static bool HitHead(GameObject* gameObject);
+    static bool IsOnTop(Rect* bottom, Rect* top);
 
     inline static void setCurrentLevel(Level* currentLevel){ _currentLevel = currentLevel; }
     static void MoveAndCheckCollision(GameObject* gameObject);
