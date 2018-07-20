@@ -7,6 +7,7 @@
 #include "../include/ErrorHandler.h"
 
 std::map<std::string, Texture*> ResourceManager::_textureMap;
+std::map<std::string, Sound*> ResourceManager::_soundEffectsMap;
 
 bool ResourceManager::LoadTexture(const std::string& filename, const std::string& name) {
     
@@ -61,6 +62,22 @@ void ResourceManager::CleanTextures() {
         delete it->second;
     }
     _textureMap.clear();
+}
+
+bool ResourceManager::LoadSoundEffect(const std::string& filename, const std::string& name) {
+	Mix_Chunk* sample;
+	sample = Mix_LoadWAV(filename.c_str());
+	if (!sample) {
+		LOG_ERROR("Unable to load the sample: " + std::string(Mix_GetError()));
+		return false;
+	}
+
+	_soundEffectsMap.insert(std::pair<std::string, Sound*>(name, sample));
+	return true;
+}
+
+Sound* ResourceManager::GetSoundEffect(const std::string& name) {
+    return _soundEffectsMap[name];
 }
 
 Level* ResourceManager::ParseLevel(const std::string& filename){

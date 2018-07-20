@@ -7,6 +7,7 @@
 #include "../include/InputModule.h"
 #include "../include/Maya.h"
 #include "../include/ResourceManager.h"
+#include "../include/SoundPlayer.h"
 
 
 bool Game::Init() {
@@ -35,6 +36,15 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
     }
+
+    if(!SoundPlayer::Init()){
+        LOG_ERROR("Unable to initialize SoundPlayer.");
+        return false;
+    }
+
+    ResourceManager::LoadSoundEffect("../res/audio/sfx/01 Barcelona.wav", "Teste");
+
+    SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("Teste"));
    
     if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
         LOG_ERROR("Unbale to load texture.");
