@@ -28,27 +28,22 @@ void Shader::Unbind() {
 }
 
 void Shader::SetUniform1f(const char* name, GLfloat v0){
-  Bind();
   GLCall(glUniform1f(GetUniformLocation(name), v0));
 }
 
 void Shader::SetUniform2f(const char* name, GLfloat v0, GLfloat v1){
-  Bind();
   GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
 }
 
 void Shader::SetUniform3f(const char* name, GLfloat v0, GLfloat v1, GLfloat v2) {
-  Bind();
   GLCall(glUniform3f(GetUniformLocation(name), v0, v1, v2));
 }
 
 void Shader::SetUniform4f(const char* name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3){
-  Bind();
   GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
 }
 
 void Shader::SetUniformMat4(const char* name, const void* data){
-  Bind();
   GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, (const GLfloat*)data));
 }
 

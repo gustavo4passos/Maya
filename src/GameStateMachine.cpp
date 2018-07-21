@@ -30,7 +30,7 @@ void GameStateMachine::ChangeState(GameState* _state){
     while(!_gameStates.empty()){
 
         if(_gameStates.top()->stateID() == _state->stateID()){
-            LOG_ERROR("Do nothing, already in this state");
+             LOG_ERROR("Do nothing, already in this state");
             return;
 
         }
@@ -47,14 +47,26 @@ void GameStateMachine::ChangeState(GameState* _state){
     _state->OnEnter();
 }
 
+void GameStateMachine::HandleInput(){
+    if(!_gameStates.empty()){
+        _gameStates.top()->HandleInput();
+    }
+}
+
 void GameStateMachine::Update(){
     if(!_gameStates.empty()){
         _gameStates.top()->Update();
     }
 }
 
-void GameStateMachine::Render(){
+void GameStateMachine::Render(Renderer* renderer, float deltatime){
     if(!_gameStates.empty()){
-        _gameStates.top()->Update();
+        _gameStates.top()->Render(renderer, deltatime);
     }
+}
+
+void GameStateMachine::Clean(){
+    while(!_gameStates.empty()) {
+        PopState();
+    }  
 }
