@@ -20,6 +20,7 @@ public:
 	void DrawBackground(Renderer* renderer, float deltaTime);
 	
 	void AddBackgroundLayer(Layer* layer);
+	void AddForegroundLayer(Layer* layer);
 	void AddCollisionRect(Rect* rect);
 	void AddEnemy(GameEnemy* enemy);
 	void AddGameObject(GameObject* gameObject);

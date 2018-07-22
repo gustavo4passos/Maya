@@ -8,6 +8,10 @@
 #include "../include/ResourceManager.h"
 #include "../include/SoundPlayer.h"
 
+GameObject::GameObject(float x, float y, int w, int h) 
+:	GameObject(CollisionRect(x, y, w, h, 0, 0), w, h)
+{ }
+
 GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spriteH)
 :	_velocity(0.f, 0.f),
 	_spriteW(spriteW),

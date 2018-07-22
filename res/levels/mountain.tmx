@@ -171,8 +171,8 @@
   </object>
   <object id="21" x="1696" y="928" width="64" height="96">
    <properties>
-    <property name="openedAtCreation" type="bool" value="false"/>
-    <property name="requiresSwitch" value="mountain-switch-10"/>
+    <property name="initiallyOpen" type="bool" value="false"/>
+    <property name="switchesRequired" value="mountain-switch-10"/>
     <property name="type" value="door"/>
    </properties>
   </object>
