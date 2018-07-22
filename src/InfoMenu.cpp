@@ -270,13 +270,21 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		ImGui::Separator();
 
 		ImGui::Dummy(ImVec2(10.f, 0.f));
-		if(ImGui::BeginMenu("Load level")){
+		if(ImGui::BeginMenu("Add Subregion")){
 			std::vector<std::string> levels = GetFilenamesInLevelsFolder();
 			for(auto level = levels.begin(); level != levels.end(); level++){
-				if(ImGui::Button((*level).c_str())){
-					delete _levelptr;
-					(*level).insert(0, "../res/levels/");
-					_levelptr = ResourceManager::ParseLevel((*level).c_str());
+				if((*level) != "." && (*level) != "..") {
+					if(ImGui::Button((*level).c_str())){
+						(*level).insert(0, "../res/levels/");
+						Level* newSubregion = ResourceManager::ParseLevel((*level).c_str());
+						if(newSubregion != nullptr) {
+							ServiceLocator::GetCurrentRegion()->AddLevel(newSubregion, *level);
+						}
+						else {
+							LOG_ERROR("Unable to load subregion: " + *level);
+						}
+
+					}
 				}
 			}
 			ImGui::EndMenu();

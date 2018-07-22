@@ -11,7 +11,9 @@ class Renderer;
 
 class GameObject : public EventListener {
 public:
+	GameObject(float x, float y, int w, int h);
 	GameObject(const CollisionRect& collisionRect, int spriteW, int spriteH);
+
 	virtual ~GameObject();
 
 	inline const Rect& collisionRect() { return _collisionRect; }
@@ -27,9 +29,8 @@ public:
 	void setPosition(float x, float y);
 	void setVelocity(float x, float y);
 	
-	void Deactivate() { _isActive = false; }
 	void Activate() { _isActive = true; }
-
+	void Deactivate() { _isActive = false; }
 
 	virtual void HandleInput();
 	virtual void Update();

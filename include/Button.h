@@ -4,10 +4,7 @@
 #include "GameObject.h"
 
 class Button : public GameObject {
-public:
-    Button(int x, int y, int w, int h, int collisionOffsetX, int collisionOffsetY,
-        int collisionRectW, int collisionRectH, const std::string& activatesSwitch, bool initiallyOn = false);
-    
+public:    
     Button(const CollisionRect& collisionRect, int spriteW, int spriteH, const std::string& activatesSwitch, bool initiallyPressed);
 
     void Update() override;

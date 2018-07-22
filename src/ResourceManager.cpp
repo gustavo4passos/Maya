@@ -183,7 +183,7 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
 
 	level = new Level(tileset, width, height, tileWidth, tileHeight, filename);
 
-    for(e = pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+    for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
         if(e->Value() == std::string("layer")){
             layer = ParseLayer(e, level, tileset);
 
@@ -284,8 +284,11 @@ Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
     imagenode->Attribute("height", &height);
     nRows = (height - 2*margin + spacing) / (tileHeight + spacing);
 
-	// Loads sprite texture to memory
-	LoadTexture(source, name);
+	// Tries to load tileset texture to video memory
+	if(!LoadTexture(source, name)) {
+		LOG_ERROR("Unable to load tileset texture. Filename: " + source);
+		return NULL;
+	}
 
     return new Tileset(source, name, width, height, tileWidth, tileHeight, margin, spacing, nColumns, nRows);
 

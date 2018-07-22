@@ -1,9 +1,9 @@
 #ifndef EVENTLISTENER_H
 #define EVENTLISTENER_H
 
-#include <memory>
+#include <queue>
 
-class Event;
+#include "Event.h"
 
 class EventListener {
 public:
@@ -15,6 +15,10 @@ public:
     // longer be propagated to the remaining registered
     // listeners.
     virtual bool OnNotify(Event* event) = 0;
+
+protected:
+	std::queue<Event> _unresolvedEvents;
+	void EnqueueEventForLater(Event* e) { _unresolvedEvents.push(*e); }
 };
 
 #endif
