@@ -7,13 +7,16 @@ class Renderer;
 
 class EvilSonic : public GameEnemy {
 public:
-	EvilSonic(float x, float y, float w, float h) : 
-		GameEnemy(x, y, w, h) {
-
-	}
+	EvilSonic(const CollisionRect& collisionRect, int spriteW, int spriteH) 
+	:	GameEnemy(collisionRect, spriteW, spriteH)
+	{ }
+	
+	virtual ~EvilSonic() { }
 
 	void Update() override;
-	void Draw(Renderer* renderer, float positionInterpolation) override;
+	void Draw(Renderer* renderer, float deltaTime) override;
+
+	bool OnNotify(Event* event);
 };
 
 #endif

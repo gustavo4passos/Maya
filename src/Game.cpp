@@ -1,16 +1,20 @@
 #include "../include/Game.h"
 
+#include <thread>
+
 #include <SDL2/SDL.h>
 #include "imgui.h"
 #include "imgui_impl_sdl_gl3.h"
 
-#include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
+#include "../include/GameStateMachine.h"
+#include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
+#include "../include/LuaScript.h"
 #include "../include/ResourceManager.h"
+#include "../include/SoundPlayer.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/ServiceLocator.h"
-#include "../include/GameStateMachine.h"
 #include "../include/PlayState.h"
 
 bool Game::Init() {
@@ -41,11 +45,17 @@ bool Game::Init() {
         return false;
     }
 
+    if(!SoundPlayer::Init()){
+        LOG_ERROR("Unable to initialize SoundPlayer.");
+        return false;
+    }
+   
+    ServiceLocator::ProvideGame(this);
     ServiceLocator::ProvideWindow(_window); 
     ServiceLocator::ProvideRenderer(_renderer);
-    ServiceLocator::ProvideGame(this);
-    ServiceLocator::ProvideWindow(_window);
 
+    ServiceLocator::ProvideGameSwitches(new GameSwitches());
+    ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;
@@ -81,7 +91,6 @@ void Game::Render(float positionFactor) {
     GameStateMachine::Render(_renderer, positionFactor);
 
     _window->Swap();
-
 }
 
 void Game::Update() {
@@ -90,8 +99,7 @@ void Game::Update() {
 
 void Game::Clean() {
     GameStateMachine::Clean();
-	ResourceManager::CleanTextures();
-	ResourceManager::CleanMeshes();
+	ResourceManager::Clean();
     InputModule::Clean();
 
     delete _renderer;

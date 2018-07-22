@@ -125,7 +125,7 @@ bool Renderer::Init(Camera* camera) {
 	return true;
 }
 
-void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
+void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect, bool flip) {
 	if(!tex){
 		LOG_ERROR("Texture is NULL.");
 		DEBUG_BREAK();
@@ -150,8 +150,13 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect) {
 	model = glm::scale(model, glm::vec3(dstRect->w(), dstRect->h(), 1.f));
 
 	_spriteShader->SetUniformMat4("model", glm::value_ptr(model));
-	_spriteShader->SetUniform4f("srcrct", srcRect->x(), srcRect->y(), srcRect->w(), srcRect->h());
 
+	if(flip) {
+		_spriteShader->SetUniform4f("srcrct", srcRect->x() + srcRect->w(), srcRect->y(), -srcRect->w(), srcRect->h());
+	}
+	else {
+		_spriteShader->SetUniform4f("srcrct", srcRect->x(), srcRect->y(), srcRect->w(), srcRect->h());		
+	}
 	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
 }
 

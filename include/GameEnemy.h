@@ -2,9 +2,11 @@
 
 class GameEnemy : public GameObject {
 public:
-	GameEnemy(float x, float y, float w, float h) :  
-		GameObject(x, y, w, h) {
-	}
+	GameEnemy(const CollisionRect& collisionRect, int spriteW, int spriteH) 
+	:	GameObject(collisionRect, spriteW, spriteH)
+	{ }
+
+	virtual ~GameEnemy() { }
 
 	inline const int damage() { return _damage; }
 

@@ -5,9 +5,11 @@
 #include "GameState.h"
 #include "Renderer.h"
 
+class GameEnemy;
 class InfoMenuGL3;
+class Region;
 
-class PlayState : public GameState{
+class PlayState : public GameState {
 public:    
     PlayState(){}
     ~PlayState(){}
@@ -26,7 +28,7 @@ private:
     Camera* _camera;
 	GameObject* _object;
 	InfoMenuGL3* _infoMenu;
-	Level* _level;
+    Region* _region;
 
     static const std::string _playID;
 

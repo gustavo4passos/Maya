@@ -1,10 +1,16 @@
 #include "../include/PlayState.h"
 
+#include "../include/Button.h"
+#include "../include/Door.h"
+#include "../include/EventDispatcher.h"
+#include "../include/EvilSonic.h"
+#include "../include/GameSwitches.h"
+#include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
 #include "../include/InputModule.h"
-#include "../include/GameStateMachine.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
+#include "../include/Region.h"
 #include "../include/Renderer.h"
 
 const std::string PlayState::_playID = "PLAY";
@@ -16,6 +22,7 @@ void PlayState::HandleInput(){
 }
 
 void PlayState::Update(){
+	_region->Update();
     _object->Update();
 	_camera->Update();
 }
@@ -30,21 +37,13 @@ void PlayState::Render(Renderer* renderer, float deltatime){
 	
 	_object->setPosition(pos.x(), pos.y()); 
 	
-	_level->DrawBackground(renderer, deltatime);
+	_region->Render(renderer, deltatime);
 	_object->Draw(renderer, deltatime);
 	_infoMenu->Render(renderer);
 }
 
 bool PlayState::OnEnter(){
-    _level = ResourceManager::ParseLevel("../res/levels/forest.tmx");
-	if(_level == NULL){
-	 	return false;
-	}
-
-	_object = new GameObject(30, 0, 36, 39);
-	_camera = new Camera(480, 270, 0, _level->width() * _level->tileWidth(), 0, _level->height() * _level->tileHeight(), _object);
-
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
+	 if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
         LOG_ERROR("Unbale to load texture.");
 		return false;
     }
@@ -54,19 +53,50 @@ bool PlayState::OnEnter(){
 		 return false;
 	}
 
-	PhysicsEngine::setCurrentLevel(_level);
-	ServiceLocator::ProvideCurrentLevel(_level);
-	ServiceLocator::ProvidePlayer(_object);
+	if(!ResourceManager::LoadTexture("../res/sprites/button.png", "button")) {
+		LOG_ERROR("Unable to load texture \"button\"");
+		return false;
+	}
 
-	ServiceLocator::GetRenderer()->UseCamera(_camera);
+	if(!ResourceManager::LoadTexture("../res/sprites/door.png", "door")) {
+		LOG_ERROR("Unable to load texture \"Door\"");
+		return false;
+	}
+	
+	_region = new Region();
+	ServiceLocator::ProvideCurrentRegion(_region);
+	
+	CollisionRect mayaCollisionRect = CollisionRect(200, 0, 10, 30, 12, 7);
+	_object = new GameObject(mayaCollisionRect, 36, 39);
+
+	ServiceLocator::ProvidePlayer(_object);
 
 	_infoMenu = new InfoMenuGL3();
 
+	Level* forest = ResourceManager::ParseLevel("../res/levels/forest.tmx");
+	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));
+	
+	forest->AddGameObject(new Button(CollisionRect(130, 525, 31, 22, 1, 10), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Door(CollisionRect(384.f, 512.f, 32, 32), 32, 32, "forest-button-1", false));
+
+	if(forest == NULL) return false;
+
+	Level* mountain = ResourceManager::ParseLevel("../res/levels/mountain.tmx");
+
+	_region->AddLevel(forest, "forest");
+	_region->AddLevel(mountain, "mountain");
+	_region->ChangeCurrentLevel("forest");
+
+	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _object);
+   
+	ServiceLocator::GetRenderer()->UseCamera(_camera);
+
+	EventDispatcher::AddListener(_object, EventType::PLAYER_ENEMY_COLLIDED);
     return true;
 }
 
 bool PlayState::OnExit(){
-	delete _level;
+	delete _region;
 	delete _object;
 	delete _camera;
 	delete _infoMenu;

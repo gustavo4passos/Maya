@@ -1,7 +1,12 @@
 #include "../include/PhysicsEngine.h"
 
+#include <memory> 
+
 #include "../include/ErrorHandler.h"
+#include "../include/EventDispatcher.h"
 #include "../include/GameEnemy.h"
+#include "../include/PlayerCollisionEvent.h"
+#include "../include/ActivateSwitchEvent.h"
 
 Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.4); 
 Level* PhysicsEngine::_currentLevel = NULL;
@@ -64,6 +69,16 @@ bool PhysicsEngine::HitHead(GameObject* gameObject){
 	return false;
 }
 
+bool PhysicsEngine::IsOnTop(Rect* bottom, Rect* top) {
+    Rect topOffset = *top;
+    topOffset.setY(topOffset.y() + 1);
+
+    if(CheckCollision(bottom, &topOffset)) {
+        return true;
+    }
+    return false;
+}
+
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
     int nSteps=(int)(gameObject->velocity().Length() *2) + 1;
     Vector2D furthestPosition = gameObject->collisionRect().position();
@@ -108,6 +123,14 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
             return true;
         }
     }
+
+    for(auto gameObject = _currentLevel->gameObjects().begin(); gameObject != _currentLevel->gameObjects().end(); gameObject++) {
+        Rect collisionRect = (*gameObject)->collisionRect();
+        if(CheckCollision(rect, &collisionRect)) {
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -125,10 +148,12 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
                  (*it)->damage() };
             gameObject->EnqueueCollisionEvent(enemyCollisionEvent);
             //Como sera determinado o dano da maya em relacao aos diferentes estados e equipamentos ?
-            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_COLLISION, gameObject->velocity(), 
+            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_ENEMY_COLLIDED, gameObject->velocity(), 
                  gameObject->damage() };
             (*it)->EnqueueCollisionEvent(mayaCollisionEvent);
+
+            std::unique_ptr<Event> playerCollision(new PlayerCollisionEvent(100, Vector2D(0, 0), Vector2D(0, 0)));
+            EventDispatcher::Notify(playerCollision.get());
         }
     }
-
 }
