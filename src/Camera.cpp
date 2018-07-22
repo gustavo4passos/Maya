@@ -28,9 +28,6 @@ bool Camera::OnNotify(Event* event) {
 	const Level* newLevel = dynamic_cast<LevelChangedEvent*>(event)->newLevel();
 	_fovright = newLevel->width() * newLevel->tileWidth();
 	_fovbottom = newLevel->height() * newLevel->tileHeight();
-	std::cout << _fovright << " ";
-	std::cout << _fovbottom;
-	std::cin.get();
 	return false;
 }
 

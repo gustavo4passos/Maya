@@ -375,7 +375,12 @@ std::vector<int> ResourceManager::ParseLayerData(TiXmlElement* dataNode){
 				aux += t[i];
 				i += 1;
 			}
-			layerdata.push_back(std::stoi(aux));
+			try {
+				layerdata.push_back(std::stoi(aux));
+			}
+			catch(const std::out_of_range& e) {
+				LOG_ERROR("Unable to parse tile: id is out of range for an int. Exception thrown: " + std::string(e.what()));
+			}
 		}
 	}
 

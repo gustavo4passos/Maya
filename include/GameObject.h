@@ -21,10 +21,15 @@ public:
 	inline const float y() const { return _collisionRect.y(); }
 	inline const float w() const { return _collisionRect.w(); }
 	inline const float h() const { return _collisionRect.h(); }
+	inline bool isActive() const { return _isActive; }
 	inline int const damage() { return _damage; }
 
 	void setPosition(float x, float y);
 	void setVelocity(float x, float y);
+	
+	void Deactivate() { _isActive = false; }
+	void Activate() { _isActive = true; }
+
 
 	virtual void HandleInput();
 	virtual void Update();
@@ -52,7 +57,9 @@ protected:
 	
 	bool _movingleft, _movingright;
 	bool  _facingright;
+	bool _isActive;
 
 	std::queue<CollisionEvent> _unresolvedCollisionEvents;
 };
+
 #endif
