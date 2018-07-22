@@ -66,15 +66,18 @@ bool PlayState::OnEnter(){
 	_region = new Region();
 	ServiceLocator::ProvideCurrentRegion(_region);
 	
-	_object = new GameObject(200, 0, 36, 39, 12, 7);
+	CollisionRect mayaCollisionRect = CollisionRect(200, 0, 10, 30, 12, 7);
+	_object = new GameObject(mayaCollisionRect, 36, 39);
+
 	ServiceLocator::ProvidePlayer(_object);
 
 	_infoMenu = new InfoMenuGL3();
 
 	Level* forest = ResourceManager::ParseLevel("../res/levels/forest.tmx");
-	forest->AddEnemy(new EvilSonic(10, 100, 36, 39, 12, 5));
-	forest->AddGameObject(new Button(130, 514, 32, 32, 1, 10, 31, 22, "forest-button-1", false));
-	forest->AddGameObject(new Door(384, 450, 32, 32, 0, 0, 32, 32, "forest-button-1"));
+	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));
+	
+	forest->AddGameObject(new Button(CollisionRect(130, 525, 31, 22, 1, 10), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Door(CollisionRect(384.f, 512.f, 32, 32), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 
@@ -85,10 +88,8 @@ bool PlayState::OnEnter(){
 	_region->ChangeCurrentLevel("forest");
 
 	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _object);
-
    
 	ServiceLocator::GetRenderer()->UseCamera(_camera);
-
 
 	EventDispatcher::AddListener(_object, EventType::PLAYER_ENEMY_COLLIDED);
     return true;

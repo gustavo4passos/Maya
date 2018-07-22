@@ -25,12 +25,16 @@ void EvilSonic::Update(){
 			_unresolvedCollisionEvents.pop();
 		}
 	}
+
+	if(y() > 800.f) {
+		setPosition(0.f, 0.f);
+		_velocity.setX(1.f);
+	}
 }
 
 void EvilSonic::Draw(Renderer* renderer, float deltaTime) {
-	Rect src = Rect(0, 0, _w, _h);
-	Rect dest = Rect(_position.x() + _velocity.x() * deltaTime, _position.y() + _velocity.y() * deltaTime
-	, _w, _h);
+	Rect src = Rect(0, 0, _spriteW, _spriteH);
+	Rect dest = Rect(_collisionRect.originX() + _velocity.x() * deltaTime, _collisionRect.originY() + _velocity.y() * deltaTime, _spriteW, _spriteH);
 
 	renderer->Draw(ResourceManager::GetTexture("maya_standing"), &src, &dest);
 }

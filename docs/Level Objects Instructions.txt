@@ -1,0 +1,35 @@
+1) Buttons and Doors
+a) Button
+    type = "button" 
+
+    // Size in the map
+    width (int)
+    height (int)
+
+    // Collision data
+    collisionwidth (int)
+    collisionheight (int)
+
+    // Switch activated when the button is pressed
+    activatesSwitch (string)
+
+    // Initial state of the button (pressed/ unpressed)
+    initial state (boolean)
+
+b) Door
+    type = "door"
+
+    // Size in the map
+    width (int)
+    height (int)
+
+    // Collision data
+    collisionheight (int)
+    collisionheight (int)
+
+    // Switches required for the door to be opened (use an
+    // empty string if it's open by default).
+    // If more than one is required, the names of the switches
+    // needs to be separated by commas
+    // Ex: "forest-button-1, forest-button-2, maya-found-sword"
+    requiresSwitch (string)

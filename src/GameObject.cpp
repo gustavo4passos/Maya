@@ -7,27 +7,30 @@
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
 
-GameObject::GameObject(float x, float y, float w, float h, float collisionOffsetX, float collisionOffsetY, float collisionRectW, float collisionRectH)
-:	_position(x, y),
-	_velocity(0.f, 0.f),
-	_w(w),
-	_h(h),
-	_collisionRect(x, y, collisionRectW, collisionRectH),
+GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spriteH)
+:	_velocity(0.f, 0.f),
+	_spriteW(spriteW),
+	_spriteH(spriteH),
+	_collisionRect(collisionRect),
 	_speed(2.5f),
 	_impulse(8.f),
 	_movingleft(false),
-	_movingright(false),
-	_collisionOffsetX(collisionOffsetX),
-	_collisionOffsetY(collisionOffsetY),
-	_collisionW(collisionRectW),
-	_collisionH(collisionRectH)
-{ 
-	setPosition(_position.x() + collisionOffsetX, _position.y() + collisionOffsetY);
-	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+	_movingright(false)
+{
+	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED); 
 }
 
 GameObject::~GameObject() {
 	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+}
+
+void GameObject::setPosition(float x, float y) {
+		_collisionRect.setPosition(x, y);
+}
+
+void GameObject::setVelocity(float x, float y) {
+		_velocity.setX(x);
+		_velocity.setY(y);
 }
 
 void GameObject::Update() {
@@ -81,14 +84,14 @@ void GameObject::HandleInput() {
 }
 
 void GameObject::Draw(Renderer* renderer, float deltaTime) {
-    Rect dst = Rect(_position.x() + (_velocity.x() * deltaTime), _position.y() + (_velocity.y() * deltaTime), 
-     _w,  _h);
+    Rect dst = Rect(_collisionRect.originX() + (_velocity.x() * deltaTime), _collisionRect.originY() + (_velocity.y() * deltaTime), 
+     _spriteW,  _spriteH);
 
-	Rect src = Rect(0, 0, _w, _h);
+	Rect src = Rect(0, 0, _spriteW, _spriteH);
 
 	if(_velocity.x() != 0.f || _velocity.y() != 0.f){
 		int frame = (SDL_GetTicks() / 80) % 8;
-		src.setX(src.x() + frame * _w);
+		src.setX(src.x() + frame * _spriteW);
 
 		if(_movingright) renderer->Draw(ResourceManager::GetTexture("maya_running"), &src, &dst);
 		else renderer->Draw(ResourceManager::GetTexture("maya_running"), &src, &dst, true);
@@ -102,7 +105,7 @@ void GameObject::Draw(Renderer* renderer, float deltaTime) {
 bool GameObject::OnNotify(Event* event){
 	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
 		_velocity.setX(0.f);
-		_velocity += Vector2D(10.f, -10.f);
+		_velocity += Vector2D(10.f, -3.f);
 	}
 
 	return false;

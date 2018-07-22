@@ -4,10 +4,10 @@
 #include "Vector2D.h"
 #include "GameObject.h"
 
-class Camera {
+class Camera : public EventListener {
 public:
     Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, int fovbottom, GameObject* subject = NULL);
-    ~Camera() { };
+    ~Camera();
 
 	// Updates the camera position in relation to the subject.
 	// The subject will always be at the center of the camera field of
@@ -31,6 +31,9 @@ public:
 	
 	// Current zoom factor
 	inline const float& zoomScale() const { return _zoomScale; }
+
+	// Listens for LEVEL_CHANGED events, and changes the _fovw and _fovh accordingly
+	virtual bool OnNotify(Event* event) override;
 
 private:
 	void FindCenter();

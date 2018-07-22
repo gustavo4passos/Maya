@@ -235,10 +235,10 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 						_levelptr->_collisionRects[i]->setY(y);
 					}
 					if(ImGui::SliderInt("Width", &w, 0, 900)) {
-						_levelptr->_collisionRects[i]->_w = w;
+						_levelptr->_collisionRects[i]->setW(w);
 					}
 					if(ImGui::SliderInt("Height", &h, 0, 900)) {
-						_levelptr->_collisionRects[i]->_h = h;
+						_levelptr->_collisionRects[i]->setH(h);
 					}
 					ImGui::EndMenu();
 				}

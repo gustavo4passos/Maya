@@ -6,7 +6,7 @@
 class Zone : public GameObject{
 
 public:
-    Zone(float x, float y, float w, float h) : GameObject(x, y, w, h) {}
+    Zone(const CollisionRect& collisionRect) : GameObject(collisionRect, 0, 0) {}
     virtual ~Zone(){}
     virtual void Activate() = 0;
     inline bool active(){ return _active; }

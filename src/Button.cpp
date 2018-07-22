@@ -5,22 +5,23 @@
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 
-Button::Button(int x, int y, int w, int h, int collisionOffsetX, int collisionOffsetY,
-        int collisionRectW, int collisionRectH, const std::string& activatesSwitch, bool initiallyOn) 
-:   GameObject(x, y, w, h, collisionOffsetX, collisionOffsetY, collisionRectW, collisionRectH),
+Button::Button(const CollisionRect& collisionRect, int spriteW, int spriteH, const std::string& activatesSwitch, bool isAlreadyPressed)
+:   GameObject(collisionRect, spriteW, spriteH),
     _activatesSwitch(activatesSwitch),
-    _on(initiallyOn)
+    _isPressed(isAlreadyPressed)
 { }
 
 void Button::Update() {
    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
 
-    if(!_on){
+    if(!_isPressed){
         if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
-             _on = true;
-            _collisionRect.setH(_collisionRect.h() - 15);
-            _collisionRect.setY(_collisionRect.y() + 15);
-            _collisionOffsetY += 15;
+             _isPressed = true;
+            std::cout << _collisionRect.originX() << " " << _collisionRect.originY() << std::endl;
+            _collisionRect.setH(0);
+            _collisionRect.setW(0);
+            _collisionRect.setOffsetY(_collisionRect.offsetY() + 15);
+            std::cout << _collisionRect.originX() << " " << _collisionRect.originY() << std::endl;
             ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
         }
     }
@@ -28,10 +29,11 @@ void Button::Update() {
 
 void Button::Draw(Renderer* renderer, float deltatime) {
     Rect src = Rect(0.f, 0.f, 32, 32);
-    if(_on){ 
+    if(_isPressed){ 
         src.setX(32);
     }
 
-    Rect dst = Rect(_position, _w, _h);
+    Rect dst = Rect(_collisionRect.originX(), _collisionRect.originY(), _spriteW, _spriteH);
+    if(_isPressed) { dst.setY(dst.y() +15); }
     renderer->Draw(ResourceManager::GetTexture("button"), &src, &dst);
 } 

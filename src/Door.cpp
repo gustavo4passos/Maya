@@ -5,13 +5,11 @@
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 
- Door::Door(int x, int y, int w, int h, int collisionOffsetX, int collisionOffsetY,
-        int collisionRectW, int collisionRectH, const std::string& switchRequired, bool initiallyOpen)
-:   GameObject(x, y, w, h, collisionOffsetX, collisionOffsetY, collisionRectW, collisionRectH),
+Door::Door(CollisionRect collisionRect, int spriteW, int spriteH, const std::string& switchRequired, bool initiallyOpen) 
+ :  GameObject(collisionRect, spriteW, spriteH),
     _switchRequired(switchRequired),
     _open(initiallyOpen)
-{
-
+{ 
 }
 
 void Door::Update() {
@@ -24,7 +22,6 @@ void Door::Draw(Renderer* renderer, float deltaTime) {
     Rect src = Rect(0, 0, 32, 32);
     if(_open) src.setX(32);
 
-    Rect dst = Rect(_position, _w, _h);
-
+    Rect dst = Rect(_collisionRect.originX(), _collisionRect.originY(), _spriteW, _spriteH);
     renderer->Draw(ResourceManager::GetTexture("door"), &src, &dst);
 }
