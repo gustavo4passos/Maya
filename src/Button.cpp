@@ -17,11 +17,9 @@ void Button::Update() {
     if(!_isPressed){
         if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
              _isPressed = true;
-            std::cout << _collisionRect.originX() << " " << _collisionRect.originY() << std::endl;
             _collisionRect.setH(0);
             _collisionRect.setW(0);
             _collisionRect.setOffsetY(_collisionRect.offsetY() + 15);
-            std::cout << _collisionRect.originX() << " " << _collisionRect.originY() << std::endl;
             ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
         }
     }

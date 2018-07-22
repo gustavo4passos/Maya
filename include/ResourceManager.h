@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "Tileset.h"
 #include "Level.h"
+#include "SoundPlayer.h"
 
 class Mesh;
 
@@ -22,6 +23,10 @@ public:
     static void DeleteTexture(const std::string& textureName);    
     static Texture* const GetTexture(const std::string& textureName); 
     static void CleanTextures();    
+
+    //Sounds & Music
+    static bool LoadSoundEffect(const std::string& filename, const std::string& name);
+    static Sound* GetSoundEffect(const std::string& name);
 
     // Levels
     static Level* ParseLevel(const std::string& filename); // Returns NULL if unable to load level
@@ -51,6 +56,7 @@ private:
 	// Data maps
     static std::map<std::string, Texture*> _textureMap;
 	static std::map<std::string, Mesh*> _meshMap;
+    static std::map<std::string, Sound*> _soundEffectsMap;
 };
 
 #endif

@@ -12,6 +12,8 @@
 #include "../include/InputModule.h"
 #include "../include/LuaScript.h"
 #include "../include/ResourceManager.h"
+#include "../include/SoundPlayer.h"
+#include "../include/PhysicsEngine.h"
 #include "../include/ServiceLocator.h"
 #include "../include/PlayState.h"
 
@@ -43,9 +45,14 @@ bool Game::Init() {
         return false;
     }
 
+    if(!SoundPlayer::Init()){
+        LOG_ERROR("Unable to initialize SoundPlayer.");
+        return false;
+    }
+   
     ServiceLocator::ProvideGame(this);
+    ServiceLocator::ProvideWindow(_window); 
     ServiceLocator::ProvideRenderer(_renderer);
-    ServiceLocator::ProvideWindow(_window);
 
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");

@@ -6,6 +6,7 @@
 #include "../include/PhysicsEngine.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
+#include "../include/SoundPlayer.h"
 
 GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spriteH)
 :	_velocity(0.f, 0.f),
