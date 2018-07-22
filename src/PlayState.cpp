@@ -62,6 +62,13 @@ bool PlayState::OnEnter(){
 		LOG_ERROR("Unable to load texture \"Door\"");
 		return false;
 	}
+
+	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/forest_sounds.mp3", "forest_sounds")){
+		LOG_ERROR("Unable to load sound effect \"forest_sounds\"");
+		return false;
+	}
+
+	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	
 	_region = new Region();
 	ServiceLocator::ProvideCurrentRegion(_region);
@@ -73,11 +80,11 @@ bool PlayState::OnEnter(){
 
 	_infoMenu = new InfoMenuGL3();
 
-	Level* forest = ResourceManager::ParseLevel("../res/levels/forest.tmx");
+	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));
 	
-	forest->AddGameObject(new Button(CollisionRect(130, 525, 31, 22, 1, 10), 32, 32, "forest-button-1", false));
-	forest->AddGameObject(new Door(CollisionRect(384.f, 512.f, 32, 32), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Button(CollisionRect(130, 430, 31, 22, 1, 10), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Door(CollisionRect(384.f, 420.f, 32, 32), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 
@@ -92,6 +99,7 @@ bool PlayState::OnEnter(){
 	ServiceLocator::GetRenderer()->UseCamera(_camera);
 
 	EventDispatcher::AddListener(_object, EventType::PLAYER_ENEMY_COLLIDED);
+
     return true;
 }
 
