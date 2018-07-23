@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Rect.h"
+#include "CollisionRect.h"
 #include "Tileset.h"
 
 class Layer;
@@ -21,11 +21,11 @@ public:
 	
 	void AddBackgroundLayer(Layer* layer);
 	void AddForegroundLayer(Layer* layer);
-	void AddCollisionRect(Rect* rect);
+	void AddCollisionRect(CollisionRect* rect);
 	void AddEnemy(GameEnemy* enemy);
 	void AddGameObject(GameObject* gameObject);
 	
-	const std::vector<Rect*>& collisionRects() { return _collisionRects; }
+	const std::vector<CollisionRect*>& collisionRects() { return _collisionRects; }
 	const std::vector<GameObject*>& gameObjects() { return _gameObjects; }
 	const std::vector<GameEnemy*>& enemies() { return _enemies; }
 
@@ -45,7 +45,7 @@ private:
     Tileset* _tileset;
 	std::vector<Layer*> _backgroundLayers;
 	std::vector<GameObject*> _gameObjects;
-	std::vector<Rect*> _collisionRects;
+	std::vector<CollisionRect*> _collisionRects;
 	std::vector<GameEnemy*> _enemies;
 
 	int _width, _height;

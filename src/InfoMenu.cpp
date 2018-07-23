@@ -176,7 +176,7 @@ void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
 	DrawCollisionBox(&rct, renderer);
 
 	if(_levelptr != NULL) {
-		for(std::vector<Rect*>::iterator it = _levelptr->_collisionRects.begin();  
+		for(std::vector<CollisionRect*>::iterator it = _levelptr->_collisionRects.begin();  
 			it != _levelptr->_collisionRects.end(); ++it)
 		{	  
 			DrawCollisionBox(*it, renderer);

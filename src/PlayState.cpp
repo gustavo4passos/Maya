@@ -73,7 +73,7 @@ bool PlayState::OnEnter(){
 	_region = new Region();
 	ServiceLocator::ProvideCurrentRegion(_region);
 	
-	CollisionRect mayaCollisionRect = CollisionRect(200, 0, 10, 30, 12, 7);
+	CollisionRect mayaCollisionRect = CollisionRect(Rect(200, 0, 10, 30), CollisionBehavior::BLOCK, 12, 7);
 	_object = new GameObject(mayaCollisionRect, 36, 39);
 
 	ServiceLocator::ProvidePlayer(_object);
@@ -83,8 +83,8 @@ bool PlayState::OnEnter(){
 	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));
 	
-	forest->AddGameObject(new Button(CollisionRect(130, 430, 31, 22, 1, 10), 32, 32, "forest-button-1", false));
-	forest->AddGameObject(new Door(CollisionRect(384.f, 420.f, 32, 32), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 

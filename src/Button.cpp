@@ -19,7 +19,7 @@ void Button::Update() {
              _isPressed = true;
             _collisionRect.setH(0);
             _collisionRect.setW(0);
-            _collisionRect.setOffsetY(_collisionRect.offsetY() + 15);
+            _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
             ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
         }
     }
@@ -32,6 +32,5 @@ void Button::Draw(Renderer* renderer, float deltatime) {
     }
 
     Rect dst = Rect(_collisionRect.originX(), _collisionRect.originY(), _spriteW, _spriteH);
-    if(_isPressed) { dst.setY(dst.y() +15); }
     renderer->Draw(ResourceManager::GetTexture("button"), &src, &dst);
 } 

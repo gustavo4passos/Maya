@@ -117,7 +117,7 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
         DEBUG_BREAK();
     }
 
-    for(std::vector<Rect*>::const_iterator it = _currentLevel->collisionRects().begin(); 
+    for(std::vector<CollisionRect*>::const_iterator it = _currentLevel->collisionRects().begin(); 
 	    it!=_currentLevel->collisionRects().end(); it++){
         if(CheckCollision(rect, *it)){
             return true;
@@ -125,6 +125,10 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
     }
 
     for(auto gameObject = _currentLevel->gameObjects().begin(); gameObject != _currentLevel->gameObjects().end(); gameObject++) {
+        if((*gameObject)->collisionRect().collisionBehavior() == CollisionBehavior::IGNORE) {
+            continue;
+        }
+
         Rect collisionRect = (*gameObject)->collisionRect();
         if(CheckCollision(rect, &collisionRect)) {
             return true;
@@ -141,8 +145,8 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
     }
 
     for(std::vector<GameEnemy*>::const_iterator it = _currentLevel->enemies().begin(); 
-        it != _currentLevel->enemies().end(); it++){
-
+        it != _currentLevel->enemies().end(); it++)
+    {
         if(CheckCollision(&gameObject->_collisionRect, &(*it)->_collisionRect)){
             CollisionEvent enemyCollisionEvent = { NULL, CollisionEventType::ENEMY_COLLISION, (*it)->velocity(), 
                  (*it)->damage() };

@@ -209,7 +209,7 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
 void ResourceManager::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 	for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
 		if(e->Value() == std::string("object")){
-			if(Rect* rct = ParseRect(e)){
+			if(CollisionRect* rct = ParseRect(e)){
 				level->AddCollisionRect(rct);
 			} else {
 				LOG_ERROR("Unable to parse collisionRect");
@@ -218,7 +218,7 @@ void ResourceManager::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 	}
 }
 
-Rect* ResourceManager::ParseRect(TiXmlElement* objectNode){
+CollisionRect* ResourceManager::ParseRect(TiXmlElement* objectNode){
 	std::string id;
 	int x, y;
 	int width, height;
@@ -245,7 +245,7 @@ Rect* ResourceManager::ParseRect(TiXmlElement* objectNode){
 		LOG_ERROR("Height field missing in object from objectgroup. Id: " + id);
 		return NULL;
 	}
-	return new Rect(x, y, width, height);
+	return new CollisionRect(Rect(x, y, width, height), CollisionBehavior::BLOCK);
 }
 
 Tileset* ResourceManager::ParseTileset(TiXmlElement* node){

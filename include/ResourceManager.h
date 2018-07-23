@@ -44,7 +44,7 @@ private:
 
     static Tileset* ParseTileset(TiXmlElement* node);
     static void ParseObjectGroup(TiXmlElement* objectsNode, Level* level);
-    static Rect* ParseRect(TiXmlElement* objectNode);
+    static CollisionRect* ParseRect(TiXmlElement* objectNode);
     static Layer* ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset);
     static std::vector<int> ParseLayerData(TiXmlElement* dataNode);
 

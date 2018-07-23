@@ -5,7 +5,7 @@
 
 class Door : public GameObject {
 public:
-    Door(CollisionRect collisionRect, int spriteW, int spriteH, const std::string& switchRequired = "", bool initiallyOpen = true);
+    Door(const CollisionRect& collisionRect, int spriteW, int spriteH, const std::string& switchRequired = "", bool initiallyOpen = true);
 
     virtual void Update() override;
     virtual void Draw(Renderer* renderer, float deltaTime);
