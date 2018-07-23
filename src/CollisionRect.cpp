@@ -6,6 +6,13 @@ CollisionRect::CollisionRect(float x, float y, int w, int h, float offsetX, floa
     _offsetY(offsetY)
 { }    
 
+CollisionRect::CollisionRect(const Rect& bounds, CollisionBehavior collisionBehavior, float offsetX, float offsetY)
+:   Rect(bounds),
+    _collisionBehavior(collisionBehavior),
+    _offsetX(offsetX),
+    _offsetY(offsetY)
+{ }
+
 CollisionRect::CollisionRect(const CollisionRect& c) 
 : CollisionRect(c.x(), c.y(), c.w(), c.h(), c._offsetX, c._offsetY)
 { }

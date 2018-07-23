@@ -9,6 +9,13 @@
 
 class Renderer; 
 
+enum class Kind {
+	ENEMY,
+	PLAYER,
+	WEAPON,
+	ZONE
+};
+
 class GameObject : public EventListener {
 public:
 	GameObject(float x, float y, int w, int h);
@@ -16,7 +23,7 @@ public:
 
 	virtual ~GameObject();
 
-	inline const Rect& collisionRect() { return _collisionRect; }
+	inline const CollisionRect& collisionRect() { return _collisionRect; }
 	inline const Vector2D& position() { return _collisionRect.position(); }
 	inline const Vector2D& velocity()  { return _velocity; }
 	inline const float x() const { return _collisionRect.x(); }
@@ -24,7 +31,8 @@ public:
 	inline const float w() const { return _collisionRect.w(); }
 	inline const float h() const { return _collisionRect.h(); }
 	inline bool isActive() const { return _isActive; }
-	inline int const damage() { return _damage; }
+	inline int damage() const { return _damage; }
+	inline Kind kind() const { return _kind;  }
 
 	void setPosition(float x, float y);
 	void setVelocity(float x, float y);
@@ -61,6 +69,8 @@ protected:
 	bool _isActive;
 
 	std::queue<CollisionEvent> _unresolvedCollisionEvents;
+
+	Kind _kind;
 };
 
 #endif

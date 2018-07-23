@@ -5,15 +5,16 @@
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 
-Door::Door(CollisionRect collisionRect, int spriteW, int spriteH, const std::string& switchRequired, bool initiallyOpen) 
+Door::Door(const CollisionRect& collisionRect, int spriteW, int spriteH, const std::string& switchRequired, bool initiallyOpen) 
  :  GameObject(collisionRect, spriteW, spriteH),
     _switchRequired(switchRequired),
     _open(initiallyOpen)
 { 
+    _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
 }
 
 void Door::Update() {
-    if(ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired)){
+    if(ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired) && !IsOpen()){
         Open();
     }
 }

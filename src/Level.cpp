@@ -18,28 +18,28 @@ Level::~Level() {
 	// Delete collision rects
 	for(auto rect = _collisionRects.begin(); rect !=  _collisionRects.end(); rect++){
 		delete *rect;
-		*rect = NULL;
+		*rect = nullptr;
 	}
 	_collisionRects.clear();
 
 	// Delete background layers
 	for(auto backgroundLayer = _backgroundLayers.begin(); backgroundLayer != _backgroundLayers.end(); backgroundLayer++){
 		delete *backgroundLayer;
-		*backgroundLayer = NULL;
+		*backgroundLayer = nullptr;
 	}
 	_backgroundLayers.clear();
 
 	// Delete game objects
 	for(auto gameObject = _gameObjects.begin(); gameObject != _gameObjects.end(); gameObject++){
 		delete *gameObject;
-		*gameObject = NULL;
+		*gameObject = nullptr;
 	}
 	_gameObjects.clear();
 
 	// Delete enemies
 	for(auto enemy = _enemies.begin(); enemy != _enemies.end(); enemy++) {
 		delete *enemy;
-		*enemy = NULL;
+		*enemy = nullptr;
 	}
 
 	// Deletes tileset texture
@@ -47,7 +47,7 @@ Level::~Level() {
 	
 	// Delete tileset
 	delete _tileset;
-	_tileset = NULL;
+	_tileset = nullptr;
 }
 
 void Level::Update() {
@@ -75,15 +75,15 @@ void Level::DrawBackground(Renderer* renderer, float deltaTime){
 }
 
 void Level::AddBackgroundLayer(Layer* layer){
-	if(layer == NULL){
+	if(layer == nullptr){
 		LOG_ERROR("Unable to add Background Layer: Layer is NULL");
 		return;
 	}
 	_backgroundLayers.push_back(layer);
 }
 
-void Level::AddCollisionRect(Rect* rect){
-	if(rect == NULL){
+void Level::AddCollisionRect(CollisionRect* rect){
+	if(rect == nullptr){
 		LOG_ERROR("Unable to add rect: rect is NULL");
 		return;
 	}
@@ -92,9 +92,16 @@ void Level::AddCollisionRect(Rect* rect){
 }
 
 void Level::AddEnemy(GameEnemy* enemy){
+	if(enemy == nullptr) {
+		LOG_WARNING("Unable to add enemy. Enemy is NULL.");
+		return;
+	}
 	_enemies.push_back(enemy);
 }
 
 void Level::AddGameObject(GameObject* gameObject) {
+	if(gameObject == nullptr) {
+		LOG_WARNING("Unable to add Game Object. Game Object is NULL.");
+	}
 	_gameObjects.push_back(gameObject);
 }
