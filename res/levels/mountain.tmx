@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
  <tileset firstgid="1" name="forest_1" tilewidth="32" tileheight="32" tilecount="0" columns="8">
   <image source="../res/sprites/forest_1.png" width="256" height="256"/>
  </tileset>
@@ -163,17 +163,15 @@
   </object>
  </objectgroup>
  <objectgroup name="GameObjects">
-  <object id="20" name="button-mountain-switch-10" x="800" y="288" width="32" height="32">
+  <object id="20" name="button-mountain-switch-10" type="button" x="800" y="288" width="32" height="32">
    <properties>
     <property name="activatesSwitch" value="mountain-switch-10"/>
-    <property name="type" value="button"/>
    </properties>
   </object>
-  <object id="21" x="1696" y="928" width="64" height="96">
+  <object id="21" type="door" x="1696" y="928" width="64" height="96">
    <properties>
     <property name="initiallyOpen" type="bool" value="false"/>
     <property name="switchesRequired" value="mountain-switch-10"/>
-    <property name="type" value="door"/>
    </properties>
   </object>
  </objectgroup>
