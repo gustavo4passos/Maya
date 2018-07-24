@@ -1,145 +1,14 @@
+#include "../include/LevelLoader.h"
+
+#include <algorithm>
+
 #include "../include/ResourceManager.h"
-
-#include <algorithm> // for std::transform
-
-// NOTE(Gustavo): stb_image fails to load some png subformats; consider using SOIL
-#define STB_IMAGE_IMPLEMENTATION
-#include "../extern/stb/stb_image.h"
-
+#include "../include/Level.h"
 #include "../include/ErrorHandler.h"
 #include "../include/Layer.h"
 
-std::map<std::string, Texture*> ResourceManager::_textureMap;
-std::map<std::string, Mesh*> ResourceManager::_meshMap;
-std::map<std::string, Sound*> ResourceManager::_soundEffectsMap;
 
-bool ResourceManager::LoadTexture(const std::string& filename, const std::string& name) {
-
-	std::map<std::string, Texture*>::const_iterator it = _textureMap.find(name);
-	if(it != _textureMap.end()) {
-		LOG_ERROR("Unable to load texture [\"" + name + "\"] into texture map: A texture with the same name already exists");
-		return true;
-	}
-
-    int w, h, nChannels;
-    unsigned char* textureData = stbi_load(filename.c_str(), &w, &h, &nChannels, 0);
-
-    if(textureData == NULL) {
-        LOG_ERROR("Unable to load image file: " + filename);
-        return false;
-    }
-
-    Texture* tex = new Texture((const void*)textureData, w, h, nChannels);
-    _textureMap[name.c_str()] = tex;
-
-    // Frees image data from RAM
-    stbi_image_free(textureData);
-
-    return true;
-}
-
-// NOTE(Gustavo): For the release version, consider returning map[entry] instead of using find()
-// However map[entry] will create a new item in map if 'entry' isn't a valid entry
-// and the caller will never be notified that the index he's trying to access is invalid,
-// making the error hard to trace.
-// In the final version, however, this type of access error must be sorted out, and this method
-// can possibly be implemented by returning the requested entry
-Texture* const ResourceManager::GetTexture(const std::string& name){
-    std::map<std::string, Texture*>::const_iterator texEntry = _textureMap.find(name);
-    if(texEntry == _textureMap.end()){
-	    LOG_ERROR("Texture is not in texture map: " << name);
-	    DEBUG_BREAK();
-	    return NULL;
-    }
-    return texEntry->second;
-}
-
-void ResourceManager::DeleteTexture(const std::string& textureName) {
-    std::map<std::string, Texture*>::iterator entry = _textureMap.find(textureName);
-    if(entry == _textureMap.end()){
-	    LOG_ERROR("Unable to delete texture, invalid texture name: " + textureName);
-    }
-    else{
-	    delete entry->second;
-	    _textureMap.erase(entry);
-    }
-}
-
-void ResourceManager::CleanTextures() {
-    for(std::map<std::string, Texture*>::iterator it = _textureMap.begin(); it != _textureMap.end(); it++)
-    {
-        delete it->second;
-    }
-    _textureMap.clear();
-}
-
-bool ResourceManager::LoadSoundEffect(const std::string& filename, const std::string& name) {
-	Mix_Chunk* sample;
-	sample = Mix_LoadWAV(filename.c_str());
-	if (!sample) {
-		LOG_ERROR("Unable to load the sample: " + std::string(Mix_GetError()));
-		return false;
-	}
-
-	_soundEffectsMap.insert(std::pair<std::string, Sound*>(name, sample));
-	return true;
-}
-
-Sound* ResourceManager::GetSoundEffect(const std::string& name) {
-    return _soundEffectsMap[name];
-}
-
-bool ResourceManager::LoadMesh(const void* data, std::size_t size, unsigned int count, const std::string& name) {
-	std::map<std::string, Mesh*>::const_iterator it = _meshMap.find(name.c_str());
-	if(it != _meshMap.end()){
-		LOG_ERROR("Unable to load mesh into mesh map: [\"" + name + "\"]. A mesh with the same name already exists.");
-		return true;
-	}
-
-	Mesh* mesh = new Mesh(data, size, count);
-	_meshMap[name.c_str()] = mesh;
-
-	return true;
-}
-
-Mesh* const ResourceManager::GetMesh(const std::string& name) {
-	std::map<std::string, Mesh*>::const_iterator meshEntry = _meshMap.find(name.c_str());
-
-	if(meshEntry == _meshMap.end()){
-		LOG_ERROR("Mesh is not in mesh map: " + name);
-		DEBUG_BREAK();
-		return NULL;
-	}
-	return meshEntry->second;
-}
-
-void ResourceManager::DeleteMesh(const std::string& name){
-	std::map<std::string, Mesh*>::iterator meshEntry = _meshMap.find(name.c_str());
-
-	if(meshEntry == _meshMap.end()){
-		LOG_ERROR("Unable to delete mesh: " + name + ". Mesh is not in mesh map.");
-	}
-	else {
-		delete meshEntry->second;
-		_meshMap.erase(meshEntry);
-	}
-}
-
-void ResourceManager::CleanMeshes(){
-	for(std::map<std::string, Mesh*>::iterator it = _meshMap.begin();
-	    it != _meshMap.end(); ++it){
-		delete it->second;
-	}
-
-	_meshMap.clear();
-}
-
-void ResourceManager::Clean() {
-	CleanMeshes();
-	CleanTextures();
-}
-
-Level* ResourceManager::ParseLevel(const std::string& filename){
+Level* LevelLoader::ParseLevel(const std::string& filename){
     // create the XML document
 	TiXmlDocument xmlDoc;
 
@@ -207,49 +76,7 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
     return level;
 }
 
-void ResourceManager::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
-	for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
-		if(e->Value() == std::string("object")){
-			if(CollisionRect* rct = ParseRect(e)){
-				level->AddCollisionRect(rct);
-			} else {
-				LOG_ERROR("Unable to parse collisionRect");
-			}
-		}
-	}
-}
-
-CollisionRect* ResourceManager::ParseRect(TiXmlElement* objectNode){
-	std::string id;
-	int x, y;
-	int width, height;
-
-	const char* aux = objectNode->Attribute("id");
-	if(aux == NULL){
-		LOG_ERROR("Id field missing in object from objectgroup");
-	} else {
-		id = std::string(objectNode->Attribute("id"));
-	}
-	if(!objectNode->Attribute("x", &x)){
-		LOG_ERROR("X field missing in object from objectgroup. Id: " + id);
-		return NULL;
-	}
-	if(!objectNode->Attribute("y", &y)){
-		LOG_ERROR("Y field missing in object from objectgroup. Id: " + id);
-		return NULL;
-	}
-	if(!objectNode->Attribute("width", &width)){
-		LOG_ERROR("Width field missing in object from objectgroup. Id: " + id);
-		return NULL;
-	}
-	if(!objectNode->Attribute("height", &height)){
-		LOG_ERROR("Height field missing in object from objectgroup. Id: " + id);
-		return NULL;
-	}
-	return new CollisionRect(Rect(x, y, width, height), CollisionBehavior::BLOCK);
-}
-
-Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
+Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
     TiXmlElement* imagenode = node->FirstChildElement();
 	// Checks if image node is absent
 	if(imagenode == NULL || imagenode->Value() != std::string("image")){
@@ -286,7 +113,7 @@ Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
     nRows = (height - 2*margin + spacing) / (tileHeight + spacing);
 
 	// Tries to load tileset texture to video memory
-	if(!LoadTexture(source, name)) {
+	if(!ResourceManager::LoadTexture(source, name)) {
 		LOG_ERROR("Unable to load tileset texture. Filename: " + source);
 		return NULL;
 	}
@@ -295,7 +122,53 @@ Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
 
 }
 
-Layer* ResourceManager::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset){
+void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
+    /*std::string test;
+    test = std::string(objectsNode->Attribute("name"));
+    std::cout<<test<<std::endl;*/
+	for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+    
+		if(e->Value() == std::string("object")){
+			if(CollisionRect* rct = ParseRect(e)){
+				level->AddCollisionRect(rct);
+			} else {
+				LOG_ERROR("Unable to parse collisionRect");
+			}
+		}
+	}
+}
+
+CollisionRect* LevelLoader::ParseRect(TiXmlElement* objectNode){
+	std::string id;
+	int x, y;
+	int width, height;
+
+	const char* aux = objectNode->Attribute("id");
+	if(aux == NULL){
+		LOG_ERROR("Id field missing in object from objectgroup");
+	} else {
+		id = std::string(objectNode->Attribute("id"));
+	}
+	if(!objectNode->Attribute("x", &x)){
+		LOG_ERROR("X field missing in object from objectgroup. Id: " + id);
+		return NULL;
+	}
+	if(!objectNode->Attribute("y", &y)){
+		LOG_ERROR("Y field missing in object from objectgroup. Id: " + id);
+		return NULL;
+	}
+	if(!objectNode->Attribute("width", &width)){
+		LOG_ERROR("Width field missing in object from objectgroup. Id: " + id);
+		return NULL;
+	}
+	if(!objectNode->Attribute("height", &height)){
+		LOG_ERROR("Height field missing in object from objectgroup. Id: " + id);
+		return NULL;
+	}
+	return new CollisionRect(Rect(x, y, width, height), CollisionBehavior::BLOCK);
+}
+
+Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset){
     if(layerNode == NULL){
         LOG_ERROR("layerNode is NULL");
         DEBUG_BREAK();
@@ -351,7 +224,7 @@ Layer* ResourceManager::ParseLayer(TiXmlElement* layerNode, Level* level, Tilese
 	return new Layer(name, width, height, tileset, zDistance);
 }
 
-std::vector<int> ResourceManager::ParseLayerData(TiXmlElement* dataNode){
+std::vector<int> LevelLoader::ParseLayerData(TiXmlElement* dataNode){
     std::string t;
     std::vector<int> layerdata;
 
@@ -391,7 +264,7 @@ std::vector<int> ResourceManager::ParseLayerData(TiXmlElement* dataNode){
 	return layerdata;
 }
 
-void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, Tileset* tileset, const std::string& name){
+void LevelLoader::LoadLayerMesh(std::vector<int>& layerData, Level* level, Tileset* tileset, const std::string& name){
 	int levelWidth;
 	float tileWidth, tileHeight;
 	int nColumns;
@@ -465,5 +338,6 @@ void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, T
 		meshData.push_back(tex4.y);
 	}
 
-	LoadMesh((const void*)(&meshData[0]), meshData.size() * sizeof(float), meshData.size() / 4, name);
+	ResourceManager::LoadMesh((const void*)(&meshData[0]), meshData.size() * sizeof(float), meshData.size() / 4, name);
 }
+
