@@ -3,20 +3,24 @@
 #include "../include/GLCall.h"
 
 VertexBuffer::VertexBuffer(const GLvoid* data, GLsizeiptr size) : _vboID(0) {
-  GLCall(glGenBuffers(1, &_vboID));
-  GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->_vboID));
-  GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
+	GLCall(glGenBuffers(1, &_vboID));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->_vboID));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
 }
 
 VertexBuffer::~VertexBuffer() {
-  Unbind();
-  GLCall(glDeleteBuffers(1, &(this->_vboID)));
+	Clean();
 }
 
 void VertexBuffer::Bind() const {
-  GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->_vboID));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->_vboID));
 }
 
 void VertexBuffer::Unbind() const {
-  GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+}
+
+void VertexBuffer::Clean() {
+	Unbind();
+	GLCall(glDeleteBuffers(1, &_vboID));
 }

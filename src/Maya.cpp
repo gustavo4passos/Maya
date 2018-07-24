@@ -29,9 +29,17 @@ void Maya::HandleInput()
     bool leftPressed = InputModule::IsKeyPressed(InputModule::LEFT);
     bool rightPressed = InputModule::IsKeyPressed(InputModule::RIGHT);
 
+    if(leftPressed) _facingRight = false;
+    if(righttPressed) _facingRight = true;
+
     if  (_currentState == STAND){
         _velocity.setX(0);
-        if      (InputModule::IsKeyPressed(InputModule::SPACE)) ChangeState(JUMP);
+        if (InputModule::WasKeyPressed(InputModule::SPACE)){
+            if(PhysicsEngine::OnGround(this)){
+                ChangeState(JUMP);
+                _velocity.setY(-_impulse);
+            }
+        } 
         else if (InputModule::WasKeyPressed(InputModule::LCTRL)) ChangeState(STAND_ATTACK);
         else if ((leftPressed && !rightPressed) || (rightPressed && !leftPressed)) ChangeState(RUN);
     } 
@@ -64,16 +72,16 @@ void Maya::ChangeState(PlayerState state)
 
         if (state == STAND){
             _currentState = STAND;        
-            _numFrames = 6;
-            _numRows = 3;
-            _defaultTexture = "maya_stand";
+            _numFrames = 1;
+            _numRows = 1;
+            _textureName = "maya_standing";
         }
 
         else if (state == RUN){
             _currentState = RUN;            
             _numFrames = 4;
             _numRows = 2;
-            _defaultTexture = "maya_run";          
+            _textureName = "maya_running";          
         }
 
         else if (state == JUMP){
@@ -82,7 +90,7 @@ void Maya::ChangeState(PlayerState state)
             _numRows = 3;
             _width = 38;
             _height = 41;
-            _defaultTexture = "maya_jump";            
+            _textureName = "maya_jumping";            
         }
 
         else if (state == STAND_ATTACK){
@@ -91,7 +99,7 @@ void Maya::ChangeState(PlayerState state)
             _numRows = 2;
             _width = 46;
             _height = 38;
-            _defaultTexture = "maya_attack";            
+            _textureName = "maya_attacking";            
         }
 
     }

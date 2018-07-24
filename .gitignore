@@ -11,6 +11,12 @@
 *.userosscache
 *.sln.docstates
 
+# User-specific bat files
+*.bat
+
+# imgui config file
+bin/imgui.ini
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

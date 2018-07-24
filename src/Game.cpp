@@ -1,12 +1,21 @@
 #include "../include/Game.h"
 
-#include <SDL2/SDL.h>
+#include <thread>
 
-#include "../include/LuaScript.h"
+#include <SDL2/SDL.h>
+#include "imgui.h"
+#include "imgui_impl_sdl_gl3.h"
+
 #include "../include/ErrorHandler.h"
+#include "../include/GameStateMachine.h"
+#include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
-#include "../include/Maya.h"
+#include "../include/LuaScript.h"
 #include "../include/ResourceManager.h"
+#include "../include/SoundPlayer.h"
+#include "../include/PhysicsEngine.h"
+#include "../include/ServiceLocator.h"
+#include "../include/PlayState.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -27,32 +36,28 @@ bool Game::Init() {
         return false;
     }
 
-    _renderer->SetClearColor(0.f, .8f, 0.f, 1.f);
+    _renderer->SetClearColor(0.09f, .60f, 0.85f, 1.f);
     _renderer->SetViewportSize(_window->width(), _window->height());
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
     }
+
+    if(!SoundPlayer::Init()){
+        LOG_ERROR("Unable to initialize SoundPlayer.");
+        return false;
+    }
    
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Run Sprite Sheet V03.png", "maya_run")) {
-        LOG_ERROR("Unbale to load texture.");
-    }
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Combat_Attack_v02.png", "maya_attack")) {
-        LOG_ERROR("Unbale to load texture.");
-    }
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Jump_V01.png", "maya_jump")) {
-        LOG_ERROR("Unbale to load texture.");
-    }
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand Arms.png", "maya_stand")) {
-        LOG_ERROR("Unbale to load texture.");
-    }
+    ServiceLocator::ProvideGame(this);
+    ServiceLocator::ProvideWindow(_window); 
+    ServiceLocator::ProvideRenderer(_renderer);
 
-    _maya = new Maya();
-    _maya->Load(270,100,36,39,"maya_stand");
-
+    ServiceLocator::ProvideGameSwitches(new GameSwitches());
+    ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
+    GameStateMachine::PushState(new PlayState());
+    
     _running = false;
-
     return true;
 }
 
@@ -62,63 +67,65 @@ void Game::Run() {
     unsigned int previous = SDL_GetTicks();
     unsigned int lag = 0.0;
     const unsigned int MS_PER_UPDATE = 16;
-  
-    while(_running) {
-        unsigned int current =  SDL_GetTicks();
-        unsigned int elapsed = current - previous;
 
+    while(_running) {
+        unsigned int current = SDL_GetTicks();
+        unsigned int elapsed = current - previous;
         previous = current;
         lag += elapsed;
-        
-                
 
         while(lag >= MS_PER_UPDATE){
-            HandleEvents();
+        	HandleEvents();
             Update();
-            lag -= MS_PER_UPDATE;            
+            lag -= MS_PER_UPDATE;
         }
-
-        Render(float(lag) / MS_PER_UPDATE);
+		
+		Render(float(lag) / MS_PER_UPDATE);
     }
-    
 }
 
 void Game::Render(float positionFactor) {
-    _renderer->Clear();
-    _maya->Draw(_renderer, positionFactor);
+	_renderer->Clear();
+
+    GameStateMachine::Render(_renderer, positionFactor);
+
     _window->Swap();
 }
 
 void Game::Update() {
-    _maya->Update();
+    GameStateMachine::Update();
 }
 
 void Game::Clean() {
+    GameStateMachine::Clean();
+	ResourceManager::Clean();
     InputModule::Clean();
-	  ResourceManager::CleanTextures();
 
-    delete _renderer;  
+    delete _renderer;
     delete _window;
 
     _renderer = NULL;
     _window = NULL;
 }
 
+void Game::EndGameRequest() {
+	_window->SetFullscreen(false);
+	_renderer->SetViewportSize(_window->width(), _window->height());
+	if(_window->ShowQuitMessageBox()) _running = false;
+}
+	
 void Game::HandleEvents() {
-    
     InputModule::Update();
 
-    if(InputModule::CloseWindowRequest() ||
-       InputModule::WasKeyReleased(InputModule::ESC)){
-        _window->SetFullscreen(false);
-        _renderer->SetViewportSize(_window->width(), _window->height());
-        if(_window->ShowQuitMessageBox()) _running = false;
+    if(InputModule::CloseWindowRequest()) { 
+		EndGameRequest();
     }
+
     if(InputModule::IsKeyPressed(InputModule::LALT) && 
        InputModule::WasKeyReleased(InputModule::ENTER)) {
            _window->ToggleFullscreen();
            _renderer->SetViewportSize(_window->width(), _window->height());
     }
 
-    _maya->HandleInput();
+    GameStateMachine::HandleInput();
 }

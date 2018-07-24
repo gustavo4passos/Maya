@@ -1,11 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Renderer.h"
 #include "Window.h"
 #include "Player.h"
+#include "Level.h"
 
 class Texture; 
+class Mesh;
+class InfoMenuGL3;
 
 class Game {
 public:
@@ -16,15 +18,20 @@ public:
     void Run();
     void Render(float positionFactor);
     void Update();
-    void Clean();
     void HandleEvents();
+
+	void EndGameRequest();
+    void Clean();
     bool running() { return _running; }
 
 private:
-
     Window* _window;
     Renderer* _renderer;
 
+	Camera* _camera;
+	GameObject* _object;
+	InfoMenuGL3* _infoMenu;;
+	Level* _level;
     Player* _maya;
 
     unsigned int _lastFrame;

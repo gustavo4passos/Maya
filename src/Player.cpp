@@ -1,37 +1,51 @@
 #include "../include/Player.h"
 #include "../include/InputModule.h"
 
-Player::Player() : GameEntity()
+Player::Player(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject()
 {}
 
 Player::~Player()
 {}
 
-void Player::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
-{
-    GameEntity::Load(xPos, yPos, width, height, sprite, scale, flip);
-}
+// void Player::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
+// {
+//     GameEntity::Load(xPos, yPos, width, height, sprite, scale, flip);
+// }
 
 void Player::Draw(Renderer* renderer, float positionFactor)
 {
-   GameEntity::Draw(renderer, positionFactor);
+   GameObject::Draw(renderer, positionFactor);
 }
 
 void Player::HandleInput()
 {
-    Vector2D vec = InputModule::GetMousePosition();
-    _position.setX(vec.x()-(_scale*_width/2));
-    _position.setY(vec.y()-(_scale*_height/2));
+    GameObject::HandleInput();
 }
 
 void Player::Update()
 {
-    GameEntity::Update();        
+    GameObject::Update();
+
+    PhysicsEngine::ApplyGravity(this);
+	PhysicsEngine::CheckCollisionAgainstEnemies(this);
+	PhysicsEngine::MoveAndCheckCollision(this);
+
+    if(PhysicsEngine::OnGround(this)){
+		_velocity.setY(0.f);
+	}
+
+    if(PhysicsEngine::HitHead(this)){
+	  	_velocity.setY(_velocity.y() * 0.3f);
+	}
+
+    if(PhysicsEngine::OnWall(this)){
+		// if(_movingright) _facingright = true;
+		// if(_movingleft) _facingright = false;
+		_velocity.setX(0.f);
+	}
 }
 
-
-
-void Player::Clean()
-{
-    GameEntity::Clean();
-}
+// void Player::Clean()
+// {
+//     GameEntity::Clean();
+// }
