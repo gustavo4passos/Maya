@@ -42,9 +42,6 @@ void GameEntity::Update()
     _frameTime++;
     _currentFrame = (_frameTime/5) % _numFrames;
     _currentRow = (_frameTime/(5*_numFrames)) % _numRows;
-    _velocity += _acceleration;
-    _position += _velocity;
-    
 }
 
 void GameEntity::Clean()

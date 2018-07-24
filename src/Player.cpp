@@ -1,7 +1,10 @@
 #include "../include/Player.h"
 #include "../include/InputModule.h"
 
-Player::Player(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject()
+Player::Player(float x, float y, int w, int h): GameObject(x, y, w, h)
+{}
+
+Player::Player(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject(collisionRect, spriteW, spriteH)
 {}
 
 Player::~Player()
@@ -43,6 +46,10 @@ void Player::Update()
 		// if(_movingleft) _facingright = false;
 		_velocity.setX(0.f);
 	}
+}
+
+bool Player::OnNotify(Event* event){
+	 GameObject::OnNotify(event);
 }
 
 // void Player::Clean()

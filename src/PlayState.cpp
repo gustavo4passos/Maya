@@ -12,6 +12,7 @@
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
+#include "../include/Maya.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -22,6 +23,7 @@ void PlayState::HandleInput(){
 }
 
 void PlayState::Update(){
+	std::cout << "PLAYSTATE UPDATE\n";
 	_region->Update();
     _object->Update();
 	_camera->Update();

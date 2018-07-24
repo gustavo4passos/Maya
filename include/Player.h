@@ -16,6 +16,7 @@ class Player : public GameObject
 {
 public:
 
+    Player(float x, float y, int w, int h);
     Player(const CollisionRect& collisionRect, int spriteW, int spriteH);
     ~Player();
     
@@ -26,6 +27,7 @@ public:
     virtual void Draw(Renderer*, float positionFactor);
     virtual void HandleInput();
     virtual void Update();
+    bool OnNotify(Event* event);
     
     // virtual void Clean();
 

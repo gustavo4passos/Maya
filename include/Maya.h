@@ -7,6 +7,7 @@ class Maya : public Player
 {
 public:
 
+    Maya(float x, float y, int w, int h);
     Maya(const CollisionRect& collisionRect, int spriteW, int spriteH);
     ~Maya();
     
@@ -14,6 +15,7 @@ public:
     void Draw(Renderer*, float positionFactor);
     void HandleInput();
     void Update();
+    bool OnNotify(Event* event);
     //void Clean();
 
 private:
