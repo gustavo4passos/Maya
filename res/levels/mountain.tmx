@@ -162,18 +162,16 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="GameObjects">
-  <object id="20" name="button-mountain-switch-10" x="800" y="288" width="32" height="32">
+<objectgroup name="GameObjects">
+  <object id="20" name="button-mountain-switch-10" type="button" x="800" y="288" width="32" height="32">
    <properties>
     <property name="activatesSwitch" value="mountain-switch-10"/>
-    <property name="type" value="button"/>
    </properties>
   </object>
-  <object id="21" x="1696" y="928" width="64" height="96">
+  <object id="21" type="door" x="1696" y="928" width="64" height="96">
    <properties>
     <property name="initiallyOpen" type="bool" value="false"/>
     <property name="switchesRequired" value="mountain-switch-10"/>
-    <property name="type" value="door"/>
    </properties>
   </object>
  </objectgroup>
