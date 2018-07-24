@@ -16,6 +16,8 @@ public:
     void Update();
     void Clean();
 
+private:
+    void ChangeState(PlayerState);
 };
 
 #endif

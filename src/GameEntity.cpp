@@ -23,9 +23,11 @@ void GameEntity::Load(int xPos, int yPos, int width, int height, std::string spr
     _scale = scale;
     _flip = flip;
 
+    _frameTime = 0;
     _currentFrame = 0;
     _currentRow = 0;
     _numFrames = 1;
+    _numRows = 1;
 }
 
 void GameEntity::Draw(Renderer* renderer, float positionFactor)
@@ -38,9 +40,12 @@ void GameEntity::Draw(Renderer* renderer, float positionFactor)
 
 void GameEntity::Update()
 {
-    _currentFrame = int(SDL_GetTicks()/80) % _numFrames;
+    _frameTime++;
+    _currentFrame = (_frameTime/5) % _numFrames;
+    _currentRow = (_frameTime/(5*_numFrames)) % _numRows;
     _velocity += _acceleration;
     _position += _velocity;
+    
 }
 
 void GameEntity::Clean()

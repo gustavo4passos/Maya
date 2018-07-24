@@ -35,12 +35,21 @@ bool Game::Init() {
         return false;
     }
    
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
+    if(!ResourceManager::LoadTexture("../res/assets/Maya_Run Sprite Sheet V03.png", "maya_run")) {
+        LOG_ERROR("Unbale to load texture.");
+    }
+    if(!ResourceManager::LoadTexture("../res/assets/Maya_Combat_Attack_v02.png", "maya_attack")) {
+        LOG_ERROR("Unbale to load texture.");
+    }
+    if(!ResourceManager::LoadTexture("../res/assets/Maya_Jump_V01.png", "maya_jump")) {
+        LOG_ERROR("Unbale to load texture.");
+    }
+    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand Arms.png", "maya_stand")) {
         LOG_ERROR("Unbale to load texture.");
     }
 
     _maya = new Maya();
-    _maya->Load(270,100,36,39,"maya_running");
+    _maya->Load(270,100,36,39,"maya_stand");
 
     _running = false;
 
@@ -61,9 +70,10 @@ void Game::Run() {
         previous = current;
         lag += elapsed;
         
-        HandleEvents();        
+                
 
         while(lag >= MS_PER_UPDATE){
+            HandleEvents();
             Update();
             lag -= MS_PER_UPDATE;            
         }
