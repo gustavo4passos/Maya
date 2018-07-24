@@ -80,6 +80,11 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/dagger_swing.mp3", "dagger_swing")){
+		LOG_ERROR("Unable to load sound effect \"dagger_swing\"");
+		return false;
+	}
+
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	
 	_region = new Region();

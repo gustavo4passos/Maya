@@ -113,6 +113,7 @@ void Maya::ChangeState(PlayerState state)
             _spriteW = 46;
             _spriteH = 38;
             _textureName = "maya_attacking";            
+            SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("dagger_swing"));
         }
 
     }
