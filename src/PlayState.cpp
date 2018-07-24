@@ -86,10 +86,11 @@ bool PlayState::OnEnter(){
 	
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
+	//forest->AddGameObject(new Door(CollisionRect(Rect(627, 405, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 
-	Level* mountain = ResourceManager::ParseLevel("../res/levels/mountain.tmx");
+	Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
 
 	_region->AddLevel(forest, "forest");
 	_region->AddLevel(mountain, "mountain");

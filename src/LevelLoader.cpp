@@ -6,6 +6,8 @@
 #include "../include/Level.h"
 #include "../include/ErrorHandler.h"
 #include "../include/Layer.h"
+#include "../include/Door.h"
+#include "../include/Button.h"
 
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
@@ -123,16 +125,72 @@ Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
 }
 
 void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
-    /*std::string test;
+    std::string test;
     test = std::string(objectsNode->Attribute("name"));
-    std::cout<<test<<std::endl;*/
-	for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
-    
-		if(e->Value() == std::string("object")){
-			if(CollisionRect* rct = ParseRect(e)){
-				level->AddCollisionRect(rct);
-			} else {
-				LOG_ERROR("Unable to parse collisionRect");
+    //std::cout<<std::string(objectsNode->Value())<<std::endl;
+	if(test == std::string("CollisionLayer")){
+		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+		
+			if(e->Value() == std::string("object")){
+				if(CollisionRect* rct = ParseRect(e)){
+					level->AddCollisionRect(rct);
+				} else {
+					LOG_ERROR("Unable to parse collisionRect");
+				}
+			}
+		}
+	}
+	else if(test == std::string("GameObjects")){
+		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+			if(e->Value() == std::string("object")){
+				std::string temp;
+				temp = std::string(e->Attribute("type"));
+				float x, y;
+				if(temp == std::string("door")){
+					std::string switchesRequired;
+					bool initialState;
+
+					e->QueryFloatAttribute("x", &x);
+					e->QueryFloatAttribute("y", &y);
+					TiXmlElement* propertiesNode = e->FirstChildElement();
+					if(std::string(propertiesNode->Value()) != std::string("properties"))
+						continue;
+					else{
+						TiXmlElement* initiallyOpen = GetProperty(propertiesNode, "initiallyOpen");
+						if(initiallyOpen == NULL){
+							LOG_WARNING("Door's inittialyOpen is missing, door not loaded");
+							continue;
+						}
+						initiallyOpen->QueryBoolAttribute("value", &initialState);
+						TiXmlElement* switchesRequiredProperty = GetProperty(propertiesNode, "switchesRequired");
+						if(switchesRequiredProperty == NULL){
+							LOG_WARNING("Door's switchesRequired's is missing, door not loaded");
+							continue;
+						}
+						switchesRequired = std::string(switchesRequiredProperty->Attribute("value"));
+						level->AddGameObject(new Door(CollisionRect(Rect(x, y, 32, 32)), 32, 32, switchesRequired, initialState));
+					}				
+					
+				}	
+				if(temp == std::string("button")){
+					std::string activatesSwitch;
+
+					e->QueryFloatAttribute("x", &x);
+					e->QueryFloatAttribute("y", &y);
+					TiXmlElement* propertiesNode = e->FirstChildElement();
+					if(std::string(propertiesNode->Value()) != std::string("properties"))
+						continue;
+					else{
+						TiXmlElement* activatesSwitchNode = GetProperty(propertiesNode, "activatesSwitch");
+						if(activatesSwitchNode == NULL){
+							LOG_WARNING("Button's activeatesSwitch is missing, button not loaded");
+							continue;
+						}
+		
+						activatesSwitch = std::string(activatesSwitchNode->Attribute("value"));
+						level->AddGameObject(new Button(CollisionRect(Rect(x, y, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, activatesSwitch, false));
+					}
+				}
 			}
 		}
 	}
@@ -339,5 +397,19 @@ void LevelLoader::LoadLayerMesh(std::vector<int>& layerData, Level* level, Tiles
 	}
 
 	ResourceManager::LoadMesh((const void*)(&meshData[0]), meshData.size() * sizeof(float), meshData.size() / 4, name);
+}
+
+TiXmlElement* LevelLoader::GetProperty(TiXmlElement* propertiesNode, std::string propertyName){
+	if(propertiesNode==NULL){
+		LOG_ERROR("PropertiesNode is NULL");
+		return NULL;
+	} else {
+		for(TiXmlElement* e = propertiesNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+			if(std::string(e->Attribute("name")) == propertyName){
+				return e;
+			} 
+		}
+	}
+	return NULL; //Property not found.
 }
 
