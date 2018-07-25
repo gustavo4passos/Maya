@@ -9,9 +9,10 @@ class Golem : public GameObject {
 public:
 	Golem(float x, float y);
 
-	virtual void Update() override;
-	virtual void Draw(Renderer* renderer, float deltaTime) override;
-	//virtual bool OnNotify(Event* event);
+	void Update() override;
+	void Draw(Renderer* renderer, float deltaTime) override;
+	bool OnNotify(Event* event) override;
+	void HandleInput() override;
 
 };
 

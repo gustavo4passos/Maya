@@ -13,6 +13,7 @@
 #include "../include/Region.h"
 #include "../include/Renderer.h"
 #include "../include/LevelLoader.h"
+#include "../include/Golem.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -24,7 +25,7 @@ void PlayState::HandleInput(){
 
 void PlayState::Update(){
 	_region->Update();
-    _object->Update();
+    _object->Update(); //maya
 	_camera->Update();
 }
 
@@ -64,6 +65,12 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	//-----------------adicionando golem textura------------------------//
+	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
+		LOG_ERROR("Unable to load texture \"Golem\"");
+		return false;
+	}
+
 	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/forest_sounds.mp3", "forest_sounds")){
 		LOG_ERROR("Unable to load sound effect \"forest_sounds\"");
 		return false;
@@ -83,6 +90,9 @@ bool PlayState::OnEnter(){
 
 	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));
+
+	//-----------------adicionando golem------------------------//
+	forest->AddGameObject(new Golem(300, 150));
 	
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
