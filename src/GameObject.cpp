@@ -79,16 +79,16 @@ void GameObject::HandleInput() {
 
 void GameObject::Draw(Renderer* renderer, float deltaTime) {
    
-    Vector2D refacPosition = Vector2D(_collisionRect.originX() + (_velocity.x() * deltaTime), _collisionRect.originY() + (_velocity.y() * deltaTime));	
-	Rect dst = Rect(refacPosition, _spriteW,  _spriteH);
-	Rect src = Rect(_currentFrame*_spriteW, _currentRow*_spriteH, _spriteW, _spriteH);
+    // Vector2D refacPosition = Vector2D(_collisionRect.originX() + (_velocity.x() * deltaTime), _collisionRect.originY() + (_velocity.y() * deltaTime));	
+	// Rect dst = Rect(refacPosition, _spriteW,  _spriteH);
+	// Rect src = Rect(_currentFrame*_spriteW, _currentRow*_spriteH, _spriteW, _spriteH);
 
-	if(_facingright){
-		renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst);
-	}
-	else{
-		renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst, true);
-	}	
+	// if(_facingright){
+	// 	renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst);
+	// }
+	// else{
+	// 	renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst, true);
+	// }	
 
 	// if(_velocity.x() != 0.f || _velocity.y() != 0.f){
 	// 	if(_movingright) renderer->Draw(ResourceManager::GetTexture("maya_running"), &src, &dst);

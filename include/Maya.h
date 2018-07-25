@@ -11,15 +11,16 @@ public:
     Maya(const CollisionRect& collisionRect, int spriteW, int spriteH);
     ~Maya();
     
-    //void Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
     void Draw(Renderer*, float positionFactor);
     void HandleInput();
     void Update();
     bool OnNotify(Event* event);
-    //void Clean();
+
+    GameObject* weapon() { return _weapon; }
 
 private:
     void ChangeState(PlayerState);
+    GameObject* _weapon;
 };
 
 #endif

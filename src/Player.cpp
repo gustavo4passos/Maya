@@ -1,5 +1,7 @@
 #include "../include/Player.h"
 #include "../include/InputModule.h"
+#include "../include/ResourceManager.h"
+#include "../include/Renderer.h"
 
 Player::Player(float x, float y, int w, int h): GameObject(x, y, w, h)
 {}
@@ -10,14 +12,18 @@ Player::Player(const CollisionRect& collisionRect, int spriteW, int spriteH) : G
 Player::~Player()
 {}
 
-// void Player::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
-// {
-//     GameEntity::Load(xPos, yPos, width, height, sprite, scale, flip);
-// }
-
-void Player::Draw(Renderer* renderer, float positionFactor)
+void Player::Draw(Renderer* renderer, float deltaTime)
 {
-   GameObject::Draw(renderer, positionFactor);
+    Vector2D refacPosition = Vector2D(_collisionRect.originX() + (_velocity.x() * deltaTime), _collisionRect.originY() + (_velocity.y() * deltaTime));	
+	Rect dst = Rect(refacPosition, _spriteW,  _spriteH);
+	Rect src = Rect(_currentFrame*_spriteW, _currentRow*_spriteH, _spriteW, _spriteH);
+
+	if(_facingright){
+		renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst);
+	}
+	else{
+		renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst, true);
+	}	
 }
 
 void Player::HandleInput()
@@ -42,17 +48,10 @@ void Player::Update()
 	}
 
     if(PhysicsEngine::OnWall(this)){
-		// if(_movingright) _facingright = true;
-		// if(_movingleft) _facingright = false;
 		_velocity.setX(0.f);
 	}
 }
 
 bool Player::OnNotify(Event* event){
-	 GameObject::OnNotify(event);
+	return GameObject::OnNotify(event);
 }
-
-// void Player::Clean()
-// {
-//     GameEntity::Clean();
-// }

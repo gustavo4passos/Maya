@@ -13,18 +13,14 @@ Maya::Maya(float x, float y, int w, int h): Player(x, y, w, h)
 
 Maya::Maya(const CollisionRect& collisionRect, int spriteW, int spriteH) : Player(collisionRect, spriteW, spriteH)
 {
-     _textureName = "maya_standing";
-     _currentState = STAND;
+    _textureName = "maya_standing";
+    _currentState = STAND;
+    _kind = Kind::PLAYER;
+    _weapon = new GameObject(_collisionRect.x(), _collisionRect.y()+16, 10, 4);
+    _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::IGNORE);
 }
-
 Maya::~Maya()
 {}
-
-// void Maya::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
-// {
-//     Player::Load(xPos, yPos, width, height, sprite, scale, flip);
-//     ChangeState(STAND);
-// }
 
 void Maya::Draw(Renderer* renderer, float positionFactor)
 {
@@ -34,20 +30,22 @@ void Maya::Draw(Renderer* renderer, float positionFactor)
 void Maya::HandleInput()
 {
 
-    bool leftPressed = InputModule::IsKeyPressed(InputModule::LEFT);
-    bool rightPressed = InputModule::IsKeyPressed(InputModule::RIGHT);
+    bool leftPressed = InputModule::IsKeyPressed(InputModule::LEFT) || InputModule::StickXValue(InputModule::LEFT_STICK) == -1;
+    bool rightPressed = InputModule::IsKeyPressed(InputModule::RIGHT) || InputModule::StickXValue(InputModule::LEFT_STICK) == 1;
 
     if(leftPressed) _facingright = false;
     if(rightPressed) _facingright = true;
 
     if  (_currentState == STAND){
         _velocity.setX(0);
-        if (InputModule::WasKeyPressed(InputModule::SPACE)){
+        if (InputModule::WasKeyPressed(InputModule::SPACE) || InputModule::IsJoyButtonDown(InputModule::JOY_A)){
             if(PhysicsEngine::OnGround(this)){
                 _velocity.setY(-_impulse);
             }
         } 
-        else if (InputModule::WasKeyPressed(InputModule::LCTRL)) ChangeState(STAND_ATTACK);
+        else if (InputModule::WasKeyPressed(InputModule::LCTRL) || InputModule::IsJoyButtonDown(InputModule::JOY_X)) {            
+            ChangeState(STAND_ATTACK);
+        }
         else if ((leftPressed && !rightPressed) || (rightPressed && !leftPressed)) ChangeState(RUN);
     } 
 
@@ -59,7 +57,7 @@ void Maya::HandleInput()
 
     else if (_currentState == RUN){
        
-        if (InputModule::IsKeyPressed(InputModule::SPACE)){
+        if (InputModule::IsKeyPressed(InputModule::SPACE) || InputModule::IsJoyButtonDown(InputModule::JOY_A)){
             if(PhysicsEngine::OnGround(this)){
                 _velocity.setY(-_impulse);
             }
@@ -67,7 +65,7 @@ void Maya::HandleInput()
         else if ((leftPressed && rightPressed) || (!leftPressed && !rightPressed)){
             ChangeState(STAND);
         }            
-        else if (InputModule::WasKeyPressed(InputModule::LCTRL)){
+        else if (InputModule::WasKeyPressed(InputModule::LCTRL) || InputModule::IsJoyButtonDown(InputModule::JOY_X)){
             ChangeState(STAND_ATTACK);
         }           
         else if (leftPressed)  _velocity.setX(-2); 
@@ -122,6 +120,7 @@ void Maya::ChangeState(PlayerState state)
 void Maya::Update()
 {  
     Player::Update();
+    _weapon->setPosition(_collisionRect.x(), _collisionRect.y()+16);
     
     if (_currentState == JUMP){
         if (PhysicsEngine::OnGround(this)){
@@ -131,6 +130,12 @@ void Maya::Update()
 
     else if (_currentState == STAND_ATTACK){
         _velocity.setX(0);
+        if((_currentFrame >= 1 && _currentFrame <= 2 && _currentRow == 0)
+        || (_currentFrame == 0 && _currentRow == 1))
+        {
+            if(_facingright) _weapon->setPosition(_collisionRect.x()+25, _collisionRect.y()+10);
+            else _weapon->setPosition(_collisionRect.x()-13, _collisionRect.y()+10);
+        }
         if (_currentFrame == 2 && _currentRow == 1) ChangeState(STAND);
     }
 
@@ -147,15 +152,11 @@ void Maya::Update()
     }
 
     
+
+    
 }
 
 
 bool Maya::OnNotify(Event* event){
-    Player::OnNotify(event);
+    return Player::OnNotify(event);
 }
-
-// void Maya::Clean()
-// {
-//     Player::Clean();
-// }
-

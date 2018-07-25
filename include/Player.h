@@ -24,7 +24,7 @@ public:
 
     
 
-    virtual void Draw(Renderer*, float positionFactor);
+    virtual void Draw(Renderer*, float deltaTime);
     virtual void HandleInput();
     virtual void Update();
     bool OnNotify(Event* event);

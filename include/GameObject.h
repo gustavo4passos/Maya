@@ -23,7 +23,7 @@ public:
 
 	virtual ~GameObject();
 
-	inline const CollisionRect& collisionRect() { return _collisionRect; }
+	inline const CollisionRect& collisionRect() { return _collisionRect; }	
 	inline const Vector2D& position() { return _collisionRect.position(); }
 	inline const Vector2D& velocity()  { return _velocity; }
 	inline const float x() const { return _collisionRect.x(); }
@@ -33,6 +33,12 @@ public:
 	inline bool isActive() const { return _isActive; }
 	inline int damage() const { return _damage; }
 	inline Kind kind() const { return _kind;  }
+
+
+
+	//TEMPORARIAAAAA
+	inline CollisionRect& collisionRectCHANGEBLE() { return _collisionRect; }
+	//TEMPORARIAAAA
 
 	void setPosition(float x, float y);
 	void setVelocity(float x, float y);
