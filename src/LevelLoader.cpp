@@ -8,6 +8,7 @@
 #include "../include/Layer.h"
 #include "../include/Door.h"
 #include "../include/Button.h"
+#include "../include/EvilSonic.h"
 
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
@@ -125,10 +126,11 @@ Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
 }
 
 void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
-    std::string test;
-    test = std::string(objectsNode->Attribute("name"));
+	float x, y;
+    std::string objectgroupName;
+    objectgroupName = std::string(objectsNode->Attribute("name"));
     //std::cout<<std::string(objectsNode->Value())<<std::endl;
-	if(test == std::string("CollisionLayer")){
+	if(objectgroupName == std::string("CollisionLayer")){
 		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
 		
 			if(e->Value() == std::string("object")){
@@ -140,13 +142,12 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 			}
 		}
 	}
-	else if(test == std::string("GameObjects")){
+	else if(objectgroupName == std::string("GameObjects")){
 		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
 			if(e->Value() == std::string("object")){
-				std::string temp;
-				temp = std::string(e->Attribute("type"));
-				float x, y;
-				if(temp == std::string("door")){
+				std::string objectType;
+				objectType = std::string(e->Attribute("type"));
+				if(objectType == std::string("door")){
 					std::string switchesRequired;
 					bool initialState;
 
@@ -172,7 +173,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					}				
 					
 				}	
-				if(temp == std::string("button")){
+				if(objectType == std::string("button")){
 					std::string activatesSwitch;
 
 					e->QueryFloatAttribute("x", &x);
@@ -191,6 +192,35 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 						level->AddGameObject(new Button(CollisionRect(Rect(x, y, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, activatesSwitch, false));
 					}
 				}
+			}
+		}
+	}
+	else if(objectgroupName == std::string("Enemies")){
+		int width, height;
+		std::string enemyType;
+		TiXmlElement* enemyTypeNode;
+		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+			if(e->Value() == std::string("object")){
+				e->QueryFloatAttribute("x", &x);
+				e->QueryFloatAttribute("y", &y);
+				e->Attribute("width", &width);
+				e->Attribute("height", &height);
+
+				TiXmlElement* propertiesNode = e->FirstChildElement();
+				if(std::string(propertiesNode->Value()) != std::string("properties"))
+					continue;
+				else{
+					enemyTypeNode = GetProperty(propertiesNode, "type");
+
+					if(enemyTypeNode != NULL)
+						enemyType = std::string(enemyTypeNode->Attribute("value"));
+					else{
+						LOG_WARNING("Enemy's type is missing, enemy not loaded");
+						continue;
+					}	
+				}
+
+				level->AddEnemy(new EvilSonic(CollisionRect(x, y, 10, 30, 12, 5), 36, 39));
 			}
 		}
 	}
