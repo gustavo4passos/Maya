@@ -92,7 +92,7 @@ bool PlayState::OnEnter(){
 	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));
 
 	//-----------------adicionando golem------------------------//
-	forest->AddGameObject(new Golem(300, 150));
+	forest->AddGameObject(new Golem(634, 410));
 	
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));

@@ -10,7 +10,7 @@ void Golem::Draw(Renderer* renderer, float deltaTime){
 	Rect rect1 = Rect(0,0,_spriteW,_spriteH);
 	Rect rect2 = Rect(_collisionRect.originX(),_collisionRect.originY(),_spriteW,_spriteH);
 
-	renderer->Draw(ResourceManager::GetTexture("../res/sprites/static_golem.png"),&rect1,&rect2);
+	renderer->Draw(ResourceManager::GetTexture("../res/assets/static-golem.png"),&rect1,&rect2);
 	//first rect: dimension inside the original img
 }
 
