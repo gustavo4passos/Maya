@@ -272,6 +272,7 @@ bool InputModule::InitJoysticks()
 	}
 
 	if (SDL_NumJoysticks() <= 0) {
+		std::cout << "No joysticks initialized\n";
 		_joysticksInit = false;
 		return false;
 	}
@@ -319,7 +320,7 @@ bool InputModule::JoysticksInitialized()
 
 int InputModule::StickXValue(JoyAnalogStick stick, int joyIndex)
 {
-	if (_joystickValues.size() == 0) return 0;
+	if (!_joysticksInit) return 0;
 
 	if (stick == LEFT_STICK)
 		return _joystickValues[joyIndex].first->x();
@@ -329,7 +330,7 @@ int InputModule::StickXValue(JoyAnalogStick stick, int joyIndex)
 
 int InputModule::StickYValue(JoyAnalogStick stick, int joyIndex)
 {
-	if (_joystickValues.size() == 0) return 0;
+	if (!_joysticksInit) return 0;
 
 	if (stick == LEFT_STICK)
 		return _joystickValues[joyIndex].first->y();
@@ -339,11 +340,13 @@ int InputModule::StickYValue(JoyAnalogStick stick, int joyIndex)
 
 bool InputModule::IsJoyButtonUp(JoyButton button, int joyIndex)
 {
+	if (!_joysticksInit) return false;
 	return _joyButtonStates[joyIndex][button].isUp;
 }
 
 bool InputModule::IsJoyButtonDown(JoyButton button, int joyIndex)
 {
+	if (!_joysticksInit) return false;
 	return _joyButtonStates[joyIndex][button].isDown;
 }
 

@@ -59,7 +59,7 @@ bool PlayState::OnEnter(){
 		 return false;
 	}
 
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Combat_Attack_v02.png", "maya_attacking")){
+	if(!ResourceManager::LoadTexture("../res/assets/Maya_Combat Attack v003.png", "maya_attacking")){
 	 	LOG_ERROR("Unable to load texture \"Maya_Attacking\"");
 		 return false;
 	}
@@ -84,14 +84,17 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/damage.mp3", "damage")){
+		LOG_ERROR("Unable to load sound effect \"damage\"");
+		return false;
+	}
+
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	
 	_region = new Region();
 	ServiceLocator::ProvideCurrentRegion(_region);
 	
-	CollisionRect mayaCollisionRect = CollisionRect(Rect(200, 0, 10, 30), CollisionBehavior::BLOCK, 12, 7);
-	_maya = new Maya(mayaCollisionRect, 36, 39);
-
+	_maya = new Maya(200, 0);
 	ServiceLocator::ProvidePlayer(_maya);
 
 	_infoMenu = new InfoMenuGL3();

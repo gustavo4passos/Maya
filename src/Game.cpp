@@ -46,7 +46,6 @@ bool Game::Init() {
 
     if(!InputModule::InitJoysticks()){
         LOG_ERROR("Unable to initialize Joysticks");
-        return false;
     }
 
     if(!SoundPlayer::Init()){

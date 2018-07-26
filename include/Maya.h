@@ -7,7 +7,7 @@ class Maya : public Player
 {
 public:
 
-    Maya(float x, float y, int w, int h);
+    Maya(float x, float y);
     Maya(const CollisionRect& collisionRect, int spriteW, int spriteH);
     ~Maya();
     

@@ -14,9 +14,15 @@ Player::~Player()
 
 void Player::Draw(Renderer* renderer, float deltaTime)
 {
-    Vector2D refacPosition = Vector2D(_collisionRect.originX() + (_velocity.x() * deltaTime), _collisionRect.originY() + (_velocity.y() * deltaTime));	
+	float drawX = _collisionRect.originX();
+	//if(_currentState == STAND_ATTACK) drawX -= 8;
+	Vector2D refacPosition = Vector2D(drawX + (_velocity.x() * deltaTime), _collisionRect.originY() + (_velocity.y() * deltaTime));
 	Rect dst = Rect(refacPosition, _spriteW,  _spriteH);
 	Rect src = Rect(_currentFrame*_spriteW, _currentRow*_spriteH, _spriteW, _spriteH);
+
+	// Color blue = {0, 0, 200, 50};
+
+	// renderer->DrawFillRect(&dst, &blue);
 
 	if(_facingright){
 		renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst);
