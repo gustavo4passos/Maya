@@ -4,6 +4,7 @@
 #include <string>
 #include "GameState.h"
 #include "Renderer.h"
+#include "Maya.h"
 
 class GameEnemy;
 class InfoMenuGL3;
@@ -26,7 +27,7 @@ public:
 
 private:
     Camera* _camera;
-	GameObject* _object;
+	Maya* _maya;
 	InfoMenuGL3* _infoMenu;
     Region* _region;
 

@@ -4,7 +4,7 @@
 
 #include "../include/ErrorHandler.h"
 #include "../include/EventDispatcher.h"
-#include "../include/GameEnemy.h"
+#include "../include/Enemy.h"
 #include "../include/PlayerCollisionEvent.h"
 #include "../include/ActivateSwitchEvent.h"
 
@@ -144,7 +144,7 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
         DEBUG_BREAK();
     }
 
-    for(std::vector<GameEnemy*>::const_iterator it = _currentLevel->enemies().begin(); 
+    for(std::vector<Enemy*>::const_iterator it = _currentLevel->enemies().begin(); 
         it != _currentLevel->enemies().end(); it++)
     {
         if(CheckCollision(&gameObject->_collisionRect, &(*it)->_collisionRect)){

@@ -23,7 +23,7 @@ public:
 
 	virtual ~GameObject();
 
-	inline const CollisionRect& collisionRect() { return _collisionRect; }
+	inline const CollisionRect& collisionRect() { return _collisionRect; }	
 	inline const Vector2D& position() { return _collisionRect.position(); }
 	inline const Vector2D& velocity()  { return _velocity; }
 	inline const float x() const { return _collisionRect.x(); }
@@ -34,13 +34,18 @@ public:
 	inline int damage() const { return _damage; }
 	inline Kind kind() const { return _kind;  }
 
+
+
+	//TEMPORARIAAAAA
+	inline CollisionRect& collisionRectCHANGEBLE() { return _collisionRect; }
+	//TEMPORARIAAAA
+
 	void setPosition(float x, float y);
 	void setVelocity(float x, float y);
 	
 	void Activate() { _isActive = true; }
 	void Deactivate() { _isActive = false; }
 
-	virtual void HandleInput();
 	virtual void Update();
 	virtual void Draw(Renderer* renderer, float deltaTime);
 
@@ -55,21 +60,30 @@ public:
 	friend class InfoMenuGL3;
 
 protected:
+	
+	// Physics
 	Vector2D _velocity;
-
-	float _spriteW, _spriteH;
 	CollisionRect _collisionRect;
-
 	float _speed;
 	float _impulse;
 	int _damage;
-	
-	bool _movingleft, _movingright;
+
+	// Flags
 	bool  _facingright;
 	bool _isActive;
 
+	// Sprite
+	int _currentFrame, _currentRow;
+	int _numRows, _numFrames;
+	int _frameTime;
+	float _spriteW, _spriteH;
+
+	std::string _textureName;
+
+	//Events
 	std::queue<CollisionEvent> _unresolvedCollisionEvents;
 
+	// Kind
 	Kind _kind;
 };
 

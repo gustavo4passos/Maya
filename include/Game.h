@@ -1,9 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "ErrorHandler.h"
 #include "Window.h"
 #include "Player.h"
 #include "Level.h"
+#include "Camera.h"
 
 class Texture; 
 class Mesh;
