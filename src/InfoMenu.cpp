@@ -7,12 +7,13 @@
 #include "../include/Event.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Game.h"
-#include "../include/GameEnemy.h"
+#include "../include/Enemy.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InputModule.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
 #include "../include/ServiceLocator.h"
+#include "../include/LevelLoader.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
 
@@ -278,7 +279,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 				if((*level) != "." && (*level) != "..") {
 					if(ImGui::Button((*level).c_str())){
 						(*level).insert(0, "../res/levels/");
-						Level* newSubregion = ResourceManager::ParseLevel((*level).c_str());
+						Level* newSubregion = LevelLoader::ParseLevel((*level).c_str());
 						if(newSubregion != nullptr) {
 							ServiceLocator::GetCurrentRegion()->AddLevel(newSubregion, *level);
 						}

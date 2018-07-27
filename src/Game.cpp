@@ -59,6 +59,7 @@ bool Game::Init() {
 
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
+    ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;

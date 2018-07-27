@@ -3,6 +3,10 @@
 #include "../include/Button.h"
 #include "../include/Door.h"
 #include "../include/EventDispatcher.h"
+<<<<<<< HEAD
+=======
+#include "../include/Golem.h"
+>>>>>>> 31ed02c98b2118871c5e6528cb1d41bd8ee75668
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
@@ -11,6 +15,10 @@
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
+<<<<<<< HEAD
+=======
+#include "../include/LevelLoader.h"
+>>>>>>> 31ed02c98b2118871c5e6528cb1d41bd8ee75668
 #include "../include/Maya.h"
 
 const std::string PlayState::_playID = "PLAY";
@@ -62,7 +70,7 @@ bool PlayState::OnEnter(){
 	 	LOG_ERROR("Unable to load texture \"Maya_Attacking\"");
 		return false;	
 	}
-
+	
 	if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand Arms.png", "maya_waiting")){
 	 	LOG_ERROR("Unable to load texture \"Maya_Waiting\"");
 		return false;
@@ -74,6 +82,11 @@ bool PlayState::OnEnter(){
 	}
 
 	if(!ResourceManager::LoadTexture("../res/sprites/door.png", "door")) {
+		LOG_ERROR("Unable to load texture \"Door\"");
+		return false;
+	}
+
+	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
 		LOG_ERROR("Unable to load texture \"Door\"");
 		return false;
 	}
@@ -105,12 +118,13 @@ bool PlayState::OnEnter(){
 
 	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
+	forest->AddEnemy(new Golem(480,0));
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 
-	Level* mountain = ResourceManager::ParseLevel("../res/levels/mountain.tmx");
+	Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
 
 	_region->AddLevel(forest, "forest");
 	_region->AddLevel(mountain, "mountain");
@@ -119,8 +133,6 @@ bool PlayState::OnEnter(){
 	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _maya);
    
 	ServiceLocator::GetRenderer()->UseCamera(_camera);
-
-	EventDispatcher::AddListener(_maya, EventType::PLAYER_ENEMY_COLLIDED);
 
     return true;
 }

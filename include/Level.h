@@ -7,7 +7,7 @@
 #include "Tileset.h"
 
 class Layer;
-class GameEnemy;
+class Enemy;
 class GameObject;
 class Renderer;
 
@@ -22,12 +22,12 @@ public:
 	void AddBackgroundLayer(Layer* layer);
 	void AddForegroundLayer(Layer* layer);
 	void AddCollisionRect(CollisionRect* rect);
-	void AddEnemy(GameEnemy* enemy);
+	void AddEnemy(Enemy* enemy);
 	void AddGameObject(GameObject* gameObject);
 	
 	const std::vector<CollisionRect*>& collisionRects() { return _collisionRects; }
 	const std::vector<GameObject*>& gameObjects() { return _gameObjects; }
-	const std::vector<GameEnemy*>& enemies() { return _enemies; }
+	const std::vector<Enemy*>& enemies() { return _enemies; }
 
 	Tileset* tileset() { return _tileset; }
 	
@@ -46,7 +46,7 @@ private:
 	std::vector<Layer*> _backgroundLayers;
 	std::vector<GameObject*> _gameObjects;
 	std::vector<CollisionRect*> _collisionRects;
-	std::vector<GameEnemy*> _enemies;
+	std::vector<Enemy*> _enemies;
 
 	int _width, _height;
 	int _tileWidth, _tileHeight;

@@ -2,7 +2,7 @@
 
 #include "../include/Layer.h"
 #include "../include/ResourceManager.h"
-#include "../include/GameEnemy.h"
+#include "../include/Enemy.h"
 #include "../include/Renderer.h"
 
 Level::Level(Tileset* tileset, int width, int height, int tileWidth, int tileHeight, const std::string& filename) 
@@ -91,7 +91,7 @@ void Level::AddCollisionRect(CollisionRect* rect){
 
 }
 
-void Level::AddEnemy(GameEnemy* enemy){
+void Level::AddEnemy(Enemy* enemy){
 	if(enemy == nullptr) {
 		LOG_WARNING("Unable to add enemy. Enemy is NULL.");
 		return;
