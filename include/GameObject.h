@@ -46,7 +46,6 @@ public:
 	void Activate() { _isActive = true; }
 	void Deactivate() { _isActive = false; }
 
-	virtual void HandleInput();
 	virtual void Update();
 	virtual void Draw(Renderer* renderer, float deltaTime);
 
@@ -67,6 +66,7 @@ protected:
 	CollisionRect _collisionRect;
 	float _speed;
 	float _impulse;
+	int _damage;
 
 	// Flags
 	bool  _facingright;

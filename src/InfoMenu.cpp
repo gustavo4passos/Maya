@@ -7,7 +7,7 @@
 #include "../include/Event.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Game.h"
-#include "../include/GameEnemy.h"
+#include "../include/Enemy.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InputModule.h"
 #include "../include/PhysicsEngine.h"

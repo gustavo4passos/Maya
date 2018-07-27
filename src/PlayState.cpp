@@ -3,7 +3,7 @@
 #include "../include/Button.h"
 #include "../include/Door.h"
 #include "../include/EventDispatcher.h"
-#include "../include/EvilSonic.h"
+#include "../include/Golem.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
@@ -80,6 +80,11 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
+		LOG_ERROR("Unable to load texture \"Door\"");
+		return false;
+	}
+
 	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/forest_sounds.mp3", "forest_sounds")){
 		LOG_ERROR("Unable to load sound effect \"forest_sounds\"");
 		return false;
@@ -107,11 +112,9 @@ bool PlayState::OnEnter(){
 
 	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
-	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));	
-	
+	forest->AddEnemy(new Golem(480,0));
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
-	//forest->AddGameObject(new Door(CollisionRect(Rect(627, 405, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 
@@ -124,8 +127,6 @@ bool PlayState::OnEnter(){
 	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _maya);
    
 	ServiceLocator::GetRenderer()->UseCamera(_camera);
-
-	EventDispatcher::AddListener(_maya, EventType::PLAYER_ENEMY_COLLIDED);
 
     return true;
 }

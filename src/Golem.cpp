@@ -1,11 +1,19 @@
 #include "../include/Golem.h"
 
 Golem::Golem(float x, float y)
-:	GameObject(CollisionRect(Rect(x,y,26,23),CollisionBehavior::BLOCK,14,33),52,56)
-{ }
+:	Enemy(CollisionRect(Rect(x,y,26,23),CollisionBehavior::BLOCK,14,33),52,56)
+{ 
+	_textureName = "../res/assets/static-golem.png";
+}
 
 void Golem::Draw(Renderer* renderer, float deltaTime){
-	renderer->Draw(ResourceManager::GetTexture("../res/sprites/static_golem.png"),Rect(0,0,_spriteW,_spriteH),
-		Rect(x,y,_spriteW,_spriteH))
-	//first rect: dimension inside the original img
+	Enemy::Draw(renderer, deltaTime);
+}
+
+bool Golem::OnNotify(Event* event){
+	return Enemy::OnNotify(event);
+}
+
+void Golem::Update(){
+	Enemy::Update();
 }

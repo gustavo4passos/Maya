@@ -19,9 +19,7 @@ GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spri
 	_facingright(true),
 	_velocity(0.f, 0.f),
     _frameTime(0)
-{
-	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED); 
-}
+{}
 
 GameObject::~GameObject() {
 	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
@@ -42,15 +40,7 @@ void GameObject::Update() {
     _currentRow = (_frameTime/(5*_numFrames)) % _numRows;
 }
 
-void GameObject::HandleInput() {}
-
 void GameObject::Draw(Renderer* renderer, float deltaTime) {}
 
-bool GameObject::OnNotify(Event* event){
-	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
-		_velocity.setX(0.f);
-		_velocity += Vector2D(10.f, -3.f);
-	}
-
-	return false;
-}  
+bool GameObject::OnNotify(Event* event)
+{}

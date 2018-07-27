@@ -1,17 +1,17 @@
 #ifndef GOLEM_H
 #define GOLEM_H
 
-#include "GameObject.h"
+#include "Enemy.h"
 
 
-class Golem : public GameObject {
+class Golem : public Enemy {
 
 public:
 	Golem(float x, float y);
 
-	virtual void Update() override;
-	virtual void Draw(Renderer* renderer, float deltaTime) override;
-	//virtual bool OnNotify(Event* event);
+	void Update() override;
+	void Draw(Renderer* renderer, float deltaTime) override;
+	bool OnNotify(Event* event);
 
 };
 
