@@ -74,7 +74,7 @@ void Maya::HandleInput()
 }
 
 void Maya::ChangeState(PlayerState state)
-{    
+{   
     if(_currentState != state){
         
         _frameTime = 0;
@@ -97,6 +97,7 @@ void Maya::ChangeState(PlayerState state)
         }
 
         else if (state == JUMP){
+            _collisionRect.setOffsetX(12);
             _currentState = JUMP;
             _numFrames = 3;
             _numRows = 3;
@@ -106,6 +107,7 @@ void Maya::ChangeState(PlayerState state)
         }
 
         else if (state == STAND_ATTACK){
+            _collisionRect.setOffsetX(_collisionRect.offsetX()+8);
             _currentState = STAND_ATTACK;
             _numFrames = 3;
             _numRows = 2;
@@ -122,8 +124,6 @@ void Maya::Update()
 {  
     Player::Update();
 
-    
-    _collisionRect.setOffsetX(12);
     _weapon->setPosition(_collisionRect.x(), _collisionRect.y()+16);    
     
     if (_currentState == JUMP){
@@ -133,16 +133,16 @@ void Maya::Update()
     }
 
     else if (_currentState == STAND_ATTACK){
-        _velocity.setX(0);
-        _collisionRect.setOffsetX(_collisionRect.offsetX()+8);
+        _velocity.setX(0);        
         if((_currentFrame >= 1 && _currentFrame <= 2 && _currentRow == 0)
         || (_currentFrame == 0 && _currentRow == 1))
         {
-            if(_facingright) _weapon->setPosition(_collisionRect.x()+25, _collisionRect.y()+10);
+            if(_facingright) _weapon->setPosition(_collisionRect.x()+25, _collisionRect.y()+10);            
             else _weapon->setPosition(_collisionRect.x()-20, _collisionRect.y()+10);
+            
             _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::BLOCK);
-            std::cout << _collisionRect.offsetX() << "\n";
-            if(PhysicsEngine::OnWall(_weapon)){
+            
+            if(PhysicsEngine::OnWall(_weapon) && _currentFrame == 1){
                 SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("damage"));
             }
         }
@@ -152,7 +152,7 @@ void Maya::Update()
     else if (_currentState == STAND){
         if(!PhysicsEngine::OnGround(this)){
             ChangeState(JUMP);
-        }
+        }        
     }
 
     else if (_currentState == RUN){

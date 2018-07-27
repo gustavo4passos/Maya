@@ -67,10 +67,8 @@ protected:
 	CollisionRect _collisionRect;
 	float _speed;
 	float _impulse;
-	int _damage;
 
 	// Flags
-	bool _movingleft, _movingright;
 	bool  _facingright;
 	bool _isActive;
 
@@ -79,6 +77,7 @@ protected:
 	int _numRows, _numFrames;
 	int _frameTime;
 	float _spriteW, _spriteH;
+
 	std::string _textureName;
 
 	//Events

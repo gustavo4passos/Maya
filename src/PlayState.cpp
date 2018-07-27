@@ -44,24 +44,29 @@ void PlayState::Render(Renderer* renderer, float deltatime){
 }
 
 bool PlayState::OnEnter(){
-	 if(!ResourceManager::LoadTexture("../res/assets/Maya_Run Sprite Sheet V03.png", "maya_running")) {
+	if(!ResourceManager::LoadTexture("../res/assets/Maya_Run Sprite Sheet V03.png", "maya_running")) {
         LOG_ERROR("Unbale to load texture  \"Maya_Running\"");
 		return false;
     }
 
 	if(!ResourceManager::LoadTexture("../res/assets/Maya_Standing.png", "maya_standing")){
 	 	LOG_ERROR("Unable to load texture \"Maya_Standing\"");
-		 return false;
+		return false;
 	}
 
 	if(!ResourceManager::LoadTexture("../res/assets/Maya_Jump_V01.png", "maya_jumping")){
 	 	LOG_ERROR("Unable to load texture \"Maya_Jumping\"");
-		 return false;
+		return false;
 	}
 
 	if(!ResourceManager::LoadTexture("../res/assets/Maya_Combat Attack v003.png", "maya_attacking")){
 	 	LOG_ERROR("Unable to load texture \"Maya_Attacking\"");
-		 return false;
+		return false;	
+	}
+	
+	if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand Arms.png", "maya_waiting")){
+	 	LOG_ERROR("Unable to load texture \"Maya_Waiting\"");
+		return false;
 	}
 
 	if(!ResourceManager::LoadTexture("../res/sprites/button.png", "button")) {
