@@ -14,6 +14,13 @@
 
 class Mesh;
 
+enum class ResourceType {
+    TEXTURE,
+    MESH,
+    SOUND_EFFECT,
+    MUSIC    
+};
+
 class ResourceManager {
 
 public:
@@ -27,12 +34,15 @@ public:
     //Sounds & Music
     static bool LoadSoundEffect(const std::string& filename, const std::string& name);
     static Sound* GetSoundEffect(const std::string& name);
+    static void DeleteSoundEffect(const std::string& name);
 
 	//Meshes
 	static bool LoadMesh(const void* data, std::size_t size, unsigned int count, const std::string& name);
 	static Mesh* const GetMesh(const std::string& name);
 	static void DeleteMesh(const std::string& name);
 	static void CleanMeshes();
+
+    static void CleanResource(ResourceType resourceType, const std::string& name);
 
     static void Clean();
 private:

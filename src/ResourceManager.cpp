@@ -102,6 +102,10 @@ bool ResourceManager::LoadMesh(const void* data, std::size_t size, unsigned int 
 	return true;
 }
 
+void ResourceManager::DeleteSoundEffect(const std::string& name) {
+	LOG_WARNING("Sound Effect not deleted. Method has not been implemented.")
+}
+
 Mesh* const ResourceManager::GetMesh(const std::string& name) {
 	std::map<std::string, Mesh*>::const_iterator meshEntry = _meshMap.find(name.c_str());
 
@@ -132,6 +136,22 @@ void ResourceManager::CleanMeshes(){
 	}
 
 	_meshMap.clear();
+}
+
+void ResourceManager::CleanResource(ResourceType resourceType, const std::string& name) {
+	switch(resourceType) {
+		case ResourceType::TEXTURE:
+			DeleteTexture(name);
+			break;
+		case ResourceType::MESH:
+			DeleteMesh(name);
+			break;
+		case ResourceType::SOUND_EFFECT:
+			DeleteSoundEffect(name);
+			break;
+		default:
+			break;
+	}
 }
 
 void ResourceManager::Clean() {

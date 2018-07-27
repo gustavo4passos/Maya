@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "ResourceManager.h"
+
 class Level;
 class Renderer;
 
@@ -16,6 +18,8 @@ public:
     void Update();
     void Render(Renderer* renderer, float  deltaTime);
 
+    bool AddResource(ResourceType resourceType, const std::string resourceID);
+    
     bool AddLevel(Level* level, const std::string& levelID);
     bool ChangeCurrentLevel(const std::string& levelID);
 
@@ -26,6 +30,8 @@ private:
     bool HasLevelBenSet();
     std::string _currentLevel;
     std::map<std::string, Level*> _levels;
+
+    std::map<ResourceType, std::vector< std::string > > _resources;
 };
 
 #endif
