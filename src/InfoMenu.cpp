@@ -13,6 +13,7 @@
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
 #include "../include/ServiceLocator.h"
+#include "../include/LevelLoader.h"
 
 #define LOCAL_PERSIST static
 
@@ -276,7 +277,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 				if((*level) != "." && (*level) != "..") {
 					if(ImGui::Button((*level).c_str())){
 						(*level).insert(0, "../res/levels/");
-						Level* newSubregion = ResourceManager::ParseLevel((*level).c_str());
+						Level* newSubregion = LevelLoader::ParseLevel((*level).c_str());
 						if(newSubregion != nullptr) {
 							ServiceLocator::GetCurrentRegion()->AddLevel(newSubregion, *level);
 						}

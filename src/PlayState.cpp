@@ -12,6 +12,7 @@
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
+#include "../include/LevelLoader.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -80,15 +81,16 @@ bool PlayState::OnEnter(){
 
 	_infoMenu = new InfoMenuGL3();
 
-	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
+	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));
 	
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
+	//forest->AddGameObject(new Door(CollisionRect(Rect(627, 405, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 
-	Level* mountain = ResourceManager::ParseLevel("../res/levels/mountain.tmx");
+	Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
 
 	_region->AddLevel(forest, "forest");
 	_region->AddLevel(mountain, "mountain");

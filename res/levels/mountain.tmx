@@ -162,7 +162,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="GameObjects">
+<objectgroup name="GameObjects">
   <object id="20" name="button-mountain-switch-10" type="button" x="800" y="288" width="32" height="32">
    <properties>
     <property name="activatesSwitch" value="mountain-switch-10"/>
