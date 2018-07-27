@@ -81,7 +81,12 @@ bool PlayState::OnEnter(){
 	}
 
 	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
-		LOG_ERROR("Unable to load texture \"Door\"");
+		LOG_ERROR("Unable to load texture \"static-golem\"");
+		return false;
+	}
+
+	if(!ResourceManager::LoadTexture("../res/assets/golem-walk.png", "../res/assets/golem-walk.png")) {
+		LOG_ERROR("Unable to load texture \"golem-walk\"");
 		return false;
 	}
 
@@ -112,7 +117,7 @@ bool PlayState::OnEnter(){
 
 	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
-	forest->AddEnemy(new Golem(480,0));
+	forest->AddEnemy(new Golem(320,0,"forest-button-1"));
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 

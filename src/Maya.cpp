@@ -164,5 +164,11 @@ void Maya::Update()
 
 
 bool Maya::OnNotify(Event* event){
-    return Player::OnNotify(event);
+   if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
+        //_velocity.setX(0.f);
+        if(_facingright)_velocity = Vector2D(-10, -7.f);
+        else _velocity = Vector2D(10, -7.f);
+    }
+
+    return false;
 }

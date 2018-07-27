@@ -53,11 +53,4 @@ void Player::Update()
 	}
 }
 
-bool Player::OnNotify(Event* event){
-	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
-        _velocity.setX(0.f);
-        _velocity += Vector2D(10.f, -3.f);
-    }
-
-    return false;
-}
+bool Player::OnNotify(Event* event){}
