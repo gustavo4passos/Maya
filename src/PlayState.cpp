@@ -3,10 +3,7 @@
 #include "../include/Button.h"
 #include "../include/Door.h"
 #include "../include/EventDispatcher.h"
-<<<<<<< HEAD
-=======
 #include "../include/Golem.h"
->>>>>>> 31ed02c98b2118871c5e6528cb1d41bd8ee75668
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
@@ -15,10 +12,7 @@
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
-<<<<<<< HEAD
-=======
 #include "../include/LevelLoader.h"
->>>>>>> 31ed02c98b2118871c5e6528cb1d41bd8ee75668
 #include "../include/Maya.h"
 
 const std::string PlayState::_playID = "PLAY";
