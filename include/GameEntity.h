@@ -29,9 +29,9 @@ public:
     bool IsFlipped() { return _flip; }
 	
     // Setters
-    void setPosition(int x, int y) { _position = Vector2D(x,y); }
-	void setVelocity(int x, int y) { _velocity = Vector2D(x,y); }
-	void setAcceleration(int x, int y) { _acceleration = Vector2D(x,y); }
+    void setPosition(float x, float y) { _position = Vector2D(x,y); }
+	void setVelocity(float x, float y) { _velocity = Vector2D(x,y); }
+	void setAcceleration(float x, float y) { _acceleration = Vector2D(x,y); }
     void setPosition(Vector2D vec) { _position = vec; }
     void setVelocity(Vector2D vec) { _velocity = vec; }
 	void setAcceleration(Vector2D vec) { _acceleration = vec; }
@@ -51,10 +51,13 @@ protected:
     Vector2D _velocity;
     Vector2D _acceleration;    
 
-    // Frame (We are not using them for now)
+    // Frame
     int _currentRow;
 	int _currentFrame;
-    int _numFrames; 
+    int _numFrames;
+    int _numRows;
+    int _frameTime;
+
 };
 
 #endif

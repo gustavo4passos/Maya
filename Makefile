@@ -47,15 +47,17 @@ bin/Application.exe: $(OBJECTS)
 	@echo =======================
 	@echo Make: COMPILATION SUCCEEDED
 
+build/%.o: src/%.cpp include/%.h
+	$(info $(patsubst build/%,%:, $@))
+	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
+	@echo =======================
+
 build/%.o: src/%.cpp
 	$(info $(patsubst build/%,%:, $@))
 	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
 	@echo =======================  
 
-build/%.o: src/%.cpp include/%.h
-	$(info $(patsubst build/%,%:, $@))
-	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
-	@echo =======================
+
 
 clean:
 ifeq ($(OS), Windows_NT)
