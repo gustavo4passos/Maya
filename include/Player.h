@@ -3,19 +3,24 @@
 
 #include "GameObject.h"
  
+enum PlayerState { 
+    STAND,
+    RUN,
+    JUMP,
+    RUN_ATTACK,
+    JUMP_ATTACK,
+    STAND_ATTACK,
+    BOUNCE_STUCK,
+    DEAD
+};
 
 class Player : public GameObject
 {
-
-
-
 public:
 
     Player(float x, float y, int w, int h);
     Player(const CollisionRect& collisionRect, int spriteW, int spriteH);
-
-    virtual ~Player();
-
+    virtual ~Player();  
 
     virtual void Draw(Renderer*, float deltaTime) override;
     virtual void HandleInput();
@@ -24,21 +29,10 @@ public:
     
 protected:
 
-    enum PlayerState { 
-        STAND,
-        RUN,
-        JUMP,
-        RUN_ATTACK,
-        JUMP_ATTACK,
-        STAND_ATTACK    
-    };
-
+    int _health;
 
     PlayerState _currentState;
-
-    virtual void ChangeState(PlayerState) = 0;
-    
-   
+    virtual void ChangeState(PlayerState) = 0;  
 };
 
 #endif

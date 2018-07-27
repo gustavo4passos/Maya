@@ -48,9 +48,9 @@ void Enemy::Update()
 
 bool Enemy::OnNotify(Event* event){
 	
-	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
-		_velocity.setY(-10);
-	}
+	// if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
+	// 	_velocity.setY(-10);
+	// }
 
 	return false;
 }
