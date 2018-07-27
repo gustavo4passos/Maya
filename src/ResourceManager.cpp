@@ -34,7 +34,6 @@ bool ResourceManager::LoadTexture(const std::string& filename, const std::string
 
     // Frees image data from RAM
     stbi_image_free(textureData);
-
     return true;
 }
 

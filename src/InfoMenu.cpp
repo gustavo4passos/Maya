@@ -14,6 +14,8 @@
 #include "../include/Region.h"
 #include "../include/ServiceLocator.h"
 #include "../include/LevelLoader.h"
+#include "../include/Renderer.h"
+#include "../include/ResourceManager.h"
 
 #define LOCAL_PERSIST static
 
