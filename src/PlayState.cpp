@@ -3,7 +3,6 @@
 #include "../include/Button.h"
 #include "../include/Door.h"
 #include "../include/EventDispatcher.h"
-#include "../include/EvilSonic.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
@@ -63,7 +62,7 @@ bool PlayState::OnEnter(){
 	 	LOG_ERROR("Unable to load texture \"Maya_Attacking\"");
 		return false;	
 	}
-	
+
 	if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand Arms.png", "maya_waiting")){
 	 	LOG_ERROR("Unable to load texture \"Maya_Waiting\"");
 		return false;
@@ -106,7 +105,6 @@ bool PlayState::OnEnter(){
 
 	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
-	forest->AddEnemy(new EvilSonic(CollisionRect(10, 100, 10, 30, 12, 5), 36, 39));	
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 

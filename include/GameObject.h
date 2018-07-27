@@ -67,6 +67,7 @@ protected:
 	CollisionRect _collisionRect;
 	float _speed;
 	float _impulse;
+	int _damage;
 
 	// Flags
 	bool  _facingright;

@@ -36,7 +36,7 @@ void GameObject::setVelocity(float x, float y) {
 		_velocity.setY(y);
 }
 
-void GameObject::Update() {	
+void GameObject::Update() {
 	_frameTime++;
     _currentFrame = (_frameTime/5) % _numFrames;
     _currentRow = (_frameTime/(5*_numFrames)) % _numRows;
@@ -46,11 +46,4 @@ void GameObject::HandleInput() {}
 
 void GameObject::Draw(Renderer* renderer, float deltaTime) {}
 
-bool GameObject::OnNotify(Event* event){
-	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
-		_velocity.setX(0.f);
-		_velocity += Vector2D(10.f, -3.f);
-	}
-
-	return false;
-}  
+bool GameObject::OnNotify(Event* event){}  
