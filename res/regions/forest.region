@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<region>
+    <resources>
+        <audio>
+            <soundeffects>
+                <soundeffect filename="../res/sfx/sword_atack.wav" id="sword_attack"/>
+                <soundeffect filename="../res/sfx/steps" id="steps"/>
+            </soundeffects>
+
+            <songs>
+                <song filename="forest_theme.mp3" id="forest_theme"/>
+                <song filename="nightsky_serenade.mp3" id="nightsky_serenade"/>
+            </songs>
+        </audio>
+
+        <sprites>
+            <sprite filename="../res/sprites/enemies/golem_standing.png" id="golem_standing"/>
+            <sprite filename="../res/sprites/enemies/golem_running.png" id="golem_running"/>
+        </sprites>
+    </resources>
+
+    <leveldata>
+        <level filename="../res/regions/subregions/temple_outskirts.tmx" id="temple_outskirts.tmx"/>
+        <level filename="../res/regions/subregions/temple_entrance.tmx" id="temple_entrance"/>
+    </leveldata>
+
+    <startinglevel id="temple_outskirts"/>
+</region>

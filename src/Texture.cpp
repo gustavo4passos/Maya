@@ -14,7 +14,7 @@ Texture::Texture(const void* data, int width, int height, int nChannels) :
     GLCall(glBindTexture(GL_TEXTURE_2D, _textureID));
 
     SetTexFiltering(false, false);
-    SetTexRepeatBehavior(false);
+    SetTexRepeatBehavior(true);
 
     UploadTexture((BYTE*)data);
 }
@@ -35,7 +35,7 @@ void Texture::SetTexFiltering(bool magLinearFiltering, bool minLinearFiltering) 
     Bind();
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magLinearFiltering ? GL_LINEAR : GL_NEAREST));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minLinearFiltering ? GL_LINEAR : GL_NEAREST));
-    // TODO Consider generating mipmaps
+    //TODO(Gustavo): Consider generating mipmaps
 }
 
 void Texture::SetTexRepeatBehavior(bool repeat){

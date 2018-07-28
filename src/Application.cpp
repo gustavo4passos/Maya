@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
   
   if(!game.Init()){
     LOG_ERROR("Unable to start game.");
-	DEBUG_BREAK();
+	  DEBUG_BREAK();
     return 0;
   }
 

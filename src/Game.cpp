@@ -1,17 +1,20 @@
 #include "../include/Game.h"
 
+#include <thread>
+
 #include <SDL2/SDL.h>
 #include "imgui.h"
 #include "imgui_impl_sdl_gl3.h"
 
-#include "../include/LuaScript.h"
 #include "../include/ErrorHandler.h"
+#include "../include/GameStateMachine.h"
+#include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
+#include "../include/LuaScript.h"
 #include "../include/ResourceManager.h"
 #include "../include/SoundPlayer.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/ServiceLocator.h"
-#include "../include/GameStateMachine.h"
 #include "../include/PlayState.h"
 
 bool Game::Init() {
@@ -33,13 +36,16 @@ bool Game::Init() {
         return false;
     }
 
-    _renderer->SetClearColor(0.f, .8f, 0.f, 1.f);
+    _renderer->SetClearColor(0.09f, .60f, 0.85f, 1.f);
     _renderer->SetViewportSize(_window->width(), _window->height());
-
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
         return false;
+    }
+
+    if(!InputModule::InitJoysticks()){
+        LOG_ERROR("Unable to initialize Joysticks");
     }
 
     if(!SoundPlayer::Init()){
@@ -47,22 +53,21 @@ bool Game::Init() {
         return false;
     }
 
-    if(!ResourceManager::LoadMusic("../res/music/puta.wav", "porra")){
+    if(!ResourceManager::LoadMusic("../res/audio/music/piano-theme-drums.mp3", "BGM")){
         LOG_ERROR("Unable to load music.");
         return false;
     }
     else{
-        SoundPlayer::PlayBGM(ResourceManager::GetMusic("porra"), true);
+        SoundPlayer::PlayBGM(ResourceManager::GetMusic("BGM"), true);
     }
    
-    if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
-        LOG_ERROR("Unbale to load texture.");
-    }
-
     ServiceLocator::ProvideGame(this);
     ServiceLocator::ProvideWindow(_window); 
     ServiceLocator::ProvideRenderer(_renderer);
 
+    ServiceLocator::ProvideGameSwitches(new GameSwitches());
+    ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
+    ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;
@@ -98,7 +103,6 @@ void Game::Render(float positionFactor) {
     GameStateMachine::Render(_renderer, positionFactor);
 
     _window->Swap();
-
 }
 
 void Game::Update() {
@@ -107,8 +111,7 @@ void Game::Update() {
 
 void Game::Clean() {
     GameStateMachine::Clean();
-	ResourceManager::CleanTextures();
-	ResourceManager::CleanMeshes();
+	ResourceManager::Clean();
     InputModule::Clean();
 
     delete _renderer;

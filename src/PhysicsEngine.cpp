@@ -1,7 +1,12 @@
 #include "../include/PhysicsEngine.h"
 
+#include <memory> 
+
 #include "../include/ErrorHandler.h"
-#include "../include/GameEnemy.h"
+#include "../include/EventDispatcher.h"
+#include "../include/Enemy.h"
+#include "../include/PlayerCollisionEvent.h"
+#include "../include/ActivateSwitchEvent.h"
 
 Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.4); 
 Level* PhysicsEngine::_currentLevel = NULL;
@@ -64,6 +69,16 @@ bool PhysicsEngine::HitHead(GameObject* gameObject){
 	return false;
 }
 
+bool PhysicsEngine::IsOnTop(Rect* bottom, Rect* top) {
+    Rect topOffset = *top;
+    topOffset.setY(topOffset.y() + 1);
+
+    if(CheckCollision(bottom, &topOffset)) {
+        return true;
+    }
+    return false;
+}
+
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
     int nSteps=(int)(gameObject->velocity().Length() *2) + 1;
     Vector2D furthestPosition = gameObject->collisionRect().position();
@@ -102,12 +117,24 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
         DEBUG_BREAK();
     }
 
-    for(std::vector<Rect*>::const_iterator it = _currentLevel->collisionRects().begin(); 
+    for(std::vector<CollisionRect*>::const_iterator it = _currentLevel->collisionRects().begin(); 
 	    it!=_currentLevel->collisionRects().end(); it++){
         if(CheckCollision(rect, *it)){
             return true;
         }
     }
+
+    for(auto gameObject = _currentLevel->gameObjects().begin(); gameObject != _currentLevel->gameObjects().end(); gameObject++) {
+        if((*gameObject)->collisionRect().collisionBehavior() == CollisionBehavior::IGNORE) {
+            continue;
+        }
+
+        Rect collisionRect = (*gameObject)->collisionRect();
+        if(CheckCollision(rect, &collisionRect)) {
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -117,18 +144,20 @@ void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
         DEBUG_BREAK();
     }
 
-    for(std::vector<GameEnemy*>::const_iterator it = _currentLevel->enemies().begin(); 
-        it != _currentLevel->enemies().end(); it++){
-
+    for(std::vector<Enemy*>::const_iterator it = _currentLevel->enemies().begin(); 
+        it != _currentLevel->enemies().end(); it++)
+    {
         if(CheckCollision(&gameObject->_collisionRect, &(*it)->_collisionRect)){
             CollisionEvent enemyCollisionEvent = { NULL, CollisionEventType::ENEMY_COLLISION, (*it)->velocity(), 
                  (*it)->damage() };
             gameObject->EnqueueCollisionEvent(enemyCollisionEvent);
             //Como sera determinado o dano da maya em relacao aos diferentes estados e equipamentos ?
-            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_COLLISION, gameObject->velocity(), 
+            CollisionEvent mayaCollisionEvent = { NULL, CollisionEventType::PLAYER_ENEMY_COLLIDED, gameObject->velocity(), 
                  gameObject->damage() };
             (*it)->EnqueueCollisionEvent(mayaCollisionEvent);
+
+            std::unique_ptr<Event> playerCollision(new PlayerCollisionEvent(100, Vector2D(0, 0), Vector2D(0, 0)));
+            EventDispatcher::Notify(playerCollision.get());
         }
     }
-
 }

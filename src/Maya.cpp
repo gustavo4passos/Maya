@@ -3,54 +3,187 @@
 #include <iostream>
 
 #include "../include/InputModule.h"
+#include "../include/ResourceManager.h"
+#include "../include/Weapon.h"
 
-
-Maya::Maya() : Player()
+Maya::Maya(float x, float y): Maya(CollisionRect(x, y, 10, 30, 12, 7), 36, 39)
 {}
+
+Maya::Maya(const CollisionRect& collisionRect, int spriteW, int spriteH) : Player(collisionRect, spriteW, spriteH)
+{
+    _textureName = "maya_standing";
+    _currentState = STAND;
+    _kind = Kind::PLAYER;
+    _speed = 2.5f;
+	_impulse = 8.f;
+    _weapon = new Weapon(_collisionRect.x(), _collisionRect.y()+16, 10, 4);
+    _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::IGNORE);
+    _health = 80;
+}
 
 Maya::~Maya()
 {}
 
-void Maya::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
-{
-    Player::Load(xPos, yPos, width, height, sprite, scale, flip); 
-    _numFrames = 8;
-}
-
 void Maya::Draw(Renderer* renderer, float positionFactor)
 {
-    Player::Draw(renderer, positionFactor);
+    if(_health > 0) Player::Draw(renderer, positionFactor);
 }
 
 void Maya::HandleInput()
 {
-    _velocity.setX(0);
-    _velocity.setY(0);
 
-    if(InputModule::IsKeyPressed(InputModule::RIGHT)) {
-        _velocity.setX(_velocity.x()+2);
+    bool leftPressed = InputModule::IsKeyPressed(InputModule::LEFT) || InputModule::StickXValue(InputModule::LEFT_STICK) == -1;
+    bool rightPressed = InputModule::IsKeyPressed(InputModule::RIGHT) || InputModule::StickXValue(InputModule::LEFT_STICK) == 1;
+
+    if(leftPressed) _facingright = false;
+    if(rightPressed) _facingright = true;
+
+    if  (_currentState == STAND){
+        _velocity.setX(0);
+        if (InputModule::WasKeyPressed(InputModule::SPACE) || InputModule::IsJoyButtonDown(InputModule::JOY_A)){
+            if(PhysicsEngine::OnGround(this)){
+                _velocity.setY(-_impulse);
+            }
+        } 
+        else if (InputModule::WasKeyPressed(InputModule::LCTRL) || InputModule::IsJoyButtonDown(InputModule::JOY_X)) {            
+            ChangeState(STAND_ATTACK);
+        }
+        else if ((leftPressed && !rightPressed) || (rightPressed && !leftPressed)) ChangeState(RUN);
+    } 
+
+    else if (_currentState == JUMP){
+        if (leftPressed)  _velocity.setX(-2); 
+        else if (rightPressed) _velocity.setX(2);
     }
 
-    if(InputModule::IsKeyPressed(InputModule::LEFT)) {
-        _velocity.setX(_velocity.x()-2);
+    else if (_currentState == RUN){       
+        if (InputModule::IsKeyPressed(InputModule::SPACE) || InputModule::IsJoyButtonDown(InputModule::JOY_A)){
+            if(PhysicsEngine::OnGround(this)){
+                _velocity.setY(-_impulse);
+            }
+        }        
+        else if ((leftPressed && rightPressed) || (!leftPressed && !rightPressed)){
+            ChangeState(STAND);
+        }            
+        else if (InputModule::WasKeyPressed(InputModule::LCTRL) || InputModule::IsJoyButtonDown(InputModule::JOY_X)){
+            ChangeState(STAND_ATTACK);
+        }           
+        else if (leftPressed)  _velocity.setX(-2); 
+        else if (rightPressed) _velocity.setX(2);       
     }
+}
 
-    if(InputModule::IsKeyPressed(InputModule::DOWN)) {
-        _velocity.setY(_velocity.y()+2);
+void Maya::ChangeState(PlayerState state)
+{   
+    if(_currentState != state){
+        
+        _frameTime = 0;
+        _spriteW = 36;
+        _spriteH = 39;
+
+        if (state == STAND){
+            _collisionRect.setOffsetX(12);
+            _currentState = STAND;        
+            _numFrames = 1;
+            _numRows = 1;
+            _textureName = "maya_standing";
+        }
+
+        else if (state == RUN){
+            _currentState = RUN;            
+            _numFrames = 4;
+            _numRows = 2;
+            _textureName = "maya_running";          
+        }
+
+        else if (state == JUMP){
+            _collisionRect.setOffsetX(12);
+            _currentState = JUMP;
+            _numFrames = 3;
+            _numRows = 3;
+            _spriteW = 38;
+            _spriteH = 41;
+            _textureName = "maya_jumping";            
+        }
+
+        else if (state == STAND_ATTACK){
+            _collisionRect.setOffsetX(_collisionRect.offsetX()+8);
+            _currentState = STAND_ATTACK;
+            _numFrames = 3;
+            _numRows = 2;
+            _spriteW = 53;
+            _spriteH = 38;
+            _textureName = "maya_attacking";            
+            SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("dagger_swing"));
+        }
+
+        else if (state == BOUNCE_STUCK){
+            _collisionRect.setOffsetX(12);
+            _currentState = BOUNCE_STUCK;
+            _numFrames = 3;
+            _numRows = 3;
+            _spriteW = 38;
+            _spriteH = 41;
+            _textureName = "maya_jumping";           
+        }
     }
-
-    if(InputModule::IsKeyPressed(InputModule::UP)) {
-        _velocity.setY(_velocity.y()-2);
-    }
-
 }
 
 void Maya::Update()
 {  
-     Player::Update();
+    Player::Update();
+
+    _weapon->setPosition(_collisionRect.x(), _collisionRect.y()+16);    
+    
+    if (_currentState == JUMP){
+        if (PhysicsEngine::OnGround(this)){
+            ChangeState(STAND);
+        }
+    }
+    
+    else if (_currentState == BOUNCE_STUCK){
+        if(PhysicsEngine::OnGround(this)){
+            ChangeState(STAND);
+        }
+    }
+
+    else if (_currentState == STAND_ATTACK){
+        _velocity.setX(0);        
+        if((_currentFrame >= 1 && _currentFrame <= 2 && _currentRow == 0)
+        || (_currentFrame == 0 && _currentRow == 1))
+        {
+            if(_facingright) _weapon->setPosition(_collisionRect.x()+25, _collisionRect.y()+10);            
+            else _weapon->setPosition(_collisionRect.x()-20, _collisionRect.y()+10);
+            
+            // _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::BLOCK);
+            
+            if(PhysicsEngine::OnWall(_weapon) && _currentFrame == 1){
+                SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("damage"));
+            }
+        }
+        if (_currentFrame == 2 && _currentRow == 1) ChangeState(STAND);
+    }
+
+    else if (_currentState == STAND){
+        if(!PhysicsEngine::OnGround(this)){
+            ChangeState(JUMP);
+        }        
+    }
+
+    else if (_currentState == RUN){
+        if(!PhysicsEngine::OnGround(this)){
+            ChangeState(JUMP);
+        }
+    }    
 }
 
-void Maya::Clean()
-{
-    Player::Clean();
+
+bool Maya::OnNotify(Event* event){
+    if(event->type() == EventType::PLAYER_ENEMY_COLLIDED){
+        //_velocity.setX(0);
+        if(_facingright) _velocity = Vector2D(-2, -4);
+        else _velocity = Vector2D(2, -4);
+        _health--;
+        ChangeState(BOUNCE_STUCK);
+    }
 }

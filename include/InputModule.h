@@ -30,10 +30,6 @@ public:
 		JOY_START,
 		JOY_LSTICK,
 		JOY_RSTICK,
-		JOY_UP,
-		JOY_DOWN,
-		JOY_LEFT,
-		JOY_RIGHT
 	}
 	JoyButton;
 
@@ -73,11 +69,11 @@ public:
 	// Joysticks
 	static bool InitJoysticks();
 	inline static bool JoysticksInitialized();
-	inline static bool IsJoyButtonUp(int joyIndex, int buttonNumber);
-	inline static bool IsJoyButtonDown(int joyIndex, int buttonNumber);
+	static bool IsJoyButtonUp(JoyButton, int joyIndex=0);
+	static bool IsJoyButtonDown(JoyButton, int joyIndex=0);
 
-	static int StickXValue(int joyIndex, JoyAnalogStick);
-	static int StickYValue(int joyIndex, JoyAnalogStick);
+	static int StickXValue(JoyAnalogStick, int joyIndex=0);
+	static int StickYValue(JoyAnalogStick, int joyIndex=0);
 
 	// Mouse
 	inline static bool WasMouseButtonReleased(MouseButton);

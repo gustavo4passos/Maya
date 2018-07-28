@@ -272,6 +272,7 @@ bool InputModule::InitJoysticks()
 	}
 
 	if (SDL_NumJoysticks() <= 0) {
+		std::cout << "No joysticks initialized\n";
 		_joysticksInit = false;
 		return false;
 	}
@@ -317,9 +318,9 @@ bool InputModule::JoysticksInitialized()
 	return _joysticksInit;
 }
 
-int InputModule::StickXValue(int joyIndex, JoyAnalogStick stick)
+int InputModule::StickXValue(JoyAnalogStick stick, int joyIndex)
 {
-	if (_joystickValues.size() == 0) return 0;
+	if (!_joysticksInit) return 0;
 
 	if (stick == LEFT_STICK)
 		return _joystickValues[joyIndex].first->x();
@@ -327,9 +328,9 @@ int InputModule::StickXValue(int joyIndex, JoyAnalogStick stick)
 		return _joystickValues[joyIndex].second->x();
 }
 
-int InputModule::StickYValue(int joyIndex, JoyAnalogStick stick)
+int InputModule::StickYValue(JoyAnalogStick stick, int joyIndex)
 {
-	if (_joystickValues.size() == 0) return 0;
+	if (!_joysticksInit) return 0;
 
 	if (stick == LEFT_STICK)
 		return _joystickValues[joyIndex].first->y();
@@ -337,14 +338,16 @@ int InputModule::StickYValue(int joyIndex, JoyAnalogStick stick)
 		return _joystickValues[joyIndex].second->y();
 }
 
-bool InputModule::IsJoyButtonUp(int joyIndex, int buttonNumber)
+bool InputModule::IsJoyButtonUp(JoyButton button, int joyIndex)
 {
-	return _joyButtonStates[joyIndex][buttonNumber].isUp;
+	if (!_joysticksInit) return false;
+	return _joyButtonStates[joyIndex][button].isUp;
 }
 
-bool InputModule::IsJoyButtonDown(int joyIndex, int buttonNumber)
+bool InputModule::IsJoyButtonDown(JoyButton button, int joyIndex)
 {
-	return _joyButtonStates[joyIndex][buttonNumber].isDown;
+	if (!_joysticksInit) return false;
+	return _joyButtonStates[joyIndex][button].isDown;
 }
 
 // handle _joysticks events
@@ -407,8 +410,9 @@ void InputModule::OnJoystickAxisMove(SDL_Event &e)
 
 void InputModule::OnJoystickButtonDown(SDL_Event &e)
 {
+	
 	int joyIndex = e.jaxis.which;
-	_joyButtonStates[joyIndex][e.jbutton.button].isDown = true;
+	_joyButtonStates[joyIndex][e.jbutton.button].isDown = true;	
 	_joyButtonStates[joyIndex][e.jbutton.button].isUp = false;
 }
 
@@ -416,7 +420,7 @@ void InputModule::OnJoystickButtonUp(SDL_Event &e)
 {
 	int joyIndex = e.jaxis.which;
 	_joyButtonStates[joyIndex][e.jbutton.button].isDown = false;
-	_joyButtonStates[joyIndex][e.jbutton.button].isDown = true;
+	_joyButtonStates[joyIndex][e.jbutton.button].isUp = true;
 }
 
 

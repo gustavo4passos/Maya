@@ -2,9 +2,11 @@
 #define GAMESTATEMACHINE_H
 
 #include <stack>
-#include "../include/GameState.h"
 
-class GameStateMachine{
+#include "GameState.h"
+#include "EventListener.h"
+
+class GameStateMachine {
 public:
 	static void PushState(GameState* _state); 
 	static void PopState();

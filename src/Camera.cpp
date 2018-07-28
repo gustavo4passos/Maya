@@ -1,10 +1,12 @@
 #include "../include/Camera.h"
 
 #include "../include/ErrorHandler.h"
+#include "../include/EventDispatcher.h"
 #include "../include/GameObject.h"
+#include "../include/LevelChangedEvent.h"
 
-Camera::Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, int fovbottom, GameObject* subject) : 
-    _subject(subject),
+Camera::Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, int fovbottom, GameObject* subject) 
+:    _subject(subject),
 	_pos(0.f, 0.f),
 	_center(0.f, 0.f),
 	_velocity(0.f, 0.f),
@@ -14,7 +16,20 @@ Camera::Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, in
 	_fovright(fovright),
 	_fovtop(fovtop),
 	_fovbottom(fovbottom)
-	{ }
+{
+	EventDispatcher::AddListener(this, EventType::LEVEL_CHANGED);
+}
+
+Camera::~Camera() {
+	EventDispatcher::RemoveListener(this, EventType::LEVEL_CHANGED);
+}
+
+bool Camera::OnNotify(Event* event) {
+	const Level* newLevel = dynamic_cast<LevelChangedEvent*>(event)->newLevel();
+	_fovright = newLevel->width() * newLevel->tileWidth();
+	_fovbottom = newLevel->height() * newLevel->tileHeight();
+	return false;
+}
 
 void Camera::FocusAt(const GameObject* subject){
 	_subject = subject;

@@ -1,7 +1,12 @@
 #include "../include/GameSwitches.h"
 
 #include "../include/ErrorHandler.h"
+#include "../include/EventDispatcher.h"
+#include "../include/ActivateSwitchEvent.h"
 
+GameSwitches::GameSwitches() {
+    EventDispatcher::AddListener(this, EventType::SWITCH_ACTIVATED);
+}
 void GameSwitches::ActivateSwitch(std::string id){
     if(_switches.find(id) != _switches.end()){
         _switches[id] = true;
@@ -35,4 +40,12 @@ void GameSwitches::PushSwitch(std::string id, bool state){
     }   
 }
 
+bool GameSwitches::OnNotify(Event* event) {
+    if(event->type() == EventType::SWITCH_ACTIVATED) {
+        ActivateSwitch(dynamic_cast<ActivateSwitchEvent*>(event)->switchID());
+        return false;
+    }
+
+    return false;
+}
 

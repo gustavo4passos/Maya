@@ -7,7 +7,7 @@
 enum class CollisionEventType {
     ENEMY_COLLISION,
     EVENT_COLLISION,
-    PLAYER_COLLISION
+    PLAYER_ENEMY_COLLIDED
 };
 
 struct CollisionEvent {
@@ -25,6 +25,7 @@ public:
     static bool OnGround(GameObject* gameObject);
 	static bool OnWall(GameObject* gameObject);
 	static bool HitHead(GameObject* gameObject);
+    static bool IsOnTop(Rect* bottom, Rect* top);
 
     inline static void setCurrentLevel(Level* currentLevel){ _currentLevel = currentLevel; }
     static void MoveAndCheckCollision(GameObject* gameObject);
@@ -32,8 +33,8 @@ public:
     static void CheckCollisionAgainstEnemies(GameObject* gameObject);
 
 	friend class InfoMenuGL3;
+    
 private:
-
     PhysicsEngine(){}
     ~PhysicsEngine(){}
     static Level* _currentLevel;

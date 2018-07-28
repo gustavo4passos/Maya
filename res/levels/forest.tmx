@@ -3,12 +3,6 @@
  <tileset firstgid="1" name="forest_1" tilewidth="32" tileheight="32" tilecount="64" columns="8">
   <image source="../res/sprites/forest_1.png" width="256" height="256"/>
  </tileset>
- <tileset firstgid="65" name="mario_tileset" tilewidth="32" tileheight="32" tilecount="228" columns="19">
-  <image source="../sprites/mario_tileset.png" width="608" height="384"/>
- </tileset>
- <tileset firstgid="293" name="forest_1" tilewidth="32" tileheight="32" tilecount="64" columns="8">
-  <image source="../sprites/forest_1.png" width="256" height="256"/>
- </tileset>
  <layer name="Tile Layer 1" width="40" height="20">
   <properties>
    <property name="zdistance" type="float" value="0"/>

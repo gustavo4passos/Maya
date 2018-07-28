@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<save>
+    <regiondata>
+        <region filename="../regions/forest.region"/>
+        <region subregion="outside_temple"/>
+    </regiondata>
 
-<switches>
-    <switch id="got-sword" state=false/>
-    <switch id="found-father" state=false/>
-</switches>    
+    <playerdata>
+        <position x="30" y="90"/>
+    </playerdata>
+
+    <switches>
+        <switch id="got-sword" state="false"/>
+        <switch id="found-father" state="false"/>
+    </switches>    
+</save>

@@ -1,37 +1,58 @@
 #include "../include/Player.h"
 #include "../include/InputModule.h"
+#include "../include/ResourceManager.h"
+#include "../include/Renderer.h"
+#include "../include/EventDispatcher.h"
 
-Player::Player() : GameEntity()
-{}
+Player::Player(float x, float y, int w, int h): GameObject(x, y, w, h)
+{
+	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+}
+
+Player::Player(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject(collisionRect, spriteW, spriteH)
+{
+	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+}
 
 Player::~Player()
 {}
 
-void Player::Load(int xPos, int yPos, int width, int height, std::string sprite, float scale, bool flip)
+void Player::Draw(Renderer* renderer, float deltaTime)
 {
-    GameEntity::Load(xPos, yPos, width, height, sprite, scale, flip);
+	Vector2D refacPosition = Vector2D(_collisionRect.originX() + (_velocity.x() * deltaTime), _collisionRect.originY() + (_velocity.y() * deltaTime));
+	Rect dst = Rect(refacPosition, _spriteW,  _spriteH);
+	Rect src = Rect(_currentFrame*_spriteW, _currentRow*_spriteH, _spriteW, _spriteH);
+	if(_facingright){
+		renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst);
+	}
+	else{
+		renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst, true);
+	}	
 }
 
-void Player::Draw(Renderer* renderer, float positionFactor)
-{
-   GameEntity::Draw(renderer, positionFactor);
-}
-
-void Player::HandleInput()
-{
-    Vector2D vec = InputModule::GetMousePosition();
-    _position.setX(vec.x()-(_scale*_width/2));
-    _position.setY(vec.y()-(_scale*_height/2));
-}
+void Player::HandleInput() { }
 
 void Player::Update()
 {
-    GameEntity::Update();        
+    GameObject::Update();
+
+    PhysicsEngine::ApplyGravity(this);
+	PhysicsEngine::CheckCollisionAgainstEnemies(this);
+	PhysicsEngine::MoveAndCheckCollision(this);
+
+    if(PhysicsEngine::OnGround(this)){
+		_velocity.setY(0.f);
+	}
+
+    if(PhysicsEngine::HitHead(this)){
+	  	_velocity.setY(_velocity.y() * 0.3f);
+	}
+
+    if(PhysicsEngine::OnWall(this)){
+		_velocity.setX(0.f);
+	}
 }
 
-
-
-void Player::Clean()
-{
-    GameEntity::Clean();
+bool Player::OnNotify(Event* event){
+	return GameObject::OnNotify(event);
 }
