@@ -137,73 +137,73 @@ void ResourceManager::Clean() {
 	CleanMeshes();
 	CleanTextures();
 }
-Level* ResourceManager::ParseLevel(const std::string& filename){
-    // create the XML document
-	TiXmlDocument xmlDoc;
+// Level* ResourceManager::ParseLevel(const std::string& filename){
+//     // create the XML document
+// 	TiXmlDocument xmlDoc;
 
-	// load the XML document
-	if (!xmlDoc.LoadFile(filename)) {
-        LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
-		return NULL;
-	}
+// 	// load the XML document
+// 	if (!xmlDoc.LoadFile(filename)) {
+//         LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
+// 		return NULL;
+// 	}
 
-	// get the root element
-	TiXmlElement* pRoot = xmlDoc.RootElement();
+// 	// get the root element
+// 	TiXmlElement* pRoot = xmlDoc.RootElement();
 
-	std::vector<int> tileLayer; // ints vector that will contain the tile values
+// 	std::vector<int> tileLayer; // ints vector that will contain the tile values
 
-	Level* level;
-	Layer* layer = NULL;
-	Tileset* tileset = NULL;
+// 	Level* level;
+// 	Layer* layer = NULL;
+// 	Tileset* tileset = NULL;
 
-	int width, height, tileWidth, tileHeight;
-	pRoot->Attribute("width", &width);
-	pRoot->Attribute("height", &height);
-	pRoot->Attribute("tilewidth", &tileWidth);
-	pRoot->Attribute("tileheight", &tileHeight);
+// 	int width, height, tileWidth, tileHeight;
+// 	pRoot->Attribute("width", &width);
+// 	pRoot->Attribute("height", &height);
+// 	pRoot->Attribute("tilewidth", &tileWidth);
+// 	pRoot->Attribute("tileheight", &tileHeight);
 
-    // Looping the xml file to find the tileset
-	TiXmlElement* e = NULL;
+//     // Looping the xml file to find the tileset
+// 	TiXmlElement* e = NULL;
 
-	for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) {
-		if(e->Value() == std::string("tileset")){
-        	if(!(tileset = ParseTileset(e))){
-				LOG_ERROR("Tileset object is NULL");
-				return NULL;
-			}
-			break;
-        }
-	}
+// 	for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) {
+// 		if(e->Value() == std::string("tileset")){
+//         	if(!(tileset = ParseTileset(e))){
+// 				LOG_ERROR("Tileset object is NULL");
+// 				return NULL;
+// 			}
+// 			break;
+//         }
+// 	}
 
-    if(e == NULL){
-        LOG_ERROR("Cannot find tileset node on xml file");
-        return NULL;
-	}
+//     if(e == NULL){
+//         LOG_ERROR("Cannot find tileset node on xml file");
+//         return NULL;
+// 	}
 
-	level = new Level(tileset, width, height, tileWidth, tileHeight, filename);
+// 	level = new Level(tileset, width, height, tileWidth, tileHeight, filename);
 
-    for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
-        if(e->Value() == std::string("layer")){
-            layer = ParseLayer(e, level, tileset);
+//     for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
+//         if(e->Value() == std::string("layer")){
+//             layer = ParseLayer(e, level, tileset);
 
-			if(layer == NULL){
-			  	LOG_ERROR("Unable to parse layer " + std::string(e->Attribute("name")));
-				delete level;
-				return NULL;
-			}
+// 			if(layer == NULL){
+// 			  	LOG_ERROR("Unable to parse layer " + std::string(e->Attribute("name")));
+// 				delete level;
+// 				return NULL;
+// 			}
 
-			level->AddBackgroundLayer(layer);
-        }
-    }
+// 			level->AddBackgroundLayer(layer);
+//         }
+//     }
 
-	for(e=pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
-		if(e->Value() == std::string("objectgroup")){
-			ParseObjectGroup(e, level);
-		}
-	}
+// 	for(e=pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+// 		if(e->Value() == std::string("objectgroup")){
+// 			ParseObjectGroup(e, level);
+// 		}
+// 	}
 
-    return level;
-}
+//     return level;
+// }
 
 void ResourceManager::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 	for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){

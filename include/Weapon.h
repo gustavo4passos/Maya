@@ -8,7 +8,9 @@ public:
 
     Weapon(float x, float y, int w, int h);
     Weapon(const CollisionRect& collisionRect, int spriteW, int spriteH);
-    virtual ~Weapon();  
+    virtual ~Weapon(); 
+
+    
 
 };
 

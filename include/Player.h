@@ -28,9 +28,6 @@ public:
     virtual bool OnNotify(Event* event) override;
     
 protected:
-
-    int _health;
-
     PlayerState _currentState;
     virtual void ChangeState(PlayerState) = 0;  
 };

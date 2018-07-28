@@ -4,6 +4,7 @@
 #include "../include/Door.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Golem.h"
+#include "../include/Box.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
@@ -110,10 +111,11 @@ bool PlayState::OnEnter(){
 
 	_infoMenu = new InfoMenuGL3();
 
-	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
+	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
 	forest->AddEnemy(new Golem(480,0));
-	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Box(300, 0));
+	forest->AddGameObject(new Button(CollisionRect(Rect(130, 400, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
