@@ -46,6 +46,14 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize SoundPlayer.");
         return false;
     }
+
+    if(!ResourceManager::LoadMusic("../res/music/puta.wav", "porra")){
+        LOG_ERROR("Unable to load music.");
+        return false;
+    }
+    else{
+        SoundPlayer::PlayBGM(ResourceManager::GetMusic("porra"), true);
+    }
    
     if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand_Run2_Sprite_Sheet_x1_V02-1row.png", "maya_running")) {
         LOG_ERROR("Unbale to load texture.");

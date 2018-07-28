@@ -12,7 +12,7 @@
 std::map<std::string, Texture*> ResourceManager::_textureMap;
 std::map<std::string, Mesh*> ResourceManager::_meshMap;
 std::map<std::string, Sound*> ResourceManager::_soundEffectsMap;
-std::map<std::string, Sound*> ResourceManager::_musicMap;
+std::map<std::string, Music*> ResourceManager::_musicMap;
 
 bool ResourceManager::LoadTexture(const std::string& filename, const std::string& name) {
 
@@ -86,14 +86,14 @@ bool ResourceManager::LoadSoundEffect(const std::string& filename, const std::st
 }
 
 bool ResourceManager::LoadMusic(const std::string& filename, const std::string& name) {
-	Mix_Chunk* sample;
-	sample = Mix_LoadWAV(filename.c_str());
+	Mix_Music* sample;
+	sample = Mix_LoadMUS(filename.c_str());
 	if (!sample) {
 		LOG_ERROR("Unable to load the sample: " + std::string(Mix_GetError()));
 		return false;
 	}
 
-	_musicMap.insert(std::pair<std::string, Sound*>(name, sample));
+	_musicMap.insert(std::pair<std::string, Music*>(name, sample));
 	return true;
 }
 
@@ -101,7 +101,7 @@ Sound* ResourceManager::GetSoundEffect(const std::string& name) {
     return _soundEffectsMap[name];
 }
 
-Sound* ResourceManager::GetMusic(const std::string& name) {
+Music* ResourceManager::GetMusic(const std::string& name) {
     return _musicMap[name];
 }
 
@@ -111,18 +111,20 @@ void ResourceManager::DeleteSoundEffect(const std::string& name) {
 		 LOG_ERROR("Unable to delete sound effect, invalid sound effect name: " + name);
 	 }
 	 else {
-		 delete entry->second;
+		 Mix_FreeChunk(entry->second);
+		 entry->second = nullptr;
 		 _soundEffectsMap.erase(entry);
 	 }
 }
 
 void ResourceManager::DeleteMusic(const std::string& name) {
-	 std::map<std::string, Sound*>::iterator entry = _musicMap.find(name);
+	 std::map<std::string, Music*>::iterator entry = _musicMap.find(name);
 	 if (entry == _musicMap.end()) {
-		 LOG_ERROR("Unable to delete sound effect, invalid sound effect name: " + name);
+		 LOG_ERROR("Unable to delete sound effect, invalid music name: " + name);
 	 }
 	 else {
-		 delete entry->second;
+		 Mix_FreeMusic(entry->second);
+		 entry->second = nullptr;
 		 _musicMap.erase(entry);
 	 }
 }
@@ -130,13 +132,15 @@ void ResourceManager::DeleteMusic(const std::string& name) {
 void ResourceManager::CleanAudio() {
 	for(std::map<std::string, Sound*>::iterator it = _soundEffectsMap.begin(); it != _soundEffectsMap.end(); it++)
     {
-        delete it->second;
+        Mix_FreeChunk(it->second);
+		it->second = nullptr;
     }
     _soundEffectsMap.clear();
 
-	for(std::map<std::string, Sound*>::iterator it = _musicMap.begin(); it != _musicMap.end(); it++)
+	for(std::map<std::string, Music*>::iterator it = _musicMap.begin(); it != _musicMap.end(); it++)
     {
-        delete it->second;
+        Mix_FreeMusic(it->second);
+		it->second = nullptr;
     }
     _musicMap.clear();
 }

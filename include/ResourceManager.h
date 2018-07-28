@@ -12,6 +12,8 @@
 #include "Level.h"
 #include "SoundPlayer.h"
 
+class CollisionRect;
+
 class Mesh;
 
 class ResourceManager {
@@ -29,7 +31,7 @@ public:
     static Sound* GetSoundEffect(const std::string& name);
     static void DeleteSoundEffect(const std::string& name);
     static bool LoadMusic(const std::string& filename, const std::string& name);
-    static Sound* GetMusic(const std::string& name);
+    static Music* GetMusic(const std::string& name);
     static void DeleteMusic(const std::string& name);
     static void CleanAudio();
 
@@ -61,7 +63,7 @@ private:
     static std::map<std::string, Texture*> _textureMap;
     static std::map<std::string, Mesh*> _meshMap;
     static std::map<std::string, Sound*> _soundEffectsMap;
-    static std::map<std::string, Sound*> _musicMap;
+    static std::map<std::string, Music*> _musicMap;
 };
 
 #endif
