@@ -71,7 +71,7 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
-	if(!ResourceManager::LoadTexture("../res/sprites/button.png", "button")) {
+	if(!ResourceManager::LoadTexture("../res/sprites/button-red.png", "button")) {
 		LOG_ERROR("Unable to load texture \"button\"");
 		return false;
 	}
@@ -119,7 +119,7 @@ bool PlayState::OnEnter(){
 	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
 	forest->AddEnemy(new Golem(480,0));
-	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 12), CollisionBehavior::BLOCK, 1, 8), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new MovingPlatform(Vector2D(150, 90), Vector2D(485, 90), true, "forest-button-1"));
 
