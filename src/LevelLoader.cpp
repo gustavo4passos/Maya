@@ -9,6 +9,7 @@
 #include "../include/Door.h"
 #include "../include/Button.h"
 #include "../include/Golem.h"
+#include "../include/Region.h"
 
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
@@ -450,7 +451,7 @@ void LevelLoader::ParseRegion(const std::string& filename){
 	// load the XML document
 	if (!xmlDoc.LoadFile(filename)) {
         LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
-		//return NULL;
+		
 	}
 
 	// get the root element
@@ -458,45 +459,79 @@ void LevelLoader::ParseRegion(const std::string& filename){
 
 	TiXmlElement* e = NULL;
 
+	Region* region = new Region();
+
 	for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
 		if(std::string(e->Value()) == std::string("resources")){
-			ParseRegionResources(e);
+			ParseRegionResources(e, region);
 		}
 		if(std::string(e->Value()) == std::string("leveldata")){
-			ParseRegionLevelData(e);
+			ParseRegionLevelData(e, region);
+		}
+		if(std::string(e->Value()) == std::string("startinglevel")){
+			std::string currentLevel;
+			currentLevel = std::string(e->Attribute("id"));
+			region->ChangeCurrentLevel(currentLevel);
 		}
 	}	
 }
 
-void LevelLoader::ParseRegionResources(TiXmlElement* ResourcesNode){
+void LevelLoader::ParseRegionResources(TiXmlElement* ResourcesNode, Region* region){
 	TiXmlElement* e = NULL;
 
 	for(e = ResourcesNode->FirstChildElement(); e != NULL; e = e->NextSiblingElement()){
 		if(std::string(e->Value()) == std::string("audio")){
-			TiXmlElement* soundEfects = e->FirstChildElement(); //SoundEfects Node
-			TiXmlElement* songs = soundEfects->NextSiblingElement(); //Songs Node
+			TiXmlElement* soundEffects = e->FirstChildElement(); //SoundEfects Node
+			TiXmlElement* songs = soundEffects->NextSiblingElement(); //Songs Node
 			
-			ParseSoundEfects(soundEfects);
-			ParseSongs(songs);
+			ParseSoundEffects(soundEffects, region);
+			ParseSongs(songs, region);
 
 		} else if(std::string(e->Value()) == std::string("sprites")){
-			ParseSprites(e);
+			ParseSprites(e, region);
 		}
 	}
 }
 
-void LevelLoader::ParseRegionLevelData(TiXmlElement* LevelDataNode){
+void LevelLoader::ParseRegionLevelData(TiXmlElement* LevelDataNode, Region* region){
+	if(LevelDataNode->FirstChildElement() != NULL){
+		TiXmlElement* currentLevel = NULL;
+		for(currentLevel = LevelDataNode->FirstChildElement(); currentLevel != NULL; currentLevel = currentLevel->FirstChildElement()){
+			std::string filename = std::string(currentLevel->Attribute("filename"));
+			std::string id = std::string(currentLevel->Attribute("id"));
 
+
+		}
+	}
 }
 
-void LevelLoader::ParseSoundEfects(TiXmlElement* SoundEfectsNode){
-	
+void LevelLoader::ParseSoundEffects(TiXmlElement* SoundEffectsNode, Region* region){
+	if(SoundEffectsNode->FirstChildElement() != NULL){
+		for(TiXmlElement* currentSoundEffect = SoundEffectsNode->FirstChildElement(); currentSoundEffect != NULL; currentSoundEffect = currentSoundEffect->NextSiblingElement()){
+			std::string filename = std::string(currentSoundEffect->Attribute("filename"));
+			std::string id = std::string(currentSoundEffect->Attribute("id"));
+			ResourceManager::LoadSoundEffect(filename, id);
+		}
+	}
 }
 
-void LevelLoader::ParseSongs(TiXmlElement* SongsNode){
-
+void LevelLoader::ParseSongs(TiXmlElement* SongsNode, Region* region){
+	if(SongsNode->FirstChildElement() != NULL){
+		for(TiXmlElement* currentSong = SongsNode->FirstChildElement(); currentSong != NULL; currentSong = currentSong->NextSiblingElement()){
+			std::string filename = std::string(currentSong->Attribute("filename"));
+			std::string id = std::string(currentSong->Attribute("id"));
+			
+		}
+	}
 }
 
-void LevelLoader::ParseSprites(TiXmlElement* SpritesNode){
-
+void LevelLoader::ParseSprites(TiXmlElement* SpritesNode, Region* region){
+	if(SpritesNode->FirstChildElement() != NULL){
+		TiXmlElement* currentSprite = NULL;
+		for(currentSprite = SpritesNode->FirstChildElement(); currentSprite != NULL; currentSprite = currentSprite->NextSiblingElement()){
+			std::string filename = std::string(currentSprite->Attribute("filename"));
+			std::string id = std::string(currentSprite->Attribute("id"));
+			ResourceManager::LoadTexture(filename, id);
+		}
+	}
 }

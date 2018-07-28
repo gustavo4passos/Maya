@@ -11,6 +11,7 @@ class Level;
 class Tileset;
 class Layer;
 class Rect;
+class Region;
 
 class LevelLoader {
 
@@ -30,11 +31,11 @@ private:
     static TiXmlElement* GetProperty(TiXmlElement* propertiesNode, std::string propertyName);
     
     //Region methods
-    static void ParseRegionResources(TiXmlElement* ResourcesNode);
-    static void ParseRegionLevelData(TiXmlElement* LevelDataNode);
-    static void ParseSoundEfects(TiXmlElement* SoundEfectsNode);
-    static void ParseSongs(TiXmlElement* SongsNode);
-    static void ParseSprites(TiXmlElement* SpritesNode);
+    static void ParseRegionResources(TiXmlElement* ResourcesNode, Region* region);
+    static void ParseRegionLevelData(TiXmlElement* LevelDataNode, Region* region);
+    static void ParseSoundEffects(TiXmlElement* SoundEffectsNode, Region* region);
+    static void ParseSongs(TiXmlElement* SongsNode, Region* region);
+    static void ParseSprites(TiXmlElement* SpritesNode, Region* region);
 
 };
 
