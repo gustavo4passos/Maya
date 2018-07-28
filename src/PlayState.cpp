@@ -110,7 +110,7 @@ bool PlayState::OnEnter(){
 
 	_infoMenu = new InfoMenuGL3();
 
-	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
+	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
 	forest->AddEnemy(new Golem(480,0));
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));

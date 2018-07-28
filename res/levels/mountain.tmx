@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
  <tileset firstgid="1" name="forest_1" tilewidth="32" tileheight="32" tilecount="0" columns="8">
   <image source="../res/sprites/forest_1.png" width="256" height="256"/>
  </tileset>
