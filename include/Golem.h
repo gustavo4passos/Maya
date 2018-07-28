@@ -23,6 +23,8 @@ public:
 
 private:
 	void ChangeState(GolemState state);
+	void StandWalk();
+	void GetUp();
 
 	GolemState _currentState;
 	std::string _switchRequired;
