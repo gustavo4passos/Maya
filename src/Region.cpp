@@ -19,6 +19,14 @@ Region::~Region() {
     }
 
     _levels.clear();
+
+    for(auto mapItem = _resources.begin(); mapItem != _resources.end(); mapItem++) {
+        for(auto resource = mapItem->second.begin(); resource != mapItem->second.end(); resource++) {
+            ResourceManager::CleanResource(mapItem->first, *resource);
+        }
+    }
+
+    _resources.clear();
 }
 
 void Region::HandleInput() {
@@ -96,3 +104,4 @@ bool Region::HasLevelBenSet(){
 
     return true;
 }
+

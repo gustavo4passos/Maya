@@ -14,6 +14,13 @@
 
 class Mesh;
 
+enum class ResourceType {
+    TEXTURE,
+    MESH,
+    SOUND_EFFECT,
+    MUSIC    
+};
+
 class ResourceManager {
 
 public:
@@ -27,9 +34,7 @@ public:
     //Sounds & Music
     static bool LoadSoundEffect(const std::string& filename, const std::string& name);
     static Sound* GetSoundEffect(const std::string& name);
-
-    // Levels
-    static Level* ParseLevel(const std::string& filename); // Returns NULL if unable to load level
+    static void DeleteSoundEffect(const std::string& name);
 
     //Meshes
     static bool LoadMesh(const void* data, std::size_t size, unsigned int count, const std::string& name);
@@ -37,20 +42,12 @@ public:
     static void DeleteMesh(const std::string& name);
     static void CleanMeshes();
 
+    static void CleanResource(ResourceType resourceType, const std::string& name);
+
     static void Clean();
 private:
 
     ResourceManager() {}
-
-    static Tileset* ParseTileset(TiXmlElement* node);
-    static void ParseObjectGroup(TiXmlElement* objectsNode, Level* level);
-    static CollisionRect* ParseRect(TiXmlElement* objectNode);
-    static Layer* ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset);
-    static std::vector<int> ParseLayerData(TiXmlElement* dataNode);
-
-    // Loads a mesh to video memory, and stores a pointer to it in _meshMap
-    // Use DeleteMesh(name) to free it
-    static void LoadLayerMesh(std::vector<int>& layerData, Level* level, Tileset* tileset, const std::string& name);
 
     // Data maps
     static std::map<std::string, Texture*> _textureMap;
