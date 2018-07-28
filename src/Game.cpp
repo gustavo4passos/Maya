@@ -41,12 +41,12 @@ bool Game::Init() {
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
-        return false;
+       return false;
     }
 
-    if(!InputModule::InitJoysticks()){
-        LOG_ERROR("Unable to initialize Joysticks");
-    }
+    //if(!InputModule::InitJoysticks()){
+    //   LOG_ERROR("Unable to initialize Joysticks");
+    //}
 
     if(!SoundPlayer::Init()){
         LOG_ERROR("Unable to initialize SoundPlayer.");

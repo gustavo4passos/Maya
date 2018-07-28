@@ -4,7 +4,6 @@
 
 #include "../include/InputModule.h"
 #include "../include/ResourceManager.h"
-#include "../include/Weapon.h"
 
 Maya::Maya(float x, float y): Maya(CollisionRect(x, y, 10, 30, 12, 7), 36, 39)
 {}
@@ -16,9 +15,8 @@ Maya::Maya(const CollisionRect& collisionRect, int spriteW, int spriteH) : Playe
     _kind = Kind::PLAYER;
     _speed = 2.5f;
 	_impulse = 8.f;
-    _weapon = new Weapon(_collisionRect.x(), _collisionRect.y()+16, 10, 4);
+    _weapon = new GameObject(_collisionRect.x(), _collisionRect.y()+16, 10, 4);
     _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::IGNORE);
-    _health = 80;
 }
 
 Maya::~Maya()
@@ -26,7 +24,7 @@ Maya::~Maya()
 
 void Maya::Draw(Renderer* renderer, float positionFactor)
 {
-    if(_health > 0) Player::Draw(renderer, positionFactor);
+    Player::Draw(renderer, positionFactor);
 }
 
 void Maya::HandleInput()
@@ -52,11 +50,13 @@ void Maya::HandleInput()
     } 
 
     else if (_currentState == JUMP){
+        _velocity.setX(0);
         if (leftPressed)  _velocity.setX(-2); 
         else if (rightPressed) _velocity.setX(2);
     }
 
-    else if (_currentState == RUN){       
+    else if (_currentState == RUN){
+       
         if (InputModule::IsKeyPressed(InputModule::SPACE) || InputModule::IsJoyButtonDown(InputModule::JOY_A)){
             if(PhysicsEngine::OnGround(this)){
                 _velocity.setY(-_impulse);
@@ -117,15 +117,6 @@ void Maya::ChangeState(PlayerState state)
             SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("dagger_swing"));
         }
 
-        else if (state == BOUNCE_STUCK){
-            _collisionRect.setOffsetX(12);
-            _currentState = BOUNCE_STUCK;
-            _numFrames = 3;
-            _numRows = 3;
-            _spriteW = 38;
-            _spriteH = 41;
-            _textureName = "maya_jumping";           
-        }
     }
 }
 
@@ -137,13 +128,6 @@ void Maya::Update()
     
     if (_currentState == JUMP){
         if (PhysicsEngine::OnGround(this)){
-            ChangeState(STAND);
-        }
-    }
-    
-    else if (_currentState == BOUNCE_STUCK){
-        std::cout << "ENTREI EM BOUNCE!!\n";
-        if(PhysicsEngine::OnGround(this)){
             ChangeState(STAND);
         }
     }
@@ -180,11 +164,11 @@ void Maya::Update()
 
 
 bool Maya::OnNotify(Event* event){
-    if(event->type() == EventType::PLAYER_ENEMY_COLLIDED){
-        //_velocity.setX(0);
-        if(_facingright) _velocity = Vector2D(-2, -4);
-        else _velocity = Vector2D(2, -4);
-        _health--;
-        ChangeState(BOUNCE_STUCK);
+   if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
+        //_velocity.setX(0.f);
+        if(_facingright)_velocity = Vector2D(-10, -7.f);
+        else _velocity = Vector2D(10, -7.f);
     }
+
+    return false;
 }

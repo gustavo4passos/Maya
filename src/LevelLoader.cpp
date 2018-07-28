@@ -127,10 +127,10 @@ Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
 
 void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 	float x, y;
-    std::string objectgroupName;
-    objectgroupName = std::string(objectsNode->Attribute("name"));
+    std::string test;
+    test = std::string(objectsNode->Attribute("name"));
     //std::cout<<std::string(objectsNode->Value())<<std::endl;
-	if(objectgroupName == std::string("CollisionLayer")){
+	if(test == std::string("CollisionLayer")){
 		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
 		
 			if(e->Value() == std::string("object")){
@@ -142,12 +142,12 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 			}
 		}
 	}
-	else if(objectgroupName == std::string("GameObjects")){
+	else if(test == std::string("GameObjects")){
 		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
 			if(e->Value() == std::string("object")){
-				std::string objectType;
-				objectType = std::string(e->Attribute("type"));
-				if(objectType == std::string("door")){
+				std::string temp;
+				temp = std::string(e->Attribute("type"));
+				if(temp == std::string("door")){
 					std::string switchesRequired;
 					bool initialState;
 
@@ -173,7 +173,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					}				
 					
 				}	
-				if(objectType == std::string("button")){
+				if(temp == std::string("button")){
 					std::string activatesSwitch;
 
 					e->QueryFloatAttribute("x", &x);
@@ -195,36 +195,35 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 			}
 		}
 	}
-	else if(objectgroupName == std::string("Enemies")){
-		int width, height;
-		std::string enemyType;
-		TiXmlElement* enemyTypeNode;
-		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
-			if(e->Value() == std::string("object")){
-				e->QueryFloatAttribute("x", &x);
-				e->QueryFloatAttribute("y", &y);
-				e->Attribute("width", &width);
-				e->Attribute("height", &height);
+	else if(test == std::string("Enemies")){
+        int width, height;
+        std::string enemyType;
+        TiXmlElement* enemyTypeNode;
+        for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+            if(e->Value() == std::string("object")){
+                e->QueryFloatAttribute("x", &x);
+                e->QueryFloatAttribute("y", &y);
+                e->Attribute("width", &width);
+                e->Attribute("height", &height);
 
-				TiXmlElement* propertiesNode = e->FirstChildElement();
-				if(std::string(propertiesNode->Value()) != std::string("properties"))
-					continue;
-				else{
-					enemyTypeNode = GetProperty(propertiesNode, "type");
+                TiXmlElement* propertiesNode = e->FirstChildElement();
+                if(std::string(propertiesNode->Value()) != std::string("properties"))
+                    continue;
+                else{
+                    enemyTypeNode = GetProperty(propertiesNode, "type");
 
-					if(enemyTypeNode != NULL){
-						enemyType = std::string(enemyTypeNode->Attribute("value"));
-						
-					} else {
-						LOG_WARNING("Enemy's type is missing, enemy not loaded");
-						continue;
-					}	
-				}
-				level->AddEnemy(new Golem(x, y));
-				
-			}
-		}
-	}
+                    if(enemyTypeNode != NULL){
+                        enemyType = std::string(enemyTypeNode->Attribute("value"));
+
+                    } else {
+                        LOG_WARNING("Enemy's type is missing, enemy not loaded");
+                        continue;
+                    }
+                }
+            	level->AddEnemy(new Golem(x, y, "mountain-switch-10"));
+            } 		
+        }
+    }
 }
 
 CollisionRect* LevelLoader::ParseRect(TiXmlElement* objectNode){

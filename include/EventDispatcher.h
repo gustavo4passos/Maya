@@ -15,11 +15,10 @@ public:
     static void AddListener(EventListener* listener, EventType eventType);
     static void RemoveListener(EventListener* listener, EventType eventType);
 
-    static std::map<EventType, std::set<EventListener*> > _listeners;
 private:
     EventDispatcher() { }
 
-    
+    static std::map<EventType, std::set<EventListener*> > _listeners;
 };
 
 #endif

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
  <tileset firstgid="1" name="forest_1" tilewidth="32" tileheight="32" tilecount="0" columns="8">
   <image source="../res/sprites/forest_1.png" width="256" height="256"/>
  </tileset>
@@ -156,7 +156,27 @@
   </object>
  </objectgroup>
  <objectgroup name="Enemies">
-  <object id="19" x="20" y="20" width="64" height="96">
+  <object id="19" x="40" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="30" x="90" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="31" x="140" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="32" x="190" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="33" x="240" y="224" width="64" height="96">
    <properties>
     <property name="type" value="golem"/>
    </properties>
@@ -164,6 +184,11 @@
  </objectgroup>
 <objectgroup name="GameObjects">
   <object id="20" name="button-mountain-switch-10" type="button" x="800" y="288" width="32" height="32">
+   <properties>
+    <property name="activatesSwitch" value="mountain-switch-10"/>
+   </properties>
+  </object>
+  <object id="35" name="button-mountain-switch-10" type="button" x="320" y="288" width="32" height="32">
    <properties>
     <property name="activatesSwitch" value="mountain-switch-10"/>
    </properties>

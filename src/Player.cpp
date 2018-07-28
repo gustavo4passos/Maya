@@ -53,6 +53,4 @@ void Player::Update()
 	}
 }
 
-bool Player::OnNotify(Event* event){
-	return GameObject::OnNotify(event);
-}
+bool Player::OnNotify(Event* event){}
