@@ -1,6 +1,8 @@
 #include "../include/ResourceManager.h"
 
-// NOTE(Gustavo): stb_image fails to load some png subformats; consider using SOIL 
+#include <algorithm> // for std::transform
+
+// NOTE(Gustavo): stb_image fails to load some png subformats; consider using SOIL
 #define STB_IMAGE_IMPLEMENTATION
 #include "../extern/stb/stb_image.h"
 
@@ -10,9 +12,16 @@
 std::map<std::string, Texture*> ResourceManager::_textureMap;
 std::map<std::string, Mesh*> ResourceManager::_meshMap;
 std::map<std::string, Sound*> ResourceManager::_soundEffectsMap;
+std::map<std::string, Sound*> ResourceManager::_musicMap;
 
 bool ResourceManager::LoadTexture(const std::string& filename, const std::string& name) {
-    
+
+	std::map<std::string, Texture*>::const_iterator it = _textureMap.find(name);
+	if(it != _textureMap.end()) {
+		LOG_ERROR("Unable to load texture [\"" + name + "\"] into texture map: A texture with the same name already exists");
+		return true;
+	}
+
     int w, h, nChannels;
     unsigned char* textureData = stbi_load(filename.c_str(), &w, &h, &nChannels, 0);
 
@@ -22,20 +31,18 @@ bool ResourceManager::LoadTexture(const std::string& filename, const std::string
     }
 
     Texture* tex = new Texture((const void*)textureData, w, h, nChannels);
-    _textureMap[name.c_str()] = tex; 
-   
+    _textureMap[name.c_str()] = tex;
+
     // Frees image data from RAM
     stbi_image_free(textureData);
-
     return true;
 }
 
-
-// NOTE(Gustavo): For the release version, consider returning map[entry] instead of using find() 
+// NOTE(Gustavo): For the release version, consider returning map[entry] instead of using find()
 // However map[entry] will create a new item in map if 'entry' isn't a valid entry
 // and the caller will never be notified that the index he's trying to access is invalid,
 // making the error hard to trace.
-// In the final version, however, this type of access error must be sorted out, and this method 
+// In the final version, however, this type of access error must be sorted out, and this method
 // can possibly be implemented by returning the requested entry
 Texture* const ResourceManager::GetTexture(const std::string& name){
     std::map<std::string, Texture*>::const_iterator texEntry = _textureMap.find(name);
@@ -56,7 +63,7 @@ void ResourceManager::DeleteTexture(const std::string& textureName) {
 	    delete entry->second;
 	    _textureMap.erase(entry);
     }
-} 
+}
 
 void ResourceManager::CleanTextures() {
     for(std::map<std::string, Texture*>::iterator it = _textureMap.begin(); it != _textureMap.end(); it++)
@@ -78,16 +85,67 @@ bool ResourceManager::LoadSoundEffect(const std::string& filename, const std::st
 	return true;
 }
 
+bool ResourceManager::LoadMusic(const std::string& filename, const std::string& name) {
+	Mix_Chunk* sample;
+	sample = Mix_LoadWAV(filename.c_str());
+	if (!sample) {
+		LOG_ERROR("Unable to load the sample: " + std::string(Mix_GetError()));
+		return false;
+	}
+
+	_musicMap.insert(std::pair<std::string, Sound*>(name, sample));
+	return true;
+}
+
 Sound* ResourceManager::GetSoundEffect(const std::string& name) {
     return _soundEffectsMap[name];
+}
+
+Sound* ResourceManager::GetMusic(const std::string& name) {
+    return _musicMap[name];
+}
+
+void ResourceManager::DeleteSoundEffect(const std::string& name) {
+	 std::map<std::string, Sound*>::iterator entry = _soundEffectsMap.find(name);
+	 if (entry == _soundEffectsMap.end()) {
+		 LOG_ERROR("Unable to delete sound effect, invalid sound effect name: " + name);
+	 }
+	 else {
+		 delete entry->second;
+		 _soundEffectsMap.erase(entry);
+	 }
+}
+
+void ResourceManager::DeleteMusic(const std::string& name) {
+	 std::map<std::string, Sound*>::iterator entry = _musicMap.find(name);
+	 if (entry == _musicMap.end()) {
+		 LOG_ERROR("Unable to delete sound effect, invalid sound effect name: " + name);
+	 }
+	 else {
+		 delete entry->second;
+		 _musicMap.erase(entry);
+	 }
+}
+
+void ResourceManager::CleanAudio() {
+	for(std::map<std::string, Sound*>::iterator it = _soundEffectsMap.begin(); it != _soundEffectsMap.end(); it++)
+    {
+        delete it->second;
+    }
+    _soundEffectsMap.clear();
+
+	for(std::map<std::string, Sound*>::iterator it = _musicMap.begin(); it != _musicMap.end(); it++)
+    {
+        delete it->second;
+    }
+    _musicMap.clear();
 }
 
 bool ResourceManager::LoadMesh(const void* data, std::size_t size, unsigned int count, const std::string& name) {
 	std::map<std::string, Mesh*>::const_iterator it = _meshMap.find(name.c_str());
 	if(it != _meshMap.end()){
-		LOG_ERROR("Unable to load mesh into mesh map: " + name + ". A mesh with the same name already exists.");
-		//DEBUG_BREAK();
-		return false;
+		LOG_ERROR("Unable to load mesh into mesh map: [\"" + name + "\"]. A mesh with the same name already exists.");
+		return true;
 	}
 
 	Mesh* mesh = new Mesh(data, size, count);
@@ -123,21 +181,24 @@ void ResourceManager::CleanMeshes(){
 	for(std::map<std::string, Mesh*>::iterator it = _meshMap.begin();
 	    it != _meshMap.end(); ++it){
 		delete it->second;
-	}	
+	}
 
 	_meshMap.clear();
 }
-		
+
+void ResourceManager::Clean() {
+	CleanMeshes();
+	CleanTextures();
+}
 Level* ResourceManager::ParseLevel(const std::string& filename){
-    // create the XML document 
+    // create the XML document
 	TiXmlDocument xmlDoc;
-	
-	// load the XML document																														  
+
+	// load the XML document
 	if (!xmlDoc.LoadFile(filename)) {
         LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
 		return NULL;
 	}
-
 
 	// get the root element
 	TiXmlElement* pRoot = xmlDoc.RootElement();
@@ -156,15 +217,15 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
 
     // Looping the xml file to find the tileset
 	TiXmlElement* e = NULL;
-	
-	for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) { 
+
+	for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) {
 		if(e->Value() == std::string("tileset")){
         	if(!(tileset = ParseTileset(e))){
 				LOG_ERROR("Tileset object is NULL");
 				return NULL;
 			}
-			break;  
-        }    
+			break;
+        }
 	}
 
     if(e == NULL){
@@ -172,9 +233,9 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
         return NULL;
 	}
 
-	level = new Level(tileset, width, height, tileWidth, tileHeight);
+	level = new Level(tileset, width, height, tileWidth, tileHeight, filename);
 
-    for(e = pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+    for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
         if(e->Value() == std::string("layer")){
             layer = ParseLayer(e, level, tileset);
 
@@ -200,7 +261,7 @@ Level* ResourceManager::ParseLevel(const std::string& filename){
 void ResourceManager::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 	for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
 		if(e->Value() == std::string("object")){
-			if(Rect* rct = ParseRect(e)){
+			if(CollisionRect* rct = ParseRect(e)){
 				level->AddCollisionRect(rct);
 			} else {
 				LOG_ERROR("Unable to parse collisionRect");
@@ -209,7 +270,7 @@ void ResourceManager::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 	}
 }
 
-Rect* ResourceManager::ParseRect(TiXmlElement* objectNode){
+CollisionRect* ResourceManager::ParseRect(TiXmlElement* objectNode){
 	std::string id;
 	int x, y;
 	int width, height;
@@ -236,7 +297,7 @@ Rect* ResourceManager::ParseRect(TiXmlElement* objectNode){
 		LOG_ERROR("Height field missing in object from objectgroup. Id: " + id);
 		return NULL;
 	}
-	return new Rect(x, y, width, height);
+	return new CollisionRect(Rect(x, y, width, height), CollisionBehavior::BLOCK);
 }
 
 Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
@@ -251,7 +312,7 @@ Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
     std::string name;
 
     int width, height;
-	int tileWidth, tileHeight;	
+	int tileWidth, tileHeight;
     int margin, spacing;
 	int nColumns, nRows;
 
@@ -273,10 +334,13 @@ Tileset* ResourceManager::ParseTileset(TiXmlElement* node){
     source = std::string(imagenode->Attribute("source"));
     imagenode->Attribute("width", &width);
     imagenode->Attribute("height", &height);
-    nRows = (height - 2*margin + spacing) / (tileHeight + spacing); 
-	
-	// Loads sprite texture to memory
-	LoadTexture(source, name);
+    nRows = (height - 2*margin + spacing) / (tileHeight + spacing);
+
+	// Tries to load tileset texture to video memory
+	if(!LoadTexture(source, name)) {
+		LOG_ERROR("Unable to load tileset texture. Filename: " + source);
+		return NULL;
+	}
 
     return new Tileset(source, name, width, height, tileWidth, tileHeight, margin, spacing, nColumns, nRows);
 
@@ -287,38 +351,52 @@ Layer* ResourceManager::ParseLayer(TiXmlElement* layerNode, Level* level, Tilese
         LOG_ERROR("layerNode is NULL");
         DEBUG_BREAK();
 		return NULL;
-    } 
+    }
 
+	// Query name, width and height info
 	std::string name;
 	std::vector<int> layerData;
 	int width, height;
-	name = std::string(layerNode->Attribute("name"));
+	// Append the level filename to the layer name, to avoid duplicate
+	// entries in the mesh map in case two layers from different levels
+	// have the same name and needs to be in memory simultaneously.
+	name = level->filename() + std::string(layerNode->Attribute("name"));
 	layerNode->Attribute("width", &width);
 	layerNode->Attribute("height", &height);
-	
+
+	// Find layer properties node
 	TiXmlElement* propertiesNode = NULL;
 	for(propertiesNode = layerNode->FirstChildElement(); propertiesNode != NULL; propertiesNode = propertiesNode->NextSiblingElement()){
 	  	if(propertiesNode->Value() == std::string("properties")){
 		  	break;
 		}
 	}
-	
+
+	// Read layer properties data
 	double zDistance = 1; // Sets zDistance to the default value, in case it isn't specified
 	if(propertiesNode != NULL){
-		TiXmlElement* zDistanceNode = NULL;
-		for(zDistanceNode = propertiesNode->FirstChildElement(); zDistanceNode != NULL; zDistanceNode = zDistanceNode->NextSiblingElement()){
-		  	if(std::string(zDistanceNode->Attribute("name")) == std::string("zdistance")){
-				zDistanceNode->Attribute("value", &zDistance);
+		TiXmlElement* propertyElement = NULL;
+		for(propertyElement = propertiesNode->FirstChildElement(); propertyElement != NULL; propertyElement = propertyElement->NextSiblingElement()){
+			// Convert to lower case, to make the property name case insensitive
+			std::string loweredCasePropertyName = propertyElement->Attribute("name");
+			std::transform(loweredCasePropertyName.begin(), loweredCasePropertyName.end(), loweredCasePropertyName.begin(), ::tolower);
+		  	
+			  if(loweredCasePropertyName == std::string("zdistance")){
+				propertyElement->Attribute("value", &zDistance);
+			}
+			else {
+				LOG_ERROR("Unknown property in " + name + ": " + propertyElement->Attribute("name"));
 			}
 		}
 	}
 
+	// Load layers mesh data to the GPU
 	TiXmlElement* dataNode = NULL;
-	for(dataNode = layerNode->FirstChildElement(); dataNode != NULL; dataNode = dataNode->NextSiblingElement()) { 
+	for(dataNode = layerNode->FirstChildElement(); dataNode != NULL; dataNode = dataNode->NextSiblingElement()) {
 		if(dataNode->Value() == std::string("data")){ // find the dataNode and call ParseLayerData
 			layerData = ParseLayerData(dataNode);
 			LoadLayerMesh(layerData, level, tileset, name);
-		}	
+		}
 	}
 
 	return new Layer(name, width, height, tileset, zDistance);
@@ -342,7 +420,7 @@ std::vector<int> ResourceManager::ParseLayerData(TiXmlElement* dataNode){
 	//
 	for(unsigned int i=0; i<t.size(); i++){
 		std::string aux;
-	
+
 		if(t[i] != ',' || t[i] != ' '){
 			while(t[i] != ',' && i < t.size()){
 				if(t[i] == ' '){
@@ -352,7 +430,12 @@ std::vector<int> ResourceManager::ParseLayerData(TiXmlElement* dataNode){
 				aux += t[i];
 				i += 1;
 			}
-			layerdata.push_back(std::stoi(aux));
+			try {
+				layerdata.push_back(std::stoi(aux));
+			}
+			catch(const std::out_of_range& e) {
+				LOG_ERROR("Unable to parse tile: id is out of range for an int. Exception thrown: " + std::string(e.what()));
+			}
 		}
 	}
 
@@ -382,20 +465,20 @@ void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, T
 		tileRow = i / levelWidth;
 		texColumn = (layerData[i] - 1) % nColumns;
 		texRow = (layerData[i] - 1) / nColumns;
-		
+
 		struct Vertex { float x; float y; };
 		struct UVcoordinate { float x; float y; };
-	
+
 		Vertex v1 = { tileColumn * tileWidth, tileRow * tileHeight };
 		Vertex v2 = { tileColumn * tileWidth + tileWidth, tileRow * tileHeight };
 		Vertex v3 = { tileColumn * tileWidth + tileWidth, tileRow * tileHeight + tileHeight };
 		Vertex v4 = { tileColumn * tileWidth, tileRow * tileHeight + tileHeight };
-		
+
 		UVcoordinate tex1 = { texColumn * tileWidth + margin + spacing * texColumn, texRow * tileHeight + margin + spacing * texRow };
 		UVcoordinate tex2 = { texColumn * tileWidth + tileWidth + spacing * texColumn, texRow * tileHeight + margin + spacing * texRow };
 		UVcoordinate tex3 = { texColumn * tileWidth + tileWidth + spacing * texColumn, texRow * tileHeight + tileHeight + spacing * texRow};
 		UVcoordinate tex4 = { texColumn * tileWidth + margin + spacing * texColumn, texRow * tileHeight + tileHeight + spacing * texRow };
-		
+
 		// NOTE(Gustavo): Should the UV coordinates be calculated on the CPU or GPU?
 		// (Check mesh_shader.frag mat2 transform)
 
@@ -404,8 +487,8 @@ void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, T
 		meshData.push_back(v1.x); // Top left vertex
 		meshData.push_back(v1.y);
 		meshData.push_back(tex1.x); // Top left tex coordinate
-		meshData.push_back(tex1.y); 
-		
+		meshData.push_back(tex1.y);
+
 		meshData.push_back(v2.x); // Top right vertex
 		meshData.push_back(v2.y);
 		meshData.push_back(tex2.x); // Top right vertex coordinate
@@ -414,23 +497,23 @@ void ResourceManager::LoadLayerMesh(std::vector<int>& layerData, Level* level, T
 		meshData.push_back(v3.x); // Bottom right vertex
 		meshData.push_back(v3.y);
 		meshData.push_back(tex3.x); // Bottom right tex coordinate
-		meshData.push_back(tex3.y); 
+		meshData.push_back(tex3.y);
 
 		// Lower triangle
 		meshData.push_back(v1.x); // Top left vertex
 		meshData.push_back(v1.y);
 		meshData.push_back(tex1.x); // Top left tex coordinate
-		meshData.push_back(tex1.y); 
+		meshData.push_back(tex1.y);
 
 		meshData.push_back(v3.x); // Bottom right vertex
 		meshData.push_back(v3.y);
 		meshData.push_back(tex3.x); // Bottom right tex coordinate
-		meshData.push_back(tex3.y); 
+		meshData.push_back(tex3.y);
 
 		meshData.push_back(v4.x); // Bottom left vertex
 		meshData.push_back(v4.y);
 		meshData.push_back(tex4.x); // Bottom left tex coordinate
-		meshData.push_back(tex4.y); 
+		meshData.push_back(tex4.y);
 	}
 
 	LoadMesh((const void*)(&meshData[0]), meshData.size() * sizeof(float), meshData.size() / 4, name);
