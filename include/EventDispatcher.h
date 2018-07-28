@@ -16,6 +16,7 @@ public:
     static void RemoveListener(EventListener* listener, EventType eventType);
 
     static std::map<EventType, std::set<EventListener*> > _listeners;
+    
 private:
     EventDispatcher() { }
 

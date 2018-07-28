@@ -155,7 +155,7 @@ void Maya::Update()
             if(_facingright) _weapon->setPosition(_collisionRect.x()+25, _collisionRect.y()+10);            
             else _weapon->setPosition(_collisionRect.x()-20, _collisionRect.y()+10);
             
-            _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::BLOCK);
+            //_weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::BLOCK);
             
             if(PhysicsEngine::OnWall(_weapon) && _currentFrame == 1){
                 SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("damage"));

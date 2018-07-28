@@ -8,12 +8,13 @@
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
 #include "../include/InputModule.h"
+#include "../include/Maya.h"
+#include "../include/MovingPlatform.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
 #include "../include/LevelLoader.h"
-#include "../include/Maya.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -75,6 +76,11 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	if(!ResourceManager::LoadTexture("../res/sprites/moving_platform_stretched.png", "moving-platform")) {
+		LOG_ERROR("Unable to load texture \"moving-platform\"");
+		return false;
+	}
+	
 	if(!ResourceManager::LoadTexture("../res/sprites/door.png", "door")) {
 		LOG_ERROR("Unable to load texture \"Door\"");
 		return false;
@@ -115,6 +121,7 @@ bool PlayState::OnEnter(){
 	forest->AddEnemy(new Golem(480,0));
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new MovingPlatform(Vector2D(150, 90), Vector2D(485, 90), true, "forest-button-1"));
 
 	if(forest == NULL) return false;
 

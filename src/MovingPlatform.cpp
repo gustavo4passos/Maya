@@ -1,23 +1,80 @@
 #include "../include/MovingPlatform.h"
 
+#include "../include/GameSwitches.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
+#include "../include/ServiceLocator.h"
 
-MovingPlatform::MovingPlatform(Vector2D position) 
-:   GameObject(CollisionRect(Rect(position.x(), position.y(), 64, 8), CollisionBehavior::BLOCK, 0, 0), 64, 8)
-{ }
+MovingPlatform::MovingPlatform(Vector2D origin, Vector2D destination, bool loops, const std::string& switchRequired) 
+:   GameObject(CollisionRect(Rect(origin.x(), origin.y(), 45, 11), CollisionBehavior::BLOCK, 0, 2), 45, 13),
+    _origin(origin),
+    _destination(destination),
+    _loops(loops),
+    _switchRequired(switchRequired),
+    _reachedDestination(false)
+{
+    if(_switchRequired == "") _on = true;
+    _textureName = "moving-platform";
+}
 
-void MovingPlatform::Move(Vector2D destination, float transitionSpeed) {
-    setPosition(destination.x(), destination.y());
+void MovingPlatform::Move() {
+    if(!_reachedDestination) {
+        if(x() < _destination.x()) {
+            setPosition(x() + _velocity.x(), y());
+            _displacement = _velocity;
+        }
+        else {
+            setPosition(x() - _velocity.x(), y());
+            _displacement = -_velocity;
+        }
+        if((int)_destination.x() == (int)x()) {
+            _reachedDestination = true;
+        }
+    }
+    else if(_loops) {
+            if(x() < _origin.x()) {
+            setPosition(x() + _velocity.x(), y());
+            _displacement = _velocity;
+        }
+        else {
+            setPosition(x() - _velocity.x(), y());
+            _displacement = -_velocity;
+        }
+        if((int)_origin.x() == (int)x()) {
+            _reachedDestination = false;
+        }
+    }
+
+    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
+    if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
+        ServiceLocator::GetPlayer()->setPosition(ServiceLocator::GetPlayer()->x() + _displacement.x(), ServiceLocator::GetPlayer()->y());
+    }
 }
 
 void MovingPlatform::Update() {
+    if(_switchRequired != "") {
+        if(ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired)) {
+            _on = true;
+            _velocity.setX(0.8f);
+            
+        }
+        else {
+            _on = false;
+            _velocity.setX(0.0f);
 
+        }
+    }
+    
+    if(_on) Move();
 }
 
 void MovingPlatform::Draw(Renderer* renderer, float deltaTime) {
     Rect src = Rect(0.f, 0.f, _spriteW, _spriteH);
-    Rect dst = Rect(_collisionRect.originX(), _collisionRect.originY(), _spriteW, _spriteH);
+    if(_on) {
+        src.setX(_spriteW);
+    }
 
-    renderer->Draw(ResourceManager::GetTexture("wooden-moving-platform"), &src, &dst);
+    Rect dst = Rect(_collisionRect.originX() + _velocity.x() * deltaTime, _collisionRect.originY() + _velocity.y() * deltaTime, _spriteW, _spriteH);
+
+    renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst);
 }

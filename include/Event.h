@@ -10,7 +10,8 @@ enum class EventType {
     SWITCH_ACTIVATED,
 
     // Level events
-    LEVEL_CHANGED
+    LEVEL_CHANGED,
+    PLAYER_HIT_TELEPORT
 };
 
 class Event {
@@ -21,6 +22,9 @@ public:
     virtual ~Event() { }
 
     inline EventType type() const { return _type; }
+
+    // Allows cloning an event when polymorphy is needed
+    virtual Event* Clone() { return nullptr; };
 
 private:
     EventType _type;

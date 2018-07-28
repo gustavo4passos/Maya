@@ -18,7 +18,7 @@ public:
 
     bool Init();
     void Run();
-    void Render(float positionFactor);
+    void Render(float deltaTime);
     void Update();
     void HandleEvents();
 

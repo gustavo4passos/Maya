@@ -5,12 +5,13 @@
 #include <string>
 #include <vector>
 
+#include "EventListener.h"
 #include "ResourceManager.h"
 
 class Level;
 class Renderer;
 
-class Region {
+class Region : public EventListener {
 public:
     Region();
     ~Region();
@@ -25,6 +26,8 @@ public:
 
     const std::string& currentSubRegion() const { return _currentLevel; }
     std::vector<std::string> SubRegionList();
+
+    virtual bool OnNotify(Event* event);
 
 private:
     bool HasLevelBenSet();

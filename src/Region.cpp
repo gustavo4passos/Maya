@@ -7,11 +7,15 @@
 #include "../include/Level.h"
 #include "../include/LevelChangedEvent.h"
 #include "../include/PhysicsEngine.h"
+#include "../include/Player.h"
+#include "../include/PlayerHitTeleportEvent.h"
 #include "../include/ServiceLocator.h"
 
 Region::Region() 
 :   _currentLevel("")
-{ }
+{ 
+    EventDispatcher::AddListener(this, EventType::PLAYER_HIT_TELEPORT); 
+}
 
 Region::~Region() {
     for(auto it = _levels.begin(); it != _levels.end(); it++) {
@@ -27,6 +31,8 @@ Region::~Region() {
     }
 
     _resources.clear();
+
+    EventDispatcher::RemoveListener(this, EventType::PLAYER_HIT_TELEPORT);
 }
 
 void Region::HandleInput() {
@@ -41,6 +47,18 @@ void Region::Update() {
         return;
     }
     _levels[_currentLevel]->Update();
+
+    while(!_unresolvedEvents.empty()) {
+        Event* unresolvedEvent = _unresolvedEvents.back().get();
+
+        if(unresolvedEvent->type() == EventType::PLAYER_HIT_TELEPORT) {
+            PlayerHitTeleportEvent* event = dynamic_cast<PlayerHitTeleportEvent*>(unresolvedEvent);
+            ChangeCurrentLevel(event->destinationLevel());
+            ServiceLocator::GetPlayer()->setPosition(event->destinationPosition().x(), event->destinationPosition().y());
+        }
+
+        _unresolvedEvents.pop();
+    }
 }
 
 void Region::Render(Renderer* renderer, float deltaTime) {
@@ -96,6 +114,13 @@ std::vector<std::string> Region::SubRegionList() {
 
     return list;
 }
+
+bool Region::OnNotify(Event* event) {
+    if(event->type() == EventType::PLAYER_HIT_TELEPORT) EnqueueEventForLater(event);
+
+    return false;
+}
+
 bool Region::HasLevelBenSet(){
     if(_currentLevel == "") {
         LOG_ERROR("Level has not been set");

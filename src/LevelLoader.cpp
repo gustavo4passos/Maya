@@ -7,6 +7,7 @@
 #include "../include/ErrorHandler.h"
 #include "../include/Layer.h"
 #include "../include/Door.h"
+#include "../include/Golem.h"
 #include "../include/Button.h"
 
 

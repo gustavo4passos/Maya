@@ -7,6 +7,7 @@
 GameSwitches::GameSwitches() {
     EventDispatcher::AddListener(this, EventType::SWITCH_ACTIVATED);
 }
+
 void GameSwitches::ActivateSwitch(std::string id){
     if(_switches.find(id) != _switches.end()){
         _switches[id] = true;

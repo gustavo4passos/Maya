@@ -4,13 +4,15 @@
 #include "Rect.h"
 
 enum class CollisionBehavior {
-    IGNORE = 0b1,
-    BLOCK = 0b10,
-    ONE_WAY = 0b100,
-    BLOCK_LEFT = 0b1000,
-    BLOCK_RIGHT = 0b10000,
-    BLOCK_TOP = 0b100000,
-    BLOCK_BOTTOM = 0b1000000
+    IGNORE          = 0b1,
+    BLOCK           = 0b10,
+    ONE_WAY         = 0b100,
+    MOVING          = 0b1000,
+    PASSH_THROUGH   = 0b10000,
+    BLOCK_LEFT      = 0b100000,
+    BLOCK_RIGHT     = 0b1000000,
+    BLOCK_TOP       = 0b10000000,
+    BLOCK_BOTTOM    = 0b100000000
 };
 
 class CollisionRect : public Rect {

@@ -15,7 +15,9 @@ Enemy::Enemy(const CollisionRect& collisionRect, int spriteW, int spriteH) : Gam
 }
 
 Enemy::~Enemy()
-{}
+{
+	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+}
 
 void Enemy::Draw(Renderer* renderer, float deltaTime)
 {
