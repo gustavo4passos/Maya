@@ -34,9 +34,12 @@ void Golem::Update(){
         else    StandWalk();
     }
     else if(_currentState == CHASING){
-        if( ((ServiceLocator::GetPlayer())->x() - x()) > 145 || ((ServiceLocator::GetPlayer())->x() - x()) < -145){
+        if( ((ServiceLocator::GetPlayer())->x() - x()) > 145 || ((ServiceLocator::GetPlayer())->x() - x()) < -145)
             ChangeState(WALK);
-        }
+
+        else if( ((ServiceLocator::GetPlayer())->x() - x()) <= 60 && ((ServiceLocator::GetPlayer())->x() - x()) >= -60)
+            ChangeState(ATTACKING);
+
         else if( ((ServiceLocator::GetPlayer())->x() - x()) >= 0){
             _velocity.setX(1);
             _facingright = true;
@@ -45,6 +48,13 @@ void Golem::Update(){
             _velocity.setX(-1);
             _facingright = false;
         }
+    }
+    else if(_currentState == ATTACKING){
+        if( ((ServiceLocator::GetPlayer())->x() - x()) > 60 || ((ServiceLocator::GetPlayer())->x() - x()) < -60)
+            ChangeState(CHASING);
+        
+        else if(_velocity.x() < 0)   _velocity.setX(-2);
+        else if(_velocity.x() > 0)  _velocity.setX(2);
     }
 }
 
@@ -84,18 +94,20 @@ void Golem::ChangeState(GolemState state){
  	}
     else if(state == WALK){
         _currentState = WALK;
-        StandWalk();
+        _textureName = "../res/assets/golem-walk.png";
+        _numRows = 3;
+        _numFrames = 4;
     }
     else if(state == CHASING){
         _currentState = CHASING;
-        if( ((ServiceLocator::GetPlayer())->x() - x()) >= 0){
-            _velocity.setX(1);
-            _facingright = true;
-        }
-        else {
-            _velocity.setX(-1);
-            _facingright = false;
-        }
+        _textureName = "../res/assets/golem-walk.png";
+        _numRows = 3;
+        _numFrames = 4;
     }
-
+    else if(state == ATTACKING){
+        _currentState = ATTACKING;
+        _textureName = "../res/assets/golem-attack.png";
+        _numRows = 3;
+        _numFrames = 4;
+    }
 }
