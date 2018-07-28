@@ -8,7 +8,7 @@
 #include "../include/Layer.h"
 #include "../include/Door.h"
 #include "../include/Button.h"
-#include "../include/EvilSonic.h"
+#include "../include/Golem.h"
 
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
@@ -212,15 +212,16 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 				else{
 					enemyTypeNode = GetProperty(propertiesNode, "type");
 
-					if(enemyTypeNode != NULL)
+					if(enemyTypeNode != NULL){
 						enemyType = std::string(enemyTypeNode->Attribute("value"));
-					else{
+						
+					} else {
 						LOG_WARNING("Enemy's type is missing, enemy not loaded");
 						continue;
 					}	
 				}
-
-				level->AddEnemy(new EvilSonic(CollisionRect(x, y, 10, 30, 12, 5), 36, 39));
+				level->AddEnemy(new Golem(x, y));
+				
 			}
 		}
 	}
