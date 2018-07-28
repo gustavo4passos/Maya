@@ -15,7 +15,6 @@ PushableObject::PushableObject(const CollisionRect& collisionRect, int spriteW, 
     _numRows = 1;
     _currentFrame = 0;
     _currentRow = 0;
-    _currentState = NONE;
 }
 
 PushableObject::~PushableObject()
