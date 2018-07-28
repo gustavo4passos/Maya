@@ -24,8 +24,8 @@ public:
 	virtual ~GameObject();
 
 	inline const CollisionRect& collisionRect() { return _collisionRect; }	
-	inline const Vector2D& position() { return _collisionRect.position(); }
-	inline const Vector2D& velocity()  { return _velocity; }
+	inline const Vector2D& position() const { return _collisionRect.position(); }
+	inline const Vector2D& velocity() const { return _velocity; }
 	inline const float x() const { return _collisionRect.x(); }
 	inline const float y() const { return _collisionRect.y(); }
 	inline const float w() const { return _collisionRect.w(); }

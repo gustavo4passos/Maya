@@ -142,7 +142,6 @@ void Maya::Update()
     }
     
     else if (_currentState == BOUNCE_STUCK){
-        std::cout << "ENTREI EM BOUNCE!!\n";
         if(PhysicsEngine::OnGround(this)){
             ChangeState(STAND);
         }

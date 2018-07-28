@@ -1,5 +1,7 @@
 #include "../include/CollisionRect.h"
 
+#include <iostream>
+
 CollisionRect::CollisionRect(float x, float y, int w, int h, float offsetX, float offsetY)
 :    Rect(x, y, w, h),
     _offsetX(offsetX),

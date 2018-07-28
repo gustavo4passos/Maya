@@ -5,12 +5,12 @@
 
 enum class CollisionBehavior {
     IGNORE = 0b1,
-    BLOCK = 0b01,
-    ONE_WAY = 0b001,
-    BLOCK_LEFT = 0b0001,
-    BLOCK_RIGHT = 0b00001,
-    BLOCK_TOP = 0b000001,
-    BLOCK_BOTTOM = 0b0000001
+    BLOCK = 0b10,
+    ONE_WAY = 0b100,
+    BLOCK_LEFT = 0b1000,
+    BLOCK_RIGHT = 0b10000,
+    BLOCK_TOP = 0b100000,
+    BLOCK_BOTTOM = 0b1000000
 };
 
 class CollisionRect : public Rect {
