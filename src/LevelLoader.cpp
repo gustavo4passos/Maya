@@ -443,3 +443,60 @@ TiXmlElement* LevelLoader::GetProperty(TiXmlElement* propertiesNode, std::string
 	return NULL; //Property not found.
 }
 
+void LevelLoader::ParseRegion(const std::string& filename){
+	// create the XML document
+	TiXmlDocument xmlDoc;
+
+	// load the XML document
+	if (!xmlDoc.LoadFile(filename)) {
+        LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
+		//return NULL;
+	}
+
+	// get the root element
+	TiXmlElement* pRoot = xmlDoc.RootElement();
+
+	TiXmlElement* e = NULL;
+
+	for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
+		if(std::string(e->Value()) == std::string("resources")){
+			ParseRegionResources(e);
+		}
+		if(std::string(e->Value()) == std::string("leveldata")){
+			ParseRegionLevelData(e);
+		}
+	}	
+}
+
+void LevelLoader::ParseRegionResources(TiXmlElement* ResourcesNode){
+	TiXmlElement* e = NULL;
+
+	for(e = ResourcesNode->FirstChildElement(); e != NULL; e = e->NextSiblingElement()){
+		if(std::string(e->Value()) == std::string("audio")){
+			TiXmlElement* soundEfects = e->FirstChildElement(); //SoundEfects Node
+			TiXmlElement* songs = soundEfects->NextSiblingElement(); //Songs Node
+			
+			ParseSoundEfects(soundEfects);
+			ParseSongs(songs);
+
+		} else if(std::string(e->Value()) == std::string("sprites")){
+			ParseSprites(e);
+		}
+	}
+}
+
+void LevelLoader::ParseRegionLevelData(TiXmlElement* LevelDataNode){
+
+}
+
+void LevelLoader::ParseSoundEfects(TiXmlElement* SoundEfectsNode){
+	
+}
+
+void LevelLoader::ParseSongs(TiXmlElement* SongsNode){
+
+}
+
+void LevelLoader::ParseSprites(TiXmlElement* SpritesNode){
+
+}

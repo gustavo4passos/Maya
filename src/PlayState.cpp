@@ -109,6 +109,7 @@ bool PlayState::OnEnter(){
 	
 	_region = new Region();
 	ServiceLocator::ProvideCurrentRegion(_region);
+	LevelLoader::ParseRegion("../res/regions/forest.region");
 	
 	_maya = new Maya(200, 0);
 	ServiceLocator::ProvidePlayer(_maya);
