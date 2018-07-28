@@ -1,4 +1,4 @@
-#include "../include/Maya.h"
+ #include "../include/Maya.h"
 
 #include <iostream>
 

@@ -53,6 +53,14 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize SoundPlayer.");
         return false;
     }
+
+    if(!ResourceManager::LoadMusic("../res/audio/music/piano-theme-drums.mp3", "BGM")){
+        LOG_ERROR("Unable to load music.");
+        return false;
+    }
+    else{
+        SoundPlayer::PlayBGM(ResourceManager::GetMusic("BGM"), true);
+    }
    
     ServiceLocator::ProvideGame(this);
     ServiceLocator::ProvideWindow(_window); 
