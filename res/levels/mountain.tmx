@@ -142,7 +142,11 @@
 </data>
  </layer>
  <objectgroup name="CollisionLayer">
-  <object id="2" x="-144" y="320" width="1232" height="960"/>
+  <object id="2" x="-144" y="320" width="1232" height="960">
+  <properties>
+    <property name="collisionbehavior" value="oneway"/>
+   </properties>
+  </object> 
   <object id="3" x="1088" y="1024" width="832" height="256"/>
   <object id="11" x="-266.667" y="-209.091" width="169.697" height="1490.91"/>
  </objectgroup>
@@ -179,6 +183,16 @@
   <object id="33" x="240" y="224" width="64" height="96">
    <properties>
     <property name="type" value="golem"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Zones">
+  <object id="35" x="960" y="0" width="112" height="640">
+   <properties>
+    <property name="destinationLevel" value="mountain"/>
+    <property name="destinationX" type="float" value="10"/>
+    <property name="destinationY" type="float" value="10"/>
+    <property name="type" value="TeleportZone"/>
    </properties>
   </object>
  </objectgroup>

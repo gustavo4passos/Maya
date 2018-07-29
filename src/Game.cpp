@@ -16,6 +16,7 @@
 #include "../include/PhysicsEngine.h"
 #include "../include/ServiceLocator.h"
 #include "../include/PlayState.h"
+#include "../include/EventDispatcher.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -51,6 +52,14 @@ bool Game::Init() {
     if(!SoundPlayer::Init()){
         LOG_ERROR("Unable to initialize SoundPlayer.");
         return false;
+    }
+
+    if(!ResourceManager::LoadMusic("../res/audio/music/piano-theme-drums.mp3", "BGM")){
+        LOG_ERROR("Unable to load music.");
+        return false;
+    }
+    else{
+        SoundPlayer::PlayBGM(ResourceManager::GetMusic("BGM"), true);
     }
    
     ServiceLocator::ProvideGame(this);
@@ -89,10 +98,10 @@ void Game::Run() {
     }
 }
 
-void Game::Render(float positionFactor) {
+void Game::Render(float deltaTime) {
 	_renderer->Clear();
 
-    GameStateMachine::Render(_renderer, positionFactor);
+    GameStateMachine::Render(_renderer, deltaTime);
 
     _window->Swap();
 }

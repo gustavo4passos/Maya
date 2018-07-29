@@ -1,6 +1,8 @@
 #include "../include/Button.h"
 
+#include "../include/EventDispatcher.h"
 #include "../include/GameSwitches.h"
+#include "../include/PlayerHitTeleportEvent.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
@@ -16,6 +18,9 @@ void Button::Update() {
 
     if(!_isPressed){
         if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
+            // std::unique_ptr<Event> test(new PlayerHitTeleportEvent("mountain", Vector2D(0.f, 0.f)));
+            // EventDispatcher::Notify(test.get());
+
              _isPressed = true;
             _collisionRect.setH(0);
             _collisionRect.setW(0);

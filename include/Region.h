@@ -19,7 +19,7 @@ public:
     void Update();
     void Render(Renderer* renderer, float  deltaTime);
 
-    bool AddResource(ResourceType resourceType, const std::string resourceID);
+    bool AddResource(ResourceType resourceType, const std::string& resourceID);
     
     bool AddLevel(Level* level, const std::string& levelID);
     bool ChangeCurrentLevel(const std::string& levelID);

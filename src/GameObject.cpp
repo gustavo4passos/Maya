@@ -21,9 +21,8 @@ GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spri
     _frameTime(0)
 {}
 
-GameObject::~GameObject() {
-	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
-}
+GameObject::~GameObject() 
+{ }
 
 void GameObject::setPosition(float x, float y) {
 		_collisionRect.setPosition(x, y);
