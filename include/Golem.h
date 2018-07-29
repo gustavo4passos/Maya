@@ -12,10 +12,11 @@ protected:
 		WALK,
 		ATTACKING,
 		CHASING,
+		DEAD,
 	};
 
 public:
-	Golem(float x, float y, const std::string& switchRequired);
+	Golem(float x, float y, const std::string& switchRequired = "");
 
 	void Update() override;
 	void Draw(Renderer* renderer, float deltaTime) override;
@@ -26,6 +27,9 @@ private:
 	void StandWalk();
 	void GetUp();
 
+	int _life = 1;
+
+	bool _attacking = false;
 	GolemState _currentState;
 	std::string _switchRequired;
 

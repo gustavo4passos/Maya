@@ -7,8 +7,14 @@
 Golem::Golem(float x, float y, const std::string& switchRequired)
 :	Enemy(CollisionRect(Rect(x,y,26,23),CollisionBehavior::BLOCK,14,33),52,56),
 	_switchRequired(switchRequired)
-{ 
-	ChangeState(CROUCH);
+{
+	if (switchRequired == "")
+    {
+        ChangeState(WALK);
+    }
+    else ChangeState(CROUCH);
+	
+    _kind = Kind::ENEMY;
 }
 
 void Golem::Draw(Renderer* renderer, float deltaTime){
@@ -50,11 +56,33 @@ void Golem::Update(){
         }
     }
     else if(_currentState == ATTACKING){
-        if( ((ServiceLocator::GetPlayer())->x() - x()) > 60 || ((ServiceLocator::GetPlayer())->x() - x()) < -60)
+        if( ((ServiceLocator::GetPlayer())->x() - x()) > 60 || ((ServiceLocator::GetPlayer())->x() - x()) < -60){
             ChangeState(CHASING);
-        
-        else if(_velocity.x() < 0)   _velocity.setX(-2);
-        else if(_velocity.x() > 0)  _velocity.setX(2);
+            _attacking = false;
+        }
+        else if( (_currentFrame == 3 && _currentRow == 2) || !_attacking){
+            if(((ServiceLocator::GetPlayer())->x() - x()) <= 0){
+                _velocity.setX(-3);
+                _facingright = false;
+                _attacking = true;
+            }   
+            else if(((ServiceLocator::GetPlayer())->x() - x()) > 0){
+                _velocity.setX(3);
+                _facingright = true;
+                _attacking = true;
+            }
+        }
+    }
+    while(!_unresolvedCollisionEvents.empty()){
+        CollisionEvent event = _unresolvedCollisionEvents.front();
+        _unresolvedCollisionEvents.pop();
+
+        if(event.kind == Kind::WEAPON) {
+            _life -= event.damage;
+            _velocity.setX(0);
+            if(_life == 0)
+                ChangeState(DEAD);
+        }        
     }
 }
 
@@ -86,27 +114,27 @@ void Golem::GetUp(){
 void Golem::ChangeState(GolemState state){
  	_frameTime = 0;
 
- 	if(state == CROUCH){
+ 	if(state == CROUCH || state == DEAD){
  		_currentState = CROUCH;
  		_numRows = 1;
  		_numFrames = 1;
- 		_textureName = "../res/assets/static-golem.png";
+ 		_textureName = "static-golem";
  	}
     else if(state == WALK){
         _currentState = WALK;
-        _textureName = "../res/assets/golem-walk.png";
-        _numRows = 3;
+        _textureName = "golem-walk";
+        _numRows = 4;
         _numFrames = 4;
     }
     else if(state == CHASING){
         _currentState = CHASING;
-        _textureName = "../res/assets/golem-walk.png";
-        _numRows = 3;
+        _textureName = "golem-walk";
+        _numRows = 4;
         _numFrames = 4;
     }
     else if(state == ATTACKING){
         _currentState = ATTACKING;
-        _textureName = "../res/assets/golem-attack.png";
+        _textureName = "golem-attack";
         _numRows = 3;
         _numFrames = 4;
     }

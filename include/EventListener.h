@@ -2,6 +2,7 @@
 #define EVENTLISTENER_H
 
 #include <queue>
+#include <memory>
 
 #include "Event.h"
 
@@ -17,8 +18,8 @@ public:
     virtual bool OnNotify(Event* event) = 0;
 
 protected:
-	std::queue<Event> _unresolvedEvents;
-	void EnqueueEventForLater(Event* e) { _unresolvedEvents.push(*e); }
+	std::queue< std::unique_ptr<Event> > _unresolvedEvents;
+	void EnqueueEventForLater(Event* e) { _unresolvedEvents.push( std::unique_ptr<Event>(e->Clone())); }
 };
 
 #endif

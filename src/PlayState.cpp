@@ -8,12 +8,13 @@
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
 #include "../include/InputModule.h"
+#include "../include/Maya.h"
+#include "../include/MovingPlatform.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
 #include "../include/LevelLoader.h"
-#include "../include/Maya.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -70,28 +71,18 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
-	if(!ResourceManager::LoadTexture("../res/sprites/button.png", "button")) {
+	if(!ResourceManager::LoadTexture("../res/sprites/button-red.png", "button")) {
 		LOG_ERROR("Unable to load texture \"button\"");
 		return false;
 	}
 
+	if(!ResourceManager::LoadTexture("../res/sprites/moving_platform_stretched.png", "moving-platform")) {
+		LOG_ERROR("Unable to load texture \"moving-platform\"");
+		return false;
+	}
+	
 	if(!ResourceManager::LoadTexture("../res/sprites/door.png", "door")) {
 		LOG_ERROR("Unable to load texture \"Door\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
-		LOG_ERROR("Unable to load texture \"static-golem\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/golem-walk.png", "../res/assets/golem-walk.png")) {
-		LOG_ERROR("Unable to load texture \"golem-walk\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/golem-attack.png", "../res/assets/golem-attack.png")) {
-		LOG_ERROR("Unable to load texture \"golem-attack\"");
 		return false;
 	}
 
@@ -112,30 +103,31 @@ bool PlayState::OnEnter(){
 
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	
-	_region = new Region();
-	ServiceLocator::ProvideCurrentRegion(_region);
+	//_region = new Region();
+	
 	
 	_maya = new Maya(200, 0);
 	ServiceLocator::ProvidePlayer(_maya);
 
 	_infoMenu = new InfoMenuGL3();
 
-	Level* forest = ResourceManager::ParseLevel("../res/levels/forest_2.tmx");
-	forest->AddGameObject(_maya->weapon());
+	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
+	//forest->AddGameObject(_maya->weapon());
+	//forest->AddEnemy(new Golem(320,0,"forest-button-1"));
+	//forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 12), CollisionBehavior::BLOCK, 1, 8), 32, 32, "forest-button-1", false));
+	//forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
+	//forest->AddGameObject(new MovingPlatform(Vector2D(150, 90), Vector2D(485, 90), true, "forest-button-1"));
+
+	//if(forest == NULL) return false;
+
+	//Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
+
+	//_region->AddLevel(forest, "forest");
+	//_region->AddLevel(mountain, "mountain");
+	//_region->ChangeCurrentLevel("forest");
 	
-	forest->AddEnemy(new Golem(320,0,"forest-button-1"));
-
-	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
-	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
-
-	if(forest == NULL) return false;
-
-	Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
-
-	_region->AddLevel(forest, "forest");
-	_region->AddLevel(mountain, "mountain");
-	_region->ChangeCurrentLevel("forest");
-
+	_region = LevelLoader::ParseRegion("../res/regions/temple-area.region");
+	ServiceLocator::ProvideCurrentRegion(_region);
 	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _maya);
    
 	ServiceLocator::GetRenderer()->UseCamera(_camera);

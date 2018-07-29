@@ -6,8 +6,10 @@
 class Zone : public GameObject{
 
 public:
-    Zone(const CollisionRect& collisionRect) : GameObject(collisionRect, 0, 0) {}
-    virtual ~Zone(){}
+    Zone(const Rect& bounds) 
+    :   GameObject(CollisionRect(bounds, CollisionBehavior::PASSH_THROUGH), 0, 0)
+    { }
+    virtual ~Zone() {}
     virtual void Activate() = 0;
     inline bool active(){ return _active; }
     inline bool onTouch(){ return _onTouch; }
