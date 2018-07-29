@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<region>
+    <resources>
+        <audio>
+            <soundeffects>
+                <soundeffect filename="../res/audio/sfx/dagger_swing.mp3" id="dagger_swing"/>
+                <soundeffect filename="../res/audio/sfx/damage.mp3" id="damage"/>
+                <soundeffect filename="../res/audio/sfx/forest_sounds.mp3" id="forest_sounds"/>
+            </soundeffects>
+
+            <songs>
+                <song filename="../res/audio/music/piano-theme-drums.mp3" id="forest_theme"/>
+            </songs>
+            
+        </audio>
+
+        <sprites>
+            <sprite filename="../res/assets/static-golem.png" id="static-golem"/>
+            <sprite filename="../res/assets/golem-walk.png" id="golem-walk"/>
+            <sprite filename="../res/assets/golem-attack.png" id="golem-attack"/>
+            <sprite filename="../res/assets/Maya_Stand Arms.png" id="maya_waiting"/>
+            <sprite filename="../res/assets/Maya_Run Sprite Sheet V03.png" id="maya_running"/>
+            <sprite filename="../res/assets/Maya_Jump_V01.png" id="maya_jumping"/>
+            <sprite filename="../res/assets/Maya_Combat Attack v003.png" id="maya_attacking"/>
+            <sprite filename="../res/assets/Maya_Standing.png" id="maya_standing"/>
+            <sprite filename="../res/assets/Maya_Climbing.png" id="maya_climbing"/>
+            <sprite filename="../res/assets/box.png" id="box"/>
+            <sprite filename="../res/sprites/button-red.png" id="button"/>
+            <sprite filename="../res/sprites/door.png" id="door"/>
+            <sprite filename="../res/sprites/moving_platform_stretched.png" id="moving-platform"/>
+        </sprites>
+    </resources>
+
+    <leveldata>
+        <level filename="../res/levels/forest_2.tmx" id="forest_2"/>
+        <level filename="../res/levels/mountain.tmx" id="mountain"/>
+        <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
+    </leveldata>
+
+    <startinglevel id="TempleEntrance1"/>
+</region>

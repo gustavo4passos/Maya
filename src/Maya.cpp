@@ -1,4 +1,4 @@
-#include "../include/Maya.h"
+ #include "../include/Maya.h"
 
 #include <iostream>
 
@@ -19,6 +19,10 @@ Maya::Maya(const CollisionRect& collisionRect, int spriteW, int spriteH) : Playe
     _health = 3;
     _weapon = new Weapon(x(),y(), 23, 4);
     _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::IGNORE);
+    _collisionRect.setOffsetX(12);
+    _currentState = STAND;        
+    _numFrames = 1;
+    _numRows = 1;
 }
 
 Maya::~Maya()
@@ -88,7 +92,7 @@ void Maya::HandleInput()
         }       
     }
 
-    else if(_currentState == BOUNCE){    
+    else if (_currentState == BOUNCE){    
         if(_lastState == DRAG_WALL && ((PhysicsEngine::OnWallLeft(this) && leftPressed) || (PhysicsEngine::OnWallRight(this) && rightPressed))) {
             ChangeState(DRAG_WALL);
         }
@@ -198,9 +202,13 @@ void Maya::Update()
 {  
     Player::Update();
 
+    std::cout << "Maya update1\n";
+
     if(_health <= 0 && PhysicsEngine::OnGround(this)) ChangeState(DEAD);
     
     _weapon->setPosition(x(),y());
+
+    std::cout << "Maya update2\n";
         
     if (_currentState == JUMP){
         if (PhysicsEngine::OnGround(this)){
@@ -221,9 +229,9 @@ void Maya::Update()
         {
             if(_facingright) _weapon->setPosition(x()+11, y()+10);            
             else _weapon->setPosition(x()-20, y()+10);
-            
+
             _weapon->_collisionRect.setCollisionBehavior(CollisionBehavior::BLOCK);
-            
+
             if(PhysicsEngine::OnWall(_weapon) && _currentFrame == 1){
                 SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("damage"));
             }
@@ -250,6 +258,7 @@ void Maya::Update()
         _velocity.setY(_velocity.y()*0.5);
     }  
 
+    std::cout << "Maya update3\n";
     
     while(!_unresolvedCollisionEvents.empty()){
         CollisionEvent e = _unresolvedCollisionEvents.front();
@@ -264,9 +273,10 @@ void Maya::Update()
         }
 
         _unresolvedCollisionEvents.pop();        
-    }       
+    }
+    std::cout << "Maya update4\n";  
 }
 
 bool Maya::OnNotify(Event* event){
-    return false;
+     return false;
 }

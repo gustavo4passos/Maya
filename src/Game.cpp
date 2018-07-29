@@ -16,6 +16,7 @@
 #include "../include/PhysicsEngine.h"
 #include "../include/ServiceLocator.h"
 #include "../include/PlayState.h"
+#include "../include/EventDispatcher.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -41,12 +42,24 @@ bool Game::Init() {
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
-        return false;
+       return false;
     }
+
+    //if(!InputModule::InitJoysticks()){
+    //   LOG_ERROR("Unable to initialize Joysticks");
+    //}
 
     if(!SoundPlayer::Init()){
         LOG_ERROR("Unable to initialize SoundPlayer.");
         return false;
+    }
+
+    if(!ResourceManager::LoadMusic("../res/audio/music/piano-theme-drums.mp3", "BGM")){
+        LOG_ERROR("Unable to load music.");
+        return false;
+    }
+    else{
+        SoundPlayer::PlayBGM(ResourceManager::GetMusic("BGM"), true);
     }
    
     ServiceLocator::ProvideGame(this);
@@ -56,6 +69,7 @@ bool Game::Init() {
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
+    ServiceLocator::GetGameSwitches()->PushSwitch("golemtest");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;
@@ -64,6 +78,8 @@ bool Game::Init() {
 
 void Game::Run() {
     _running = true;
+
+    std::cout << "Debug1\n";
 
     unsigned int previous = SDL_GetTicks();
     unsigned int lag = 0.0;
@@ -75,20 +91,29 @@ void Game::Run() {
         previous = current;
         lag += elapsed;
 
+        std::cout << "Debug2\n";
+
         while(lag >= MS_PER_UPDATE){
+            std::cout << "Debug3\n";           
         	HandleEvents();
+            std::cout << "Debug4\n";
             Update();
+            std::cout << "Debug5\n";
             lag -= MS_PER_UPDATE;
         }
+
+        std::cout << "Debug6\n";
 		
 		Render(float(lag) / MS_PER_UPDATE);
     }
 }
 
-void Game::Render(float positionFactor) {
+void Game::Render(float deltaTime) {
 	_renderer->Clear();
 
-    GameStateMachine::Render(_renderer, positionFactor);
+    std::cout << "Game render1\n";
+    GameStateMachine::Render(_renderer, deltaTime);
+    std::cout << "Game render2\n";
 
     _window->Swap();
 }

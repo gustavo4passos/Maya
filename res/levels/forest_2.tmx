@@ -153,4 +153,29 @@
   <object id="28" x="816" y="212.364" width="32" height="27.6364"/>
   <object id="29" x="848" y="228.182" width="16" height="11.8182"/>
  </objectgroup>
+ <objectgroup name="Enemies">
+  <object id="19" x="40" y="0" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+    <property name="switch" value="golemtest"/>
+   </properties>
+  </object>
+  <object id="19" x="300" y="0" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="GameObjects">
+  <object id="20" name="button-mountain-switch-10" type="button" x="100" y="430" width="32" height="32">
+   <properties>
+    <property name="activatesSwitch" value="golemtest"/>
+   </properties>
+  </object>
+  <object id="20" name="button-mountain-switch-11" type="button" x="200" y="430" width="32" height="32">
+   <properties>
+    <property name="activatesSwitch" value="forest-button-1"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

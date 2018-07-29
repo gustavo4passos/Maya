@@ -21,9 +21,8 @@ GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spri
     _frameTime(0)
 {}
 
-GameObject::~GameObject() {
-	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
-}
+GameObject::~GameObject() 
+{ }
 
 void GameObject::setPosition(float x, float y) {
 		_collisionRect.setPosition(x, y);
@@ -34,10 +33,13 @@ void GameObject::setVelocity(float x, float y) {
 		_velocity.setY(y);
 }
 
-void GameObject::Update() {	
+void GameObject::Update() {
+	std::cout << "FrameTime = " << _frameTime  << ", numFrames = " << _numFrames << ", numRows = " << _numRows << "\n";
 	_frameTime++;
     _currentFrame = (_frameTime/5) % _numFrames;
+	std::cout << "GameObject update1\n";
     _currentRow = (_frameTime/(5*_numFrames)) % _numRows;
+	std::cout << "GameObject update2\n";
 }
 
 void GameObject::Draw(Renderer* renderer, float deltaTime) {}

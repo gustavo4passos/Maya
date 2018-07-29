@@ -13,7 +13,8 @@ enum class Kind {
 	ENEMY,
 	PLAYER,
 	WEAPON,
-	ZONE
+	ZONE,
+	TELEPORT_ZONE
 };
 
 class GameObject : public EventListener {

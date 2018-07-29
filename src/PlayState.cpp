@@ -9,12 +9,13 @@
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
 #include "../include/InputModule.h"
+#include "../include/Maya.h"
+#include "../include/MovingPlatform.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
 #include "../include/LevelLoader.h"
-#include "../include/Maya.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -25,127 +26,78 @@ void PlayState::HandleInput(){
 }
 
 void PlayState::Update(){
+	std::cout << "PlayState update1\n";
 	_region->Update();
+	std::cout << "PlayState update2\n";
     _maya->Update();
+	std::cout << "PlayState update3\n";
 	_camera->Update();
+	std::cout << "PlayState update4\n";
 }
 
 void PlayState::Render(Renderer* renderer, float deltatime){
 	//TODO(Gustavo): Below is a temporary solution for the camera position interpolation problem.
 	// This solution must be integrated properly withing the camera code
+
+	std::cout << "PlayState render1\n";
 	Vector2D pos = _maya->collisionRect().position();
+	std::cout << "PlayState render2\n";
 	_maya->setPosition(pos.x() + _maya->velocity().x() * deltatime, 
 				  		 pos.y() + _maya->velocity().y() * deltatime); 
+	std::cout << "PlayState render3\n";
 	_camera->Update();
+	std::cout << "PlayState render4\n";
 	
 	_maya->setPosition(pos.x(), pos.y()); 
+	std::cout << "PlayState render5\n";
 	
 	_region->Render(renderer, deltatime);
+	std::cout << "PlayState render6\n";
 	_maya->Draw(renderer, deltatime);
+	std::cout << "PlayState render7\n";
 	_infoMenu->Render(renderer);
+	std::cout << "PlayState render8\n";
+
+	
 }
 
-bool PlayState::OnEnter(){
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Run Sprite Sheet V03.png", "maya_running")) {
-        LOG_ERROR("Unbale to load texture  \"Maya_Running\"");
-		return false;
-    }
-
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Standing.png", "maya_standing")){
-	 	LOG_ERROR("Unable to load texture \"Maya_Standing\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Jump_V01.png", "maya_jumping")){
-	 	LOG_ERROR("Unable to load texture \"Maya_Jumping\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Combat Attack v003.png", "maya_attacking")){
-	 	LOG_ERROR("Unable to load texture \"Maya_Attacking\"");
-		return false;	
-	}
-	
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Stand Arms.png", "maya_waiting")){
-	 	LOG_ERROR("Unable to load texture \"Maya_Waiting\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/Maya_Climbing.png", "maya_climbing")){
-	 	LOG_ERROR("Unable to load texture \"Maya_Climbing\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/sprites/button.png", "button")) {
-		LOG_ERROR("Unable to load texture \"button\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/sprites/door.png", "door")) {
-		LOG_ERROR("Unable to load texture \"Door\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
-		LOG_ERROR("Unable to load texture \"Static golem\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/forest_sounds.mp3", "forest_sounds")){
-		LOG_ERROR("Unable to load sound effect \"forest_sounds\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/dagger_swing.mp3", "dagger_swing")){
-		LOG_ERROR("Unable to load sound effect \"dagger_swing\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/damage.mp3", "damage")){
-		LOG_ERROR("Unable to load sound effect \"damage\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/box.png", "box")) {
-		LOG_ERROR("Unable to load texture \"Box\"");
-		return false;
-	}
-	
-
-	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
-	
-	_region = new Region();
-	ServiceLocator::ProvideCurrentRegion(_region);
+bool PlayState::OnEnter(){		
 	
 	_maya = new Maya(200, 0);
 	ServiceLocator::ProvidePlayer(_maya);
 
-	_infoMenu = new InfoMenuGL3();
-
-	
 	_camera = new Camera(480, 270, 0, 0, 0, 0, _maya);
 	ServiceLocator::GetRenderer()->UseCamera(_camera);
+	_infoMenu = new InfoMenuGL3();
 
-	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
-	forest->AddGameObject(_maya->weapon());
-	forest->AddEnemy(new Golem(480,0));
-	forest->AddGameObject(new PushableObject(800, 0));
-	forest->AddGameObject(new Button(CollisionRect(Rect(130, 400, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
-	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
+	_region = LevelLoader::ParseRegion("../res/regions/temple-area.region");	
+	ServiceLocator::ProvideCurrentRegion(_region);
 
-	if(forest == NULL) return false;
+	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 
-	Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
-	Level* templeEntrance = LevelLoader::ParseLevel("../res/levels/TempleEntrance1.tmx");
-	templeEntrance->AddGameObject(new PushableObject(CollisionRect(Rect(300, 0, 47, 41), CollisionBehavior::BLOCK), 47, 41));
+	//_region->ChangeCurrentLevel("templeEntrance");
+	//Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
+	//Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
+	//Level* templeEntrance = LevelLoader::ParseLevel("../res/levels/TempleEntrance1.tmx");
+	//templeEntrance->AddGameObject(new PushableObject(CollisionRect(Rect(300, 0, 47, 41), CollisionBehavior::BLOCK), 47, 41));
 
-	_region->AddLevel(forest, "forest");
-	_region->AddLevel(mountain, "mountain");
-	_region->AddLevel(templeEntrance, "templeEntrance");
+	// _region->AddLevel(forest, "forest");
+	// _region->AddLevel(mountain, "mountain");
+	// _region->AddLevel(templeEntrance, "templeEntrance");
 
 	//_region->ChangeCurrentLevel("forest");
-	_region->ChangeCurrentLevel("templeEntrance");
+	
 
+	//Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
+
+	//_region->AddLevel(forest, "forest");
+	//_region->AddLevel(mountain, "mountain");
+	//_region->ChangeCurrentLevel("forest");
+	
+	
+	
+	
+   
 
     return true;
 }
