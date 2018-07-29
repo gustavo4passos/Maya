@@ -3,47 +3,36 @@
 
 #include "GameObject.h"
  
-
+enum PlayerState { 
+    STAND,
+    RUN,
+    JUMP,
+    RUN_ATTACK,
+    JUMP_ATTACK,
+    STAND_ATTACK,
+    BOUNCE_STUCK,
+    BOUNCE,
+    DRAG_WALL,
+    DEAD
+};
 
 class Player : public GameObject
 {
-
-
-
 public:
 
     Player(float x, float y, int w, int h);
     Player(const CollisionRect& collisionRect, int spriteW, int spriteH);
-    virtual ~Player();
-    
-    //virtual void Load(int xPos, int yPos, int width, int height, std::string sprite, float scale=1, bool flip=false);
+    virtual ~Player();  
 
-    
-
-    virtual void Draw(Renderer*, float deltaTime);
+    virtual void Draw(Renderer*, float deltaTime) override;
     virtual void HandleInput();
-    virtual void Update();
-    virtual bool OnNotify(Event* event);
+    virtual void Update() override;
+    virtual bool OnNotify(Event* event) override;
     
-    // virtual void Clean();
-
 protected:
-
-    enum PlayerState { 
-        STAND,
-        RUN,
-        JUMP,
-        RUN_ATTACK,
-        JUMP_ATTACK,
-        STAND_ATTACK    
-    };
-
-
     PlayerState _currentState;
-
     virtual void ChangeState(PlayerState) = 0;
-    
-   
+    int _health;
 };
 
 #endif

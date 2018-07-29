@@ -160,11 +160,6 @@
     <property name="switch" value="golemtest"/>
    </properties>
   </object>
-  <object id="19" x="300" y="0" width="64" height="96">
-   <properties>
-    <property name="type" value="golem"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup name="GameObjects">
   <object id="20" name="button-mountain-switch-10" type="button" x="100" y="430" width="32" height="32">

@@ -92,8 +92,16 @@ public:
 		return *this;
 	}
 
+	bool operator < (const Vector2D rhs) const{
+        return this->_x < rhs._x || (this->_x == rhs._x && this->_y < rhs._y);
+    }
+
+    bool operator == (const Vector2D rhs) const {
+        return (this->_x == rhs._x && this->_y == rhs._y);
+    }
+
 	static Vector2D UnitX() { return Vector2D(1.f, 0.f); }
-	static Vector2D UnitY() { return Vector2D(0.f, 1.f); } 
+	static Vector2D UnitY() { return Vector2D(0.f, 1.f); }
 
 private:
 	float _x;

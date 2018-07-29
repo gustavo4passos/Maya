@@ -4,6 +4,7 @@
 #include "../include/Door.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Golem.h"
+#include "../include/PushableObject.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
@@ -101,6 +102,12 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	if(!ResourceManager::LoadTexture("../res/assets/box.png", "box")) {
+		LOG_ERROR("Unable to load texture \"Box\"");
+		return false;
+	}
+	
+
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	
 	//_region = new Region();
@@ -117,7 +124,6 @@ bool PlayState::OnEnter(){
 	//forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 12), CollisionBehavior::BLOCK, 1, 8), 32, 32, "forest-button-1", false));
 	//forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 	//forest->AddGameObject(new MovingPlatform(Vector2D(150, 90), Vector2D(485, 90), true, "forest-button-1"));
-
 	//if(forest == NULL) return false;
 
 	//Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");

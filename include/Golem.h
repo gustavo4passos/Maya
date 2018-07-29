@@ -27,7 +27,7 @@ private:
 	void StandWalk();
 	void GetUp();
 
-	int _life = 1;
+	int _life = 24;
 
 	bool _attacking = false;
 	GolemState _currentState;

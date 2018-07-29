@@ -49,5 +49,4 @@ void Enemy::Update()
 	}
 }
 
-bool Enemy::OnNotify(Event* event)
-{}
+bool Enemy::OnNotify(Event* event){}
