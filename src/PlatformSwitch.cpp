@@ -7,7 +7,7 @@
 #include "../include/SoundPlayer.h"
 
 PlatformSwitch::PlatformSwitch(float x, float y, const std::string& activatesSwitch) 
-:   GameObject(CollisionRect(Rect(x, y, 96, 21), CollisionBehavior::BLOCK), 96, 21),
+:   GameObject(CollisionRect(Rect(x, y, 96, 14), CollisionBehavior::BLOCK), 96, 14),
     _activatesSwitch(activatesSwitch),
     _originPosition(x, y),
     _on(false),
@@ -53,6 +53,7 @@ void PlatformSwitch::Update() {
 
 void PlatformSwitch::Draw(Renderer* renderer, float deltaTime) {
     Rect src = Rect(0, 0, _spriteW, _spriteH);
+    if(_on) src.setX(_spriteW);
     Rect dst = Rect(_collisionRect.originX(), _collisionRect.originY(), _spriteW, _spriteH);
 
     renderer->Draw(ResourceManager::GetTexture(_textureName), &src, &dst);

@@ -1,6 +1,8 @@
 #include "../include/Door.h"
 
+#include "../include/EventDispatcher.h"
 #include "../include/GameSwitches.h"
+#include "../include/PlayerHitTeleportEvent.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
@@ -16,6 +18,18 @@ Door::Door(const CollisionRect& collisionRect, int spriteW, int spriteH, const s
 void Door::Update() {
     if(ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired) && !IsOpen()){
         Open();
+    }
+
+    if(_open) {
+        CollisionRect playerRct = ServiceLocator::GetPlayer()->collisionRect();
+        CollisionRect collision = _collisionRect;
+        collision.setW(_collisionRect.w() - 15);
+        collision.setX(x() + 7);
+        
+        if(PhysicsEngine::CheckCollision(&collision, &playerRct)){
+            std::unique_ptr<Event> playerHitTeleport(new PlayerHitTeleportEvent("mountain", Vector2D(-14, 289)));
+            EventDispatcher::Notify(playerHitTeleport.get());
+        }
     }
 }
 
