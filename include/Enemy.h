@@ -17,16 +17,7 @@ public:
 	inline const int damage() { return _damage; }
 
 protected:
-	enum EnemyState {
-		CROCH,
-		WALK,
-		ATTACKING,
-		CHASING,
-	};
-
-private:
 	int _damage;
-	EnemyState _currentState;
 };
 
 #endif

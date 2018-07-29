@@ -15,7 +15,9 @@ Player::Player(const CollisionRect& collisionRect, int spriteW, int spriteH) : G
 }
 
 Player::~Player()
-{}
+{
+	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+}
 
 void Player::Draw(Renderer* renderer, float deltaTime)
 {
@@ -53,6 +55,4 @@ void Player::Update()
 	}
 }
 
-bool Player::OnNotify(Event* event){
-	return GameObject::OnNotify(event);
-}
+bool Player::OnNotify(Event* event){}

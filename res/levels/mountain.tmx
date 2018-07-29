@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#329ce7" nextobjectid="23">
  <tileset firstgid="1" name="forest_1" tilewidth="32" tileheight="32" tilecount="0" columns="8">
   <image source="../res/sprites/forest_1.png" width="256" height="256"/>
  </tileset>
@@ -142,7 +142,11 @@
 </data>
  </layer>
  <objectgroup name="CollisionLayer">
-  <object id="2" x="-144" y="320" width="1232" height="960"/>
+  <object id="2" x="-144" y="320" width="1232" height="960">
+  <properties>
+    <property name="collisionbehavior" value="oneway"/>
+   </properties>
+  </object> 
   <object id="3" x="1088" y="1024" width="832" height="256"/>
   <object id="11" x="-266.667" y="-209.091" width="169.697" height="1490.91"/>
  </objectgroup>
@@ -156,14 +160,49 @@
   </object>
  </objectgroup>
  <objectgroup name="Enemies">
-  <object id="19" x="320" y="224" width="64" height="96">
+  <object id="19" x="40" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="30" x="90" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="31" x="140" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="32" x="190" y="224" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+  <object id="33" x="240" y="224" width="64" height="96">
    <properties>
     <property name="type" value="golem"/>
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="Zones">
+  <object id="35" x="960" y="0" width="112" height="640">
+   <properties>
+    <property name="destinationLevel" value="mountain"/>
+    <property name="destinationX" type="float" value="10"/>
+    <property name="destinationY" type="float" value="10"/>
+    <property name="type" value="TeleportZone"/>
+   </properties>
+  </object>
+ </objectgroup>
 <objectgroup name="GameObjects">
   <object id="20" name="button-mountain-switch-10" type="button" x="800" y="288" width="32" height="32">
+   <properties>
+    <property name="activatesSwitch" value="mountain-switch-10"/>
+   </properties>
+  </object>
+  <object id="35" name="button-mountain-switch-10" type="button" x="320" y="288" width="32" height="32">
    <properties>
     <property name="activatesSwitch" value="mountain-switch-10"/>
    </properties>

@@ -16,6 +16,7 @@
 #include "../include/PhysicsEngine.h"
 #include "../include/ServiceLocator.h"
 #include "../include/PlayState.h"
+#include "../include/EventDispatcher.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -41,12 +42,12 @@ bool Game::Init() {
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
-        return false;
+       return false;
     }
 
-    if(!InputModule::InitJoysticks()){
-        LOG_ERROR("Unable to initialize Joysticks");
-    }
+    //if(!InputModule::InitJoysticks()){
+    //   LOG_ERROR("Unable to initialize Joysticks");
+    //}
 
     if(!SoundPlayer::Init()){
         LOG_ERROR("Unable to initialize SoundPlayer.");
@@ -60,6 +61,7 @@ bool Game::Init() {
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
+    ServiceLocator::GetGameSwitches()->PushSwitch("golemtest");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;
@@ -89,10 +91,10 @@ void Game::Run() {
     }
 }
 
-void Game::Render(float positionFactor) {
+void Game::Render(float deltaTime) {
 	_renderer->Clear();
 
-    GameStateMachine::Render(_renderer, positionFactor);
+    GameStateMachine::Render(_renderer, deltaTime);
 
     _window->Swap();
 }

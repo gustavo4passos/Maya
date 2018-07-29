@@ -18,6 +18,7 @@ void EventDispatcher::Notify(Event* event) {
     }
     std::set<EventListener*> *eventListenersSet = &eventListenersEntry->second;
     for(std::set<EventListener*>::iterator listener = eventListenersSet->begin(); listener != eventListenersSet->end(); listener++) {
+        // If current listener handles the event, do not notify the remaining listeners
         if((*listener)->OnNotify(event)) break;
     }
 }
