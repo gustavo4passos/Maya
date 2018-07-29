@@ -2,7 +2,6 @@
 
 #include "../include/ServiceLocator.h"
 #include "../include/GameSwitches.h"
-#include <iostream>
 
 Golem::Golem(float x, float y, const std::string& switchRequired)
 :	Enemy(CollisionRect(Rect(x,y,26,23),CollisionBehavior::BLOCK,14,33),52,56),
