@@ -201,7 +201,11 @@ void ResourceManager::CleanResource(ResourceType resourceType, const std::string
 		case ResourceType::SOUND_EFFECT:
 			DeleteSoundEffect(name);
 			break;
+		case ResourceType::SONG:
+			DeleteMusic(name);
+			break;
 		default:
+			LOG_WARNING("Unable to delete resource. Resource type is unknown.");
 			break;
 	}
 }

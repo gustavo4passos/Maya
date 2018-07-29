@@ -20,7 +20,7 @@ enum class ResourceType {
     TEXTURE,
     MESH,
     SOUND_EFFECT,
-    MUSIC    
+    SONG    
 };
 
 class ResourceManager {

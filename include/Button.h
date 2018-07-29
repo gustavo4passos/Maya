@@ -5,13 +5,13 @@
 
 class Button : public GameObject {
 public:    
-    Button(const CollisionRect& collisionRect, int spriteW, int spriteH, const std::string& activatesSwitch, bool initiallyPressed);
+    Button(float x, float y, const std::string& activatesSwitch, bool initiallyPressed);
 
     void Update() override;
     void Draw(Renderer* renderer, float deltaTime) override;
 
     virtual inline bool IsOn() const { return _isPressed; }
-    virtual inline void TurnOn() { _isPressed = true; }
+    virtual inline void TurnOn();
     virtual inline void TurnOf() { _isPressed = false;  }
     virtual inline void Toggle() { _isPressed = !_isPressed; }
     

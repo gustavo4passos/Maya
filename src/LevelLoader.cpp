@@ -189,7 +189,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 						}
 		
 						activatesSwitch = std::string(activatesSwitchNode->Attribute("value"));
-						level->AddGameObject(new Button(CollisionRect(Rect(x, y, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, activatesSwitch, false));
+						level->AddGameObject(new Button(x, y, activatesSwitch, false));
 					}
 				}
 			}

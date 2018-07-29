@@ -8,13 +8,14 @@
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
 #include "../include/InputModule.h"
+#include "../include/LevelLoader.h"
 #include "../include/Maya.h"
 #include "../include/MovingPlatform.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
-#include "../include/LevelLoader.h"
+#include "../include/PlatformSwitch.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -106,6 +107,20 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/button-press.wav", "button-press")) {
+		LOG_ERROR("Unable to load sound effect \"button-press\"");
+		return false;
+	}
+	if(!ResourceManager::LoadMusic("../res/audio/music/piano-theme-drums.mp3", "BGM")){
+        LOG_ERROR("Unable to load music.");
+        return false;
+    }
+	if(!ResourceManager::LoadTexture("../res/sprites/platform-switch.png", "platform-switch")) {
+		LOG_ERROR("Unable to load texture \"platform-switch\"");
+		return false;
+	}
+    
+    SoundPlayer::PlayBGM(ResourceManager::GetMusic("BGM"), true);
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	
 	_region = new Region();
@@ -116,12 +131,16 @@ bool PlayState::OnEnter(){
 
 	_infoMenu = new InfoMenuGL3();
 
+	_camera = new Camera(480, 270, 0, 0, 0, 0, _maya);
+	ServiceLocator::GetRenderer()->UseCamera(_camera);
+
 	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
 	forest->AddEnemy(new Golem(480,0));
-	forest->AddGameObject(new Button(CollisionRect(Rect(130, 430, 31, 12), CollisionBehavior::BLOCK, 1, 8), 32, 32, "forest-button-1", false));
+	forest->AddGameObject(new Button(130, 440, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new MovingPlatform(Vector2D(150, 90), Vector2D(485, 90), true, "forest-button-1"));
+	forest->AddGameObject(new PlatformSwitch(555, 310, "forest-button-1"));
 
 	if(forest == NULL) return false;
 
@@ -131,9 +150,6 @@ bool PlayState::OnEnter(){
 	_region->AddLevel(mountain, "mountain");
 	_region->ChangeCurrentLevel("forest");
 
-	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _maya);
-   
-	ServiceLocator::GetRenderer()->UseCamera(_camera);
 
     return true;
 }

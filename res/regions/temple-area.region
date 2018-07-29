@@ -8,9 +8,9 @@
             </soundeffects>
 
             <songs>
-                <song filename="forest_theme.mp3" id="forest_theme"/>
-                <song filename="nightsky_serenade.mp3" id="nightsky_serenade"/>
+                <song filename="../res/audio/piano-theme-drums.mp3" id="forest_theme"/>
             </songs>
+            
         </audio>
 
         <sprites>

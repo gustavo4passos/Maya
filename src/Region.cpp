@@ -68,6 +68,13 @@ void Region::Render(Renderer* renderer, float deltaTime) {
     _levels[_currentLevel]->DrawBackground(renderer, deltaTime);
 }
 
+bool Region::AddResource(ResourceType resourceType, const std::string& resourceID) {
+    // TODO(Gustavo): Missing error checking
+    _resources[resourceType].push_back(resourceID);
+   
+    return true;
+}
+
 bool Region::AddLevel(Level* level, const std::string& levelID){
     std::map<std::string, Level*>::const_iterator it = _levels.find(levelID);
     if(it != _levels.end()) {
