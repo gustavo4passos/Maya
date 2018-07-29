@@ -20,9 +20,6 @@ void Button::Update() {
 
     if(!_isPressed){
         if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
-            std::unique_ptr<Event> test(new PlayerHitTeleportEvent("mountain", Vector2D(0.f, 0.f)));
-            EventDispatcher::Notify(test.get());
-
             TurnOn();
             _collisionRect.setH(0);
             _collisionRect.setW(0);
