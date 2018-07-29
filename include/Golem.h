@@ -15,7 +15,7 @@ protected:
 	};
 
 public:
-	Golem(float x, float y, const std::string& switchRequired);
+	Golem(float x, float y, const std::string& switchRequired = "");
 
 	void Update() override;
 	void Draw(Renderer* renderer, float deltaTime) override;
@@ -26,6 +26,7 @@ private:
 	void StandWalk();
 	void GetUp();
 
+	bool _attacking = false;
 	GolemState _currentState;
 	std::string _switchRequired;
 

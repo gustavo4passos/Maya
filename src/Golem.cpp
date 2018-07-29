@@ -7,8 +7,14 @@
 Golem::Golem(float x, float y, const std::string& switchRequired)
 :	Enemy(CollisionRect(Rect(x,y,26,23),CollisionBehavior::BLOCK,14,33),52,56),
 	_switchRequired(switchRequired)
-{ 
-	ChangeState(CROUCH);
+{
+	if (switchRequired == "")
+    {
+        ChangeState(WALK);
+    }
+    else ChangeState(CROUCH);
+	
+    _kind = Kind::ENEMY;
 }
 
 void Golem::Draw(Renderer* renderer, float deltaTime){
@@ -34,9 +40,12 @@ void Golem::Update(){
         else    StandWalk();
     }
     else if(_currentState == CHASING){
-        if( ((ServiceLocator::GetPlayer())->x() - x()) > 145 || ((ServiceLocator::GetPlayer())->x() - x()) < -145){
+        if( ((ServiceLocator::GetPlayer())->x() - x()) > 145 || ((ServiceLocator::GetPlayer())->x() - x()) < -145)
             ChangeState(WALK);
-        }
+
+        else if( ((ServiceLocator::GetPlayer())->x() - x()) <= 60 && ((ServiceLocator::GetPlayer())->x() - x()) >= -60)
+            ChangeState(ATTACKING);
+
         else if( ((ServiceLocator::GetPlayer())->x() - x()) >= 0){
             _velocity.setX(1);
             _facingright = true;
@@ -44,6 +53,24 @@ void Golem::Update(){
         else {
             _velocity.setX(-1);
             _facingright = false;
+        }
+    }
+    else if(_currentState == ATTACKING){
+        if( ((ServiceLocator::GetPlayer())->x() - x()) > 60 || ((ServiceLocator::GetPlayer())->x() - x()) < -60){
+            ChangeState(CHASING);
+            _attacking = false;
+        }
+        else if( (_currentFrame == 3 && _currentRow == 2) || !_attacking){
+            if(((ServiceLocator::GetPlayer())->x() - x()) <= 0){
+                _velocity.setX(-3);
+                _facingright = false;
+                _attacking = true;
+            }   
+            else if(((ServiceLocator::GetPlayer())->x() - x()) > 0){
+                _velocity.setX(3);
+                _facingright = true;
+                _attacking = true;
+            }
         }
     }
 }
@@ -80,22 +107,24 @@ void Golem::ChangeState(GolemState state){
  		_currentState = CROUCH;
  		_numRows = 1;
  		_numFrames = 1;
- 		_textureName = "../res/assets/static-golem.png";
+ 		_textureName = "static-golem";
  	}
     else if(state == WALK){
         _currentState = WALK;
-        StandWalk();
+        _textureName = "golem-walk";
+        _numRows = 4;
+        _numFrames = 4;
     }
     else if(state == CHASING){
         _currentState = CHASING;
-        if( ((ServiceLocator::GetPlayer())->x() - x()) >= 0){
-            _velocity.setX(1);
-            _facingright = true;
-        }
-        else {
-            _velocity.setX(-1);
-            _facingright = false;
-        }
+        _textureName = "golem-walk";
+        _numRows = 4;
+        _numFrames = 4;
     }
-
+    else if(state == ATTACKING){
+        _currentState = ATTACKING;
+        _textureName = "golem-attack";
+        _numRows = 3;
+        _numFrames = 4;
+    }
 }

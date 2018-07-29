@@ -86,16 +86,6 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
-	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
-		LOG_ERROR("Unable to load texture \"static-golem\"");
-		return false;
-	}
-
-	if(!ResourceManager::LoadTexture("../res/assets/golem-walk.png", "../res/assets/golem-walk.png")) {
-		LOG_ERROR("Unable to load texture \"golem-walk\"");
-		return false;
-	}
-
 	if(!ResourceManager::LoadSoundEffect("../res/audio/sfx/forest_sounds.mp3", "forest_sounds")){
 		LOG_ERROR("Unable to load sound effect \"forest_sounds\"");
 		return false;

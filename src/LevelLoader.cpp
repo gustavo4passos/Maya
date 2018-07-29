@@ -200,7 +200,9 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 	else if(test == std::string("Enemies")){
         int width, height;
         std::string enemyType;
+        std::string enemySwitch;
         TiXmlElement* enemyTypeNode;
+        TiXmlElement* enemySwitchNode;
         for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
             if(e->Value() == std::string("object")){
                 e->QueryFloatAttribute("x", &x);
@@ -221,8 +223,19 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                         LOG_WARNING("Enemy's type is missing, enemy not loaded");
                         continue;
                     }
+
+                    enemySwitchNode = GetProperty(propertiesNode, "switch");
+
+                    if(enemySwitchNode != NULL){
+                        enemySwitch = std::string(enemySwitchNode->Attribute("value"));
+
+                    } else {
+                        level->AddEnemy(new Golem(x, y));
+                        continue;
+                    }
                 }
-            	level->AddEnemy(new Golem(x, y, "mountain-switch-10"));
+
+            	level->AddEnemy(new Golem(x, y, enemySwitch));
             } 		
         }
     }
@@ -277,6 +290,30 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                         zoneType = std::string(zoneNode->Attribute("value"));
                     } else {
                         LOG_WARNING("Zone's type is missing, zone not loaded");
+                        continue;
+                    }
+                }
+			}
+		}		
+	}
+	else if(test == std::string("PlatformSwitch")){
+		std::string activatesSwitch;
+		TiXmlElement* switchNode;
+		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+            if(e->Value() == std::string("object")){
+				e->QueryFloatAttribute("x", &x);
+                e->QueryFloatAttribute("y", &y);
+
+				TiXmlElement* propertiesNode = e->FirstChildElement();
+				if(std::string(propertiesNode->Value()) != std::string("properties"))
+                    continue;
+                else{
+                    switchNode = GetProperty(propertiesNode, "activatesSwitch");
+
+                    if(switchNode != NULL){
+                        activatesSwitch = std::string(switchNode->Attribute("value"));
+                    } else {
+                        LOG_WARNING("PlatformSwitch's activatesSwitch is missing, Platform not loaded");
                         continue;
                     }
                 }

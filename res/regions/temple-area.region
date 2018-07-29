@@ -14,7 +14,9 @@
         </audio>
 
         <sprites>
-            <sprite filename="../res/assets/static-golem.png" id="golem_standing"/>
+            <sprite filename="../res/assets/static-golem.png" id="static-golem"/>
+            <sprite filename="../res/assets/golem-walk.png" id="golem-walk"/>
+            <sprite filename="../res/assets/golem-attack.png" id="golem-attack"/>
             <sprite filename="../res/assets/Maya_Stand Arms.png" id="maya_waiting"/>
             <sprite filename="../res/assets/Maya_Run Sprite Sheet V03.png" id="golem_standing"/>
             <sprite filename="../res/assets/Maya_Jump_V01.png" id="maya_jumping"/>
