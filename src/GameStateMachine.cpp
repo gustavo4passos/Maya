@@ -62,7 +62,6 @@ void GameStateMachine::Update(){
 
 void GameStateMachine::Render(Renderer* renderer, float deltatime){
     if(!_gameStates.empty()){
-        std::cout << "GameStateMachine render\n";
         _gameStates.top()->Render(renderer, deltatime);
     }
 }

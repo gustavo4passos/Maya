@@ -5,7 +5,7 @@
 #include "../include/GameObject.h"
 #include "../include/LevelChangedEvent.h"
 
-Camera::Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, int fovbottom, GameObject* subject) 
+Camera::Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, int fovbottom, GameObject* subject)
 :    _subject(subject),
 	_pos(0.f, 0.f),
 	_center(0.f, 0.f),
@@ -40,7 +40,7 @@ void Camera::Update(){
 
 	_velocity = Vector2D(_center.x() - _fovw / 2, _center.y() - _fovh / 2) - _pos;
 	_pos += _velocity;
-	
+
 	if(_pos.x() < _fovleft) _pos.setX(_fovleft);
 	if(_pos.x() > _fovright - _fovw) _pos.setX(_fovright - _fovw);
 	if(_pos.y() < _fovtop) _pos.setY(_fovtop);

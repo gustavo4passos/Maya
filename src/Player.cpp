@@ -38,8 +38,6 @@ void Player::Update()
 {
     GameObject::Update();
 
-	std::cout << "Player update1\n";
-
     PhysicsEngine::ApplyGravity(this);
 	PhysicsEngine::CheckCollisionAgainstEnemies(this);
 	PhysicsEngine::MoveAndCheckCollision(this);

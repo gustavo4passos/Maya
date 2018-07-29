@@ -11,10 +11,10 @@
 #include "../include/PlayerHitTeleportEvent.h"
 #include "../include/ServiceLocator.h"
 
-Region::Region() 
+Region::Region()
 :   _currentLevel("")
-{ 
-    EventDispatcher::AddListener(this, EventType::PLAYER_HIT_TELEPORT); 
+{
+    EventDispatcher::AddListener(this, EventType::PLAYER_HIT_TELEPORT);
 }
 
 Region::~Region() {
@@ -71,7 +71,7 @@ void Region::Render(Renderer* renderer, float deltaTime) {
 bool Region::AddResource(ResourceType resourceType, const std::string& resourceID) {
     // TODO(Gustavo): Missing error checking
     _resources[resourceType].push_back(resourceID);
-   
+
     return true;
 }
 
@@ -108,7 +108,7 @@ bool Region::ChangeCurrentLevel(const std::string& levelID){
 
     std::unique_ptr<Event> levelChangedEvent(new LevelChangedEvent(_levels[levelID]));
     EventDispatcher::Notify(levelChangedEvent.get());
-    
+
     return true;
 }
 
@@ -124,7 +124,6 @@ std::vector<std::string> Region::SubRegionList() {
 
 bool Region::OnNotify(Event* event) {
     if(event->type() == EventType::PLAYER_HIT_TELEPORT) EnqueueEventForLater(event);
-
     return false;
 }
 
@@ -136,4 +135,3 @@ bool Region::HasLevelBenSet(){
 
     return true;
 }
-

@@ -9,9 +9,9 @@
             </soundeffects>
 
             <songs>
-                <song filename="../res/audio/music/piano-theme-drums.mp3" id="forest_theme"/>
+                <song filename="../res/audio/music/piano-theme-drums.mp3" id="piano-theme"/>
             </songs>
-            
+
         </audio>
 
         <sprites>
@@ -28,6 +28,7 @@
             <sprite filename="../res/sprites/button-red.png" id="button"/>
             <sprite filename="../res/sprites/door.png" id="door"/>
             <sprite filename="../res/sprites/moving_platform_stretched.png" id="moving-platform"/>
+            <sprite filename="../res/sprites/platform-switch.png" id="platform-switch"/>
         </sprites>
     </resources>
 

@@ -34,12 +34,9 @@ void GameObject::setVelocity(float x, float y) {
 }
 
 void GameObject::Update() {
-	std::cout << "FrameTime = " << _frameTime  << ", numFrames = " << _numFrames << ", numRows = " << _numRows << "\n";
 	_frameTime++;
     _currentFrame = (_frameTime/5) % _numFrames;
-	std::cout << "GameObject update1\n";
     _currentRow = (_frameTime/(5*_numFrames)) % _numRows;
-	std::cout << "GameObject update2\n";
 }
 
 void GameObject::Draw(Renderer* renderer, float deltaTime) {}

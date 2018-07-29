@@ -53,14 +53,6 @@ bool Game::Init() {
         LOG_ERROR("Unable to initialize SoundPlayer.");
         return false;
     }
-
-    if(!ResourceManager::LoadMusic("../res/audio/music/piano-theme-drums.mp3", "BGM")){
-        LOG_ERROR("Unable to load music.");
-        return false;
-    }
-    else{
-        SoundPlayer::PlayBGM(ResourceManager::GetMusic("BGM"), true);
-    }
    
     ServiceLocator::ProvideGame(this);
     ServiceLocator::ProvideWindow(_window); 
@@ -79,8 +71,6 @@ bool Game::Init() {
 void Game::Run() {
     _running = true;
 
-    std::cout << "Debug1\n";
-
     unsigned int previous = SDL_GetTicks();
     unsigned int lag = 0.0;
     const unsigned int MS_PER_UPDATE = 16;
@@ -91,18 +81,11 @@ void Game::Run() {
         previous = current;
         lag += elapsed;
 
-        std::cout << "Debug2\n";
-
-        while(lag >= MS_PER_UPDATE){
-            std::cout << "Debug3\n";           
+        while(lag >= MS_PER_UPDATE){       
         	HandleEvents();
-            std::cout << "Debug4\n";
             Update();
-            std::cout << "Debug5\n";
             lag -= MS_PER_UPDATE;
         }
-
-        std::cout << "Debug6\n";
 		
 		Render(float(lag) / MS_PER_UPDATE);
     }
@@ -110,11 +93,7 @@ void Game::Run() {
 
 void Game::Render(float deltaTime) {
 	_renderer->Clear();
-
-    std::cout << "Game render1\n";
     GameStateMachine::Render(_renderer, deltaTime);
-    std::cout << "Game render2\n";
-
     _window->Swap();
 }
 

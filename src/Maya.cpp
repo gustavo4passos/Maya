@@ -202,13 +202,9 @@ void Maya::Update()
 {  
     Player::Update();
 
-    std::cout << "Maya update1\n";
-
     if(_health <= 0 && PhysicsEngine::OnGround(this)) ChangeState(DEAD);
     
     _weapon->setPosition(x(),y());
-
-    std::cout << "Maya update2\n";
         
     if (_currentState == JUMP){
         if (PhysicsEngine::OnGround(this)){
@@ -257,9 +253,7 @@ void Maya::Update()
         }
         _velocity.setY(_velocity.y()*0.5);
     }  
-
-    std::cout << "Maya update3\n";
-    
+   
     while(!_unresolvedCollisionEvents.empty()){
         CollisionEvent e = _unresolvedCollisionEvents.front();
 
@@ -274,7 +268,6 @@ void Maya::Update()
 
         _unresolvedCollisionEvents.pop();        
     }
-    std::cout << "Maya update4\n";  
 }
 
 bool Maya::OnNotify(Event* event){
