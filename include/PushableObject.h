@@ -8,7 +8,7 @@ class PushableObject : public GameObject
 public:
 
     PushableObject(float x, float y);
-    PushableObject(const CollisionRect& collisionRect, int spriteW, int spriteH);
+    PushableObject(const CollisionRect& collisionRect, int spriteW, int spriteH, std::string texture="box");
     ~PushableObject();
     
     void Update();

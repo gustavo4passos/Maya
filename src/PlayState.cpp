@@ -82,7 +82,7 @@ bool PlayState::OnEnter(){
 	}
 
 	if(!ResourceManager::LoadTexture("../res/assets/static-golem.png", "../res/assets/static-golem.png")) {
-		LOG_ERROR("Unable to load texture \"Door\"");
+		LOG_ERROR("Unable to load texture \"Static golem\"");
 		return false;
 	}
 
@@ -100,6 +100,12 @@ bool PlayState::OnEnter(){
 		LOG_ERROR("Unable to load sound effect \"damage\"");
 		return false;
 	}
+
+	if(!ResourceManager::LoadTexture("../res/assets/box.png", "box")) {
+		LOG_ERROR("Unable to load texture \"Box\"");
+		return false;
+	}
+	
 
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	
@@ -122,13 +128,14 @@ bool PlayState::OnEnter(){
 
 	Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
 	Level* templeEntrance = LevelLoader::ParseLevel("../res/levels/TempleEntrance1.tmx");
+	templeEntrance->AddGameObject(new PushableObject(CollisionRect(Rect(300, 0, 47, 41), CollisionBehavior::BLOCK), 47, 41));
 
 	_region->AddLevel(forest, "forest");
 	_region->AddLevel(mountain, "mountain");
 	_region->AddLevel(templeEntrance, "templeEntrance");
 
-	_region->ChangeCurrentLevel("forest");
-	//_region->ChangeCurrentLevel("templeEntrance");
+	//_region->ChangeCurrentLevel("forest");
+	_region->ChangeCurrentLevel("templeEntrance");
 
 	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _maya);
    

@@ -6,10 +6,10 @@
 PushableObject::PushableObject(float x, float y): PushableObject(CollisionRect(x, y, 10, 30, 12, 7), 36, 39)
 {}
 
-PushableObject::PushableObject(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject(collisionRect, spriteW, spriteH)
+PushableObject::PushableObject(const CollisionRect& collisionRect, int spriteW, int spriteH, std::string texture) : GameObject(collisionRect, spriteW, spriteH)
 {
     _collisionRect.setCollisionBehavior(CollisionBehavior::BLOCK);
-    _textureName = "maya_standing";
+    _textureName = texture;
     _kind = Kind::ZONE;
     _numFrames = 1;
     _numRows = 1;
