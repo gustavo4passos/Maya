@@ -13,7 +13,8 @@ enum class Kind {
 	ENEMY,
 	PLAYER,
 	WEAPON,
-	ZONE
+	ZONE,
+	TELEPORT_ZONE
 };
 
 class GameObject : public EventListener {
@@ -58,6 +59,9 @@ public:
 	
 	// (DEBUB) Grants access to speed and impulse to the debug menu
 	friend class InfoMenuGL3;
+	
+	// Grants access to weapon collision rect
+	friend class Maya;
 
 protected:
 	

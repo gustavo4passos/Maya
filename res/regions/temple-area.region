@@ -23,14 +23,20 @@
             <sprite filename="../res/assets/Maya_Jump_V01.png" id="maya_jumping"/>
             <sprite filename="../res/assets/Maya_Combat Attack v003.png" id="maya_attacking"/>
             <sprite filename="../res/assets/Maya_Standing.png" id="maya_standing"/>
+            <sprite filename="../res/assets/Maya_Climbing.png" id="maya_climbing"/>
+            <sprite filename="../res/assets/box.png" id="box"/>
             <sprite filename="../res/sprites/button-red.png" id="button"/>
+            <sprite filename="../res/sprites/door.png" id="door"/>
+            <sprite filename="../res/sprites/moving_platform_stretched.png" id="moving-platform"/>
+            <sprite filename="../res/sprites/platform-switch.png" id="platform-switch"/>
         </sprites>
     </resources>
 
     <leveldata>
         <level filename="../res/levels/forest_2.tmx" id="forest_2"/>
         <level filename="../res/levels/mountain.tmx" id="mountain"/>
+        <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
     </leveldata>
 
-    <startinglevel id="forest_2"/>
+    <startinglevel id="TempleEntrance1"/>
 </region>

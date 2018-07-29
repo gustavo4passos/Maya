@@ -50,9 +50,11 @@ void Player::Update()
 	  	_velocity.setY(_velocity.y() * 0.3f);
 	}
 
-    if(PhysicsEngine::OnWall(this)){
+	if(PhysicsEngine::OnWall(this)){
 		_velocity.setX(0.f);
 	}
+
+    
 }
 
 bool Player::OnNotify(Event* event){}

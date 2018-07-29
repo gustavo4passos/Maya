@@ -13,10 +13,13 @@ Button::Button(float x, float y, const std::string& activatesSwitch, bool isAlre
 :   GameObject(CollisionRect(Rect(x, y, 31, 12), CollisionBehavior::BLOCK, 1, 19), 32, 32),
     _activatesSwitch(activatesSwitch),
     _isPressed(isAlreadyPressed)
-{ }
+{
+    _kind = Kind::ZONE;
+}
 
 void Button::Update() {
-   Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
+
+    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
 
     if(!_isPressed){
         if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
@@ -27,6 +30,8 @@ void Button::Update() {
             ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
         }
     }
+
+
 }
 
 void Button::Draw(Renderer* renderer, float deltatime) {

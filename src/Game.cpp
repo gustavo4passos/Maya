@@ -81,7 +81,7 @@ void Game::Run() {
         previous = current;
         lag += elapsed;
 
-        while(lag >= MS_PER_UPDATE){
+        while(lag >= MS_PER_UPDATE){       
         	HandleEvents();
             Update();
             lag -= MS_PER_UPDATE;
@@ -93,9 +93,7 @@ void Game::Run() {
 
 void Game::Render(float deltaTime) {
 	_renderer->Clear();
-
     GameStateMachine::Render(_renderer, deltaTime);
-
     _window->Swap();
 }
 

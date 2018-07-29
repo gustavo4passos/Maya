@@ -2,14 +2,9 @@
 #define PLAYER_H
 
 #include "GameObject.h"
- 
-
 
 class Player : public GameObject
 {
-
-
-
 public:
 
     Player(float x, float y, int w, int h);
@@ -35,15 +30,16 @@ protected:
         JUMP,
         RUN_ATTACK,
         JUMP_ATTACK,
-        STAND_ATTACK    
+        STAND_ATTACK,
+        BOUNCE_STUCK,
+        BOUNCE,
+        DRAG_WALL,
+        DEAD
     };
 
-
     PlayerState _currentState;
-
     virtual void ChangeState(PlayerState) = 0;
-    
-   
+    int _health;
 };
 
 #endif

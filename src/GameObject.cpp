@@ -33,7 +33,7 @@ void GameObject::setVelocity(float x, float y) {
 		_velocity.setY(y);
 }
 
-void GameObject::Update() {	
+void GameObject::Update() {
 	_frameTime++;
     _currentFrame = (_frameTime/5) % _numFrames;
     _currentRow = (_frameTime/(5*_numFrames)) % _numRows;
