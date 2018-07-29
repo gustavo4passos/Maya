@@ -13,14 +13,12 @@ public:
     static void Notify(Event* event);
 
     static void AddListener(EventListener* listener, EventType eventType);
-    static void RemoveListener(EventListener* listener, EventType eventType);
-
-    static std::map<EventType, std::set<EventListener*> > _listeners;
+    static void RemoveListener(EventListener* listener, EventType eventType);   
     
 private:
     EventDispatcher() { }
 
-    
+    static std::map<EventType, std::set<EventListener*> > _listeners;
 };
 
 #endif

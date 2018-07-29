@@ -33,8 +33,8 @@ public:
     static void CheckCollisionAgainstEnemies(GameObject* gameObject);
 
 	friend class InfoMenuGL3;
-    
 private:
+
     PhysicsEngine(){}
     ~PhysicsEngine(){}
     static Level* _currentLevel;

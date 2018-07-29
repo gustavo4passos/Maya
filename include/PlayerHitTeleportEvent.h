@@ -2,7 +2,6 @@
 #define PLAYERHITTELEPORTEVENT_H
 
 #include <string>
-#include <iostream>
 
 #include "Event.h"
 #include "Vector2D.h"
@@ -20,7 +19,7 @@ public:
     { }
 
     ~PlayerHitTeleportEvent() { }
-    
+
     inline const std::string& destinationLevel() const { return _destinationLevel; };
     inline const Vector2D destinationPosition() const { return _destinationPosition; }
 

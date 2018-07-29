@@ -6,7 +6,7 @@
 #include "../include/ServiceLocator.h"
 #include "../include/SoundPlayer.h"
 
-PlatformSwitch::PlatformSwitch(float x, float y, const std::string& activatesSwitch) 
+PlatformSwitch::PlatformSwitch(float x, float y, const std::string& activatesSwitch)
 :   GameObject(CollisionRect(Rect(x, y, 96, 14), CollisionBehavior::BLOCK), 96, 14),
     _activatesSwitch(activatesSwitch),
     _originPosition(x, y),
@@ -17,7 +17,7 @@ PlatformSwitch::PlatformSwitch(float x, float y, const std::string& activatesSwi
     _textureName = "platform-switch";
 }
 
-void PlatformSwitch::Update() {    
+void PlatformSwitch::Update() {
     Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
     if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
         if(y() < (_originPosition.y() + _distanceFromActivationArea)){

@@ -20,18 +20,18 @@ enum class ResourceType {
     TEXTURE,
     MESH,
     SOUND_EFFECT,
-    SONG    
+    SONG
 };
 
 class ResourceManager {
 
 public:
 
-    // Textures  
+    // Textures
     static bool LoadTexture(const std::string& filename, const std::string& name); // Returns false if unable to load texture
-    static void DeleteTexture(const std::string& textureName);    
-    static Texture* const GetTexture(const std::string& textureName); 
-    static void CleanTextures();    
+    static void DeleteTexture(const std::string& textureName);
+    static Texture* const GetTexture(const std::string& textureName);
+    static void CleanTextures();
 
     //Sounds & Music
     static bool LoadSoundEffect(const std::string& filename, const std::string& name);

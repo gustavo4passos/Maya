@@ -207,4 +207,41 @@
   <object id="28" x="816" y="212.364" width="32" height="27.6364"/>
   <object id="29" x="848" y="228.182" width="16" height="11.8182"/>
  </objectgroup>
+ <objectgroup name="Enemies">
+  <object id="19" x="40" y="0" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+    <property name="switch" value="golemtest"/>
+   </properties>
+  </object>
+  <object id="19" x="300" y="0" width="64" height="96">
+   <properties>
+    <property name="type" value="golem"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="GameObjects">
+  <object id="20" name="button-mountain-switch-10" type="button" x="100" y="440" width="32" height="32">
+   <properties>
+    <property name="activatesSwitch" value="golemtest"/>
+   </properties>
+  </object>
+  <object id="50" name="button-mountain-switch-10" type="platformSwitch" x="100" y="200" width="32" height="32">
+   <properties>
+    <property name="activatesSwitch" value="golemtest"/>
+   </properties>
+  </object>
+  <object id="52" name="moving-platform-20" type="movingPlatform" x="200" y="200" width="32" height="32">
+   <properties>
+       <property name="destinationX" value="500"/>
+       <property name="destinationY" value="400"/>
+       <property name="requiresSwitch" value="forest-button-1"/>
+   </properties>
+  </object>
+  <object id="20" name="button-mountain-switch-11" type="button" x="200" y="440" width="32" height="32">
+   <properties>
+    <property name="activatesSwitch" value="forest-button-1"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

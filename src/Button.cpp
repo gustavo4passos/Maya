@@ -7,6 +7,7 @@
 #include "../include/ResourceManager.h"
 #include "../include/SoundPlayer.h"
 #include "../include/ServiceLocator.h"
+#include "../include/LevelChangedEvent.h"
 
 Button::Button(float x, float y, const std::string& activatesSwitch, bool isAlreadyPressed)
 :   GameObject(CollisionRect(Rect(x, y, 31, 12), CollisionBehavior::BLOCK, 1, 19), 32, 32),
@@ -19,8 +20,8 @@ void Button::Update() {
 
     if(!_isPressed){
         if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
-            // std::unique_ptr<Event> test(new PlayerHitTeleportEvent("mountain", Vector2D(0.f, 0.f)));
-            // EventDispatcher::Notify(test.get());
+            std::unique_ptr<Event> test(new PlayerHitTeleportEvent("mountain", Vector2D(0.f, 0.f)));
+            EventDispatcher::Notify(test.get());
 
             TurnOn();
             _collisionRect.setH(0);
@@ -33,13 +34,13 @@ void Button::Update() {
 
 void Button::Draw(Renderer* renderer, float deltatime) {
     Rect src = Rect(0.f, 0.f, 32, 32);
-    if(_isPressed){ 
+    if(_isPressed){
         src.setX(32);
     }
 
     Rect dst = Rect(_collisionRect.originX(), _collisionRect.originY(), _spriteW, _spriteH);
     renderer->Draw(ResourceManager::GetTexture("button"), &src, &dst);
-} 
+}
 
 void Button::TurnOn() {
     _isPressed = true;

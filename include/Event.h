@@ -11,13 +11,16 @@ enum class EventType {
 
     // Level events
     LEVEL_CHANGED,
-    PLAYER_HIT_TELEPORT
+
+    // Player Events
+    PLAYER_HIT_TELEPORT,
+    PLAYER_DIED_EVENT
 };
 
 class Event {
 public:
     Event(EventType type)
-    : _type(type) 
+    : _type(type)
     { }
     virtual ~Event() { }
 

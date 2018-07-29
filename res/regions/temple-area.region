@@ -5,18 +5,21 @@
             <soundeffects>
                 <soundeffect filename="../res/audio/sfx/dagger_swing.mp3" id="dagger_swing"/>
                 <soundeffect filename="../res/audio/sfx/damage.mp3" id="damage"/>
+                <soundeffect filename="../res/audio/sfx/forest_sounds.mp3" id="forest_sounds"/>
             </soundeffects>
 
             <songs>
-                <song filename="../res/audio/piano-theme-drums.mp3" id="forest_theme"/>
+                <song filename="../res/audio/music/piano-theme-drums.mp3" id="piano-theme"/>
             </songs>
-            
+
         </audio>
 
         <sprites>
-            <sprite filename="../res/assets/static-golem.png" id="golem_standing"/>
+            <sprite filename="../res/assets/static-golem.png" id="static-golem"/>
+            <sprite filename="../res/assets/golem-walk.png" id="golem-walk"/>
+            <sprite filename="../res/assets/golem-attack.png" id="golem-attack"/>
             <sprite filename="../res/assets/Maya_Stand Arms.png" id="maya_waiting"/>
-            <sprite filename="../res/assets/Maya_Run Sprite Sheet V03.png" id="golem_standing"/>
+            <sprite filename="../res/assets/Maya_Run Sprite Sheet V03.png" id="maya_running"/>
             <sprite filename="../res/assets/Maya_Jump_V01.png" id="maya_jumping"/>
             <sprite filename="../res/assets/Maya_Combat Attack v003.png" id="maya_attacking"/>
             <sprite filename="../res/assets/Maya_Standing.png" id="maya_standing"/>

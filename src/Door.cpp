@@ -7,11 +7,11 @@
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 
-Door::Door(const CollisionRect& collisionRect, int spriteW, int spriteH, const std::string& switchRequired, bool initiallyOpen) 
+Door::Door(const CollisionRect& collisionRect, int spriteW, int spriteH, const std::string& switchRequired, bool initiallyOpen)
  :  GameObject(collisionRect, spriteW, spriteH),
     _switchRequired(switchRequired),
     _open(initiallyOpen)
-{ 
+{
     _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
 }
 
@@ -25,7 +25,7 @@ void Door::Update() {
         CollisionRect collision = _collisionRect;
         collision.setW(_collisionRect.w() - 15);
         collision.setX(x() + 7);
-        
+
         if(PhysicsEngine::CheckCollision(&collision, &playerRct)){
             std::unique_ptr<Event> playerHitTeleport(new PlayerHitTeleportEvent("mountain", Vector2D(-14, 289)));
             EventDispatcher::Notify(playerHitTeleport.get());

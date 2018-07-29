@@ -1,4 +1,5 @@
 #include "../include/Enemy.h"
+
 #include "../include/InputModule.h"
 #include "../include/ResourceManager.h"
 #include "../include/Renderer.h"
@@ -48,11 +49,5 @@ void Enemy::Update()
 	}
 }
 
-bool Enemy::OnNotify(Event* event){
-	
-	// if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {
-	// 	_velocity.setY(-10);
-	// }
-
-	return false;
-}
+bool Enemy::OnNotify(Event* event)
+{}

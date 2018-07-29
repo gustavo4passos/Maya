@@ -42,12 +42,12 @@ bool Game::Init() {
 
     if(!InputModule::Init()){
         LOG_ERROR("Unable to initialize InputModule.");
-        return false;
+       return false;
     }
 
-    if(!InputModule::InitJoysticks()){
-        LOG_ERROR("Unable to initialize Joysticks");
-    }
+    //if(!InputModule::InitJoysticks()){
+    //   LOG_ERROR("Unable to initialize Joysticks");
+    //}
 
     if(!SoundPlayer::Init()){
         LOG_ERROR("Unable to initialize SoundPlayer.");
@@ -61,6 +61,7 @@ bool Game::Init() {
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
+    ServiceLocator::GetGameSwitches()->PushSwitch("golemtest");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;
