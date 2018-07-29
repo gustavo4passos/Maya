@@ -74,6 +74,24 @@ bool PhysicsEngine::OnWall(GameObject* gameObject){
 	return false;
 }
 
+bool PhysicsEngine::OnWallRight(GameObject* gameObject){
+  	Rect offsetRect = gameObject->collisionRect();
+
+	offsetRect.setPosition(offsetRect.x() + 1, offsetRect.y());
+	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+
+	return false;
+}
+
+bool PhysicsEngine::OnWallLeft(GameObject* gameObject){
+  	Rect offsetRect = gameObject->collisionRect();
+
+	offsetRect.setPosition(offsetRect.x() - 2, offsetRect.y());
+	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+
+	return false;
+}
+
 bool PhysicsEngine::HitHead(GameObject* gameObject){
 	if(!_currentLevel){
         LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");

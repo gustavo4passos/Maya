@@ -11,6 +11,8 @@ enum PlayerState {
     JUMP_ATTACK,
     STAND_ATTACK,
     BOUNCE_STUCK,
+    BOUNCE,
+    DRAG_WALL,
     DEAD
 };
 
@@ -29,7 +31,8 @@ public:
     
 protected:
     PlayerState _currentState;
-    virtual void ChangeState(PlayerState) = 0;  
+    virtual void ChangeState(PlayerState) = 0;
+    int _health;
 };
 
 #endif

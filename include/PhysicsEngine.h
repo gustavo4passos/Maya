@@ -43,6 +43,8 @@ public:
     static CollisionPosition CheckCollisionPosition(GameObject* gameObject1, GameObject* gameObject2);
     static bool OnGround(GameObject* gameObject);
 	static bool OnWall(GameObject* gameObject);
+    static bool OnWallLeft(GameObject* gameObject);
+    static bool OnWallRight(GameObject* gameObject);
 	static bool HitHead(GameObject* gameObject);
     static bool IsOnTop(Rect* bottom, Rect* top);
 

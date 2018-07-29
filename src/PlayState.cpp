@@ -71,6 +71,11 @@ bool PlayState::OnEnter(){
 		return false;
 	}
 
+	if(!ResourceManager::LoadTexture("../res/assets/Maya_Climbing.png", "maya_climbing")){
+	 	LOG_ERROR("Unable to load texture \"Maya_Climbing\"");
+		return false;
+	}
+
 	if(!ResourceManager::LoadTexture("../res/sprites/button.png", "button")) {
 		LOG_ERROR("Unable to load texture \"button\"");
 		return false;
@@ -117,6 +122,10 @@ bool PlayState::OnEnter(){
 
 	_infoMenu = new InfoMenuGL3();
 
+	
+	_camera = new Camera(480, 270, 0, 0, 0, 0, _maya);
+	ServiceLocator::GetRenderer()->UseCamera(_camera);
+
 	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
 	forest->AddEnemy(new Golem(480,0));
@@ -137,9 +146,6 @@ bool PlayState::OnEnter(){
 	//_region->ChangeCurrentLevel("forest");
 	_region->ChangeCurrentLevel("templeEntrance");
 
-	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _maya);
-   
-	ServiceLocator::GetRenderer()->UseCamera(_camera);
 
     return true;
 }

@@ -21,6 +21,7 @@ public:
 private:
     void ChangeState(PlayerState);
     GameObject* _weapon;
+    PlayerState _lastState;
 };
 
 #endif
