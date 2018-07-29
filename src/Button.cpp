@@ -9,7 +9,9 @@ Button::Button(const CollisionRect& collisionRect, int spriteW, int spriteH, con
 :   GameObject(collisionRect, spriteW, spriteH),
     _activatesSwitch(activatesSwitch),
     _isPressed(isAlreadyPressed)
-{ }
+{
+    _kind = Kind::ZONE;
+}
 
 void Button::Update() {
 

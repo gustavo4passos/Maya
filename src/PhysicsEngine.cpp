@@ -13,7 +13,6 @@ Level* PhysicsEngine::_currentLevel = NULL;
 std::set<std::pair<GameObject*, CollisionEvent>> PhysicsEngine::_unsentCollisionEvents;
 
 void PhysicsEngine::ApplyGravity(GameObject* gameObject){
-    if(gameObject->_kind == Kind::ZONE) std::cout << "ApllyGravity\n";
     Vector2D newVelocity =  gameObject->velocity() + _gravity;
     gameObject->setVelocity( newVelocity.x() , newVelocity.y());
 }

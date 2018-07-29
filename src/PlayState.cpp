@@ -4,7 +4,7 @@
 #include "../include/Door.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Golem.h"
-#include "../include/Box.h"
+#include "../include/PushableObject.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InfoMenu.h"
@@ -114,17 +114,21 @@ bool PlayState::OnEnter(){
 	Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
 	forest->AddGameObject(_maya->weapon());
 	forest->AddEnemy(new Golem(480,0));
-	forest->AddGameObject(new Box(300, 0));
+	forest->AddGameObject(new PushableObject(800, 0));
 	forest->AddGameObject(new Button(CollisionRect(Rect(130, 400, 31, 22), CollisionBehavior::BLOCK, 1, 10), 32, 32, "forest-button-1", false));
 	forest->AddGameObject(new Door(CollisionRect(Rect(384, 420, 32, 32), CollisionBehavior::IGNORE), 32, 32, "forest-button-1", false));
 
 	if(forest == NULL) return false;
 
 	Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
+	Level* templeEntrance = LevelLoader::ParseLevel("../res/levels/TempleEntrance1.tmx");
 
 	_region->AddLevel(forest, "forest");
 	_region->AddLevel(mountain, "mountain");
+	_region->AddLevel(templeEntrance, "templeEntrance");
+
 	_region->ChangeCurrentLevel("forest");
+	//_region->ChangeCurrentLevel("templeEntrance");
 
 	_camera = new Camera(480, 270, 0, forest->width() * forest->tileWidth(), 0, forest->height() * forest->tileHeight(), _maya);
    

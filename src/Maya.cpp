@@ -180,11 +180,11 @@ void Maya::Update()
     while(!_unresolvedCollisionEvents.empty()){
         CollisionEvent e = _unresolvedCollisionEvents.front();
 
-        std::cout << "Maya :";
-        if(e.collisionPosition == CollisionPosition::LEFT_COLLISION) std::cout << "LEFT\n";
-        else if(e.collisionPosition == CollisionPosition::RIGHT_COLLISION) std::cout << "RIGHT\n";
-        else if(e.collisionPosition == CollisionPosition::TOP_COLLISION) std::cout << "TOP\n";
-        else if(e.collisionPosition == CollisionPosition::BOTTOM_COLLISION) std::cout << "BOTTOM\n";
+        if(e.kind == Kind::ENEMY){
+            if(_facingright) _velocity = Vector2D(-2, -4);
+            else             _velocity = Vector2D(2, -4);
+            ChangeState(BOUNCE_STUCK);
+        }
 
         _unresolvedCollisionEvents.pop();        
     }
