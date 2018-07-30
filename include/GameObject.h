@@ -67,10 +67,12 @@ protected:
 	
 	// Physics
 	Vector2D _velocity;
+	Vector2D _startPosition;
 	CollisionRect _collisionRect;
 	float _speed;
 	float _impulse;
 	int _damage;
+	
 
 	// Flags
 	bool  _facingright;

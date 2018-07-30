@@ -13,7 +13,8 @@ GameObject::GameObject(float x, float y, int w, int h)
 { }
 
 GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spriteH)
-:	_velocity(0.f, 0.f),	
+:	_velocity(0.f, 0.f),
+	_startPosition(collisionRect.x(), collisionRect.y()),
 	_collisionRect(collisionRect),
 	_facingright(true),
 	_frameTime(0),
