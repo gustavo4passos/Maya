@@ -41,7 +41,6 @@ public:
 	friend class InfoMenuGL3;
 
 private:
-	Level* _currentLevel;
     Tileset* _tileset;
 	std::vector<Layer*> _backgroundLayers;
 	std::vector<GameObject*> _gameObjects;
