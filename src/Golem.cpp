@@ -22,7 +22,6 @@ void Golem::Draw(Renderer* renderer, float deltaTime){
 }
 
 bool Golem::OnNotify(Event* event){
-	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {}
 	return false;
 }
 
@@ -34,9 +33,10 @@ void Golem::Update(){
         GetUp();
 	}
 	else if(_currentState == WALK){
-    	if( ((ServiceLocator::GetPlayer())->x() - x()) < 145 && ((ServiceLocator::GetPlayer())->x() - x()) > -145){
+    	if(((ServiceLocator::GetPlayer())->x() - x()) < 130 && _facingright && ((ServiceLocator::GetPlayer())->x() - x()) > 0)
             ChangeState(CHASING);
-        }
+        else if( ((ServiceLocator::GetPlayer())->x() - x()) > -130 && !_facingright && ((ServiceLocator::GetPlayer())->x() - x()) < 0)
+            ChangeState(CHASING);
         else    StandWalk();
     }
     else if(_currentState == CHASING){
@@ -47,41 +47,56 @@ void Golem::Update(){
             ChangeState(ATTACKING);
 
         else if( ((ServiceLocator::GetPlayer())->x() - x()) >= 0){
-            _velocity.setX(1);
+            _velocity.setX(1.f);
             _facingright = true;
         }
         else {
-            _velocity.setX(-1);
+            _velocity.setX(-1.f);
             _facingright = false;
         }
     }
     else if(_currentState == ATTACKING){
-        if( ((ServiceLocator::GetPlayer())->x() - x()) > 60 || ((ServiceLocator::GetPlayer())->x() - x()) < -60){
+        if( (((ServiceLocator::GetPlayer())->x() - x()) > 60 || ((ServiceLocator::GetPlayer())->x() - x()) < -60)
+         && (_currentFrame == 3 && _currentRow == 2) ){
             ChangeState(CHASING);
             _attacking = false;
         }
         else if( (_currentFrame == 3 && _currentRow == 2) || !_attacking){
             if(((ServiceLocator::GetPlayer())->x() - x()) <= 0){
-                _velocity.setX(-3);
+                _velocity.setX(-1.5);
                 _facingright = false;
                 _attacking = true;
             }   
             else if(((ServiceLocator::GetPlayer())->x() - x()) > 0){
-                _velocity.setX(3);
+                _velocity.setX(1.5);
                 _facingright = true;
                 _attacking = true;
             }
+        }
+    }
+    
+    if(_currentState != CROUCH){
+        while(!_unresolvedCollisionEvents.empty()){
+            CollisionEvent event = _unresolvedCollisionEvents.front();
+            _unresolvedCollisionEvents.pop();
+
+            if(event.kind == Kind::WEAPON) {
+                _life -= event.damage;
+                _velocity.setX(0);
+                if(_life == 0)
+                    ChangeState(DEAD);
+            }        
         }
     }
 }
 
 void Golem::StandWalk(){
 
-    if(x()-_startPosition.x() >= 130){
+    if(x() - _startPosition.x() >= 130){
         _velocity.setX(-0.5);
         _facingright = false;
     }
-    else if(x() <= _startPosition.x() || x()-_startPosition.x() == 0){
+    else if(x() <= _startPosition.x() || x() - _startPosition.x() == 0){
         _velocity.setX(0.5);
         _facingright = true;
     }
@@ -91,8 +106,8 @@ void Golem::GetUp(){
     _textureName = "../res/assets/golem-walk.png";
     _numRows = 3;
     _numFrames = 4;
-    _collisionRect = CollisionRect(Rect((x()-12),(y()-33),40,53)
-        ,CollisionBehavior::BLOCK,6,3);
+    _collisionRect = CollisionRect(Rect((x()-12),(y()-33),28,50)
+        ,CollisionBehavior::BLOCK,14,6);
        
     _startPosition.setX(x());
     _startPosition.setY(y());
@@ -126,5 +141,12 @@ void Golem::ChangeState(GolemState state){
         _textureName = "golem-attack";
         _numRows = 3;
         _numFrames = 4;
+    }
+    else if(state == DEAD){
+        _currentState = DEAD;
+        _numRows = 1;
+        _numFrames = 1;
+        _textureName = "static-golem";
+        _collisionRect = CollisionRect(Rect(x()+12,y()+28,26,23),CollisionBehavior::BLOCK,14,33);
     }
 }

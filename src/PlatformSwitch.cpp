@@ -12,7 +12,7 @@ PlatformSwitch::PlatformSwitch(float x, float y, const std::string& activatesSwi
     _originPosition(x, y),
     _on(false),
     _displacement(0.f, 0.f),
-    _distanceFromActivationArea(20.f),
+    _distanceFromActivationArea(30.f),
     _isBeingSteppedOn(false)
 {
     _textureName = "platform-switch";

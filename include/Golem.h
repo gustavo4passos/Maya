@@ -12,6 +12,7 @@ protected:
 		WALK,
 		ATTACKING,
 		CHASING,
+		DEAD,
 	};
 
 public:
@@ -25,6 +26,8 @@ private:
 	void ChangeState(GolemState state);
 	void StandWalk();
 	void GetUp();
+
+	int _life = 24;
 
 	bool _attacking = false;
 	GolemState _currentState;

@@ -37,7 +37,7 @@ bool Game::Init() {
         return false;
     }
 
-    _renderer->SetClearColor(0.09f, .60f, 0.85f, 1.f);
+    _renderer->SetClearColor(0.f, 0.f, 0.f, 1.f);
     _renderer->SetViewportSize(_window->width(), _window->height());
 
     if(!InputModule::Init()){

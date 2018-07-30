@@ -47,7 +47,7 @@ void PlayState::Render(Renderer* renderer, float deltatime){
 
 bool PlayState::OnEnter(){		
 	
-	_maya = new Maya(200, 0);
+	_maya = new Maya(100, 0);
 	ServiceLocator::ProvidePlayer(_maya);
 
 	_camera = new Camera(480, 270, 0, 0, 0, 0, _maya);

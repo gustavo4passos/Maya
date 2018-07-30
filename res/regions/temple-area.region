@@ -37,7 +37,9 @@
         <level filename="../res/levels/forest_2.tmx" id="forest_2"/>
         <level filename="../res/levels/mountain.tmx" id="mountain"/>
         <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
+        <level filename="temple-room-1.tmx" id="temple-room-2"/>
+        <level filename="temple-entrance-10.tmx" id="temple-entrance-10"/>
     </leveldata>
 
-    <startinglevel id="forest_2"/>
+    <startinglevel id="temple-room-2"/>
 </region>
