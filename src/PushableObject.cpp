@@ -3,7 +3,7 @@
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
 
-PushableObject::PushableObject(float x, float y): PushableObject(CollisionRect(x, y, 10, 30, 12, 7), 36, 39)
+PushableObject::PushableObject(float x, float y): PushableObject(CollisionRect(x, y, 47, 35, 0, 2), 47, 41)
 {}
 
 PushableObject::PushableObject(const CollisionRect& collisionRect, int spriteW, int spriteH, std::string texture) : GameObject(collisionRect, spriteW, spriteH)

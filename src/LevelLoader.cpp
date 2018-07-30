@@ -13,6 +13,7 @@
 #include "../include/Region.h"
 #include "../include/ResourceManager.h"
 #include "../include/TeleportZone.h"
+#include "../include/PushableObject.h"
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
     // create the XML document
@@ -195,12 +196,16 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					e->QueryFloatAttribute("x", &x);
 					e->QueryFloatAttribute("y", &y);
 					TiXmlElement* propertiesNode = e->FirstChildElement();
+					if(propertiesNode == NULL) {
+						LOG_WARNING("Button missing properties field. Ignoring...");
+						continue;
+					}
 					if(std::string(propertiesNode->Value()) != std::string("properties"))
 						continue;
 					else{
 						TiXmlElement* activatesSwitchNode = GetProperty(propertiesNode, "activatesSwitch");
 						if(activatesSwitchNode == NULL){
-							LOG_WARNING("Button's activeatesSwitch is missing, button not loaded");
+							LOG_WARNING("Button's activatesSwitch is missing, button not loaded");
 							continue;
 						}
 
@@ -214,6 +219,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					e->QueryFloatAttribute("x", &x);
 					e->QueryFloatAttribute("y", &y);
 					TiXmlElement* propertiesNode = e->FirstChildElement();
+
 					if(std::string(propertiesNode->Value()) != std::string("properties"))
 						continue;
 					else{
@@ -261,6 +267,12 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 
 						level->AddGameObject(new MovingPlatform(Vector2D(x, y), Vector2D(destinationX, destinationY), true, requiresSwitch));
 					}
+				}
+				else if(temp == std::string("pushableObject")) {
+					std::cout << "MINHA " << std::endl;
+					e->QueryFloatAttribute("x", &x);
+					e->QueryFloatAttribute("y", &y);
+					level->AddGameObject(new PushableObject(x, y));
 				}
 			}
 		}

@@ -31,9 +31,23 @@ void MovingPlatform::Move() {
         if((int)_destination.x() == (int)x()) {
             _reachedDestination = true;
         }
+        
+        if(false) {
+            if(y() < _destination.y()) {
+                setPosition(x(), y() + _velocity.y());
+                _displacement = velocity();
+            }
+            else {
+                setPosition(x(), y() + _velocity.y());
+                _displacement = -_velocity;
+            }
+            if((int)_destination.y() == (int)y()) {
+                _reachedDestination = true;
+            }
+        }
     }
     else if(_loops) {
-            if(x() < _origin.x()) {
+        if(x() < _origin.x()) {
             setPosition(x() + _velocity.x(), y());
             _displacement = _velocity;
         }
@@ -44,6 +58,20 @@ void MovingPlatform::Move() {
         if((int)_origin.x() == (int)x()) {
             _reachedDestination = false;
         } 
+
+        if(false) {
+            if(y() > _origin.y()) {
+                setPosition(x(), y() + _velocity.y());
+                _displacement = _velocity;
+            }
+            else {
+                setPosition(x(), y() - _velocity.y());
+                _displacement = -_velocity;
+            }
+            if((int)_origin.y() == (int)y()) {
+                _reachedDestination = false;
+            } 
+        }
     }
 
 }

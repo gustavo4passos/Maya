@@ -3,8 +3,8 @@
  <tileset firstgid="1" name="TempleEntrance1" tilewidth="16" tileheight="16" tilecount="1295" columns="37">
   <image source="../res/sprites/TempleEntrance1.png" width="592" height="560"/>
  </tileset>
- <tileset firstgid="1296" name="TempleEntrance1" tilewidth="16" tileheight="16" tilecount="1073" columns="37">
-  <image source="../res/sprites/TempleEntrance1.png" width="592" height="464"/>
+ <tileset firstgid="1296" name="TempleEntrance1" tilewidth="16" tileheight="16" tilecount="1295" columns="37">
+  <image source="../res/sprites/TempleEntrance1.png" width="592" height="560"/>
  </tileset>
  <layer name="Tile Layer 0" width="60" height="40">
   <properties>

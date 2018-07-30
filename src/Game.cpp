@@ -62,6 +62,8 @@ bool Game::Init() {
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
     ServiceLocator::GetGameSwitches()->PushSwitch("golemtest");
+    ServiceLocator::GetGameSwitches()->PushSwitch("platform-1-temple-entrance-2");
+    ServiceLocator::GetGameSwitches()->PushSwitch("platform-3-golem");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;

@@ -41,7 +41,8 @@
         <level filename="temple-entrance-10.tmx" id="temple-entrance-10"/>
         <level filename="temple-entrance-0.tmx" id="temple-entrance-0"/>
         <level filename="temple-entrance-2.tmx" id="temple-entrance-2"/>
+        <level filename="temple-entrance-3.tmx" id="temple-entrance-3"/>
     </leveldata>
 
-    <startinglevel id="temple-entrance-0"/>
+    <startinglevel id="temple-entrance-3"/>
 </region>
