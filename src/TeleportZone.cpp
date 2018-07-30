@@ -5,6 +5,7 @@
 #include "../include/EventDispatcher.h"
 #include "../include/PlayerHitTeleportEvent.h"
 
+#include <iostream>
 
 TeleportZone::TeleportZone(const Rect& bounds, const std::string& destinationLevel, const Vector2D& destinationPosition)
 :   
@@ -13,6 +14,7 @@ TeleportZone::TeleportZone(const Rect& bounds, const std::string& destinationLev
     _destinationPosition(destinationPosition)
 {
    _kind = Kind::TELEPORT_ZONE; 
+   _collisionRect.setCollisionBehavior(CollisionBehavior::PASSH_THROUGH);
 }
 
 void TeleportZone::Update() {

@@ -265,7 +265,6 @@ void Maya::Update()
                 ChangeState(BOUNCE_STUCK);
             }                
         }
-
         _unresolvedCollisionEvents.pop();        
     }
 }

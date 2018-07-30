@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextobjectid="36">
+<map version="1.0" tiledversion="1.1.6" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextobjectid="37">
  <tileset firstgid="1" name="forest_2" tilewidth="16" tileheight="16" tilecount="0" columns="8">
   <image source="../res/sprites/forest_2.png" width="128" height="240"/>
  </tileset>
@@ -183,12 +183,11 @@
 </data>
  </layer>
  <objectgroup name="Zones">
-  <object id="35" x="960" y="0" width="112" height="640">
+  <object id="36" type="teleportZone" x="965" y="249" width="31.5" height="202.5">
    <properties>
     <property name="destinationLevel" value="mountain"/>
-    <property name="destinationX" type="float" value="10"/>
-    <property name="destinationY" type="float" value="10"/>
-    <property name="type" value="TeleportZone"/>
+    <property name="destinationX" type="float" value="0"/>
+    <property name="destinationY" type="float" value="280"/>
    </properties>
   </object>
  </objectgroup>
@@ -197,7 +196,11 @@
   <object id="6" x="544" y="436" width="128" height="48"/>
   <object id="8" x="-73" y="233.5" width="64" height="406.5"/>
   <object id="9" x="992" y="256" width="73" height="386.5"/>
-  <object id="16" x="704" y="372.5" width="48" height="27.5"/>
+  <object id="16" x="704" y="372.5" width="48" height="27.5">
+   <properties>
+    <property name="collisionbehavior" value="oneway"/>
+   </properties>
+  </object>
   <object id="17" x="784" y="324" width="48" height="27.5"/>
   <object id="18" x="863.5" y="276.25" width="48" height="27.5"/>
   <object id="20" x="816" y="196.545" width="16" height="15.6363"/>
@@ -208,10 +211,10 @@
   <object id="29" x="848" y="228.182" width="16" height="11.8182"/>
  </objectgroup>
  <objectgroup name="Enemies">
-  <object id="19" x="40" y="0" width="64" height="96">
+  <object id="19" x="189.5" y="262.5" width="64" height="96">
    <properties>
-    <property name="type" value="golem"/>
     <property name="switch" value="golemtest"/>
+    <property name="type" value="golem"/>
    </properties>
   </object>
   <object id="19" x="300" y="0" width="64" height="96">
@@ -233,9 +236,9 @@
   </object>
   <object id="52" name="moving-platform-20" type="movingPlatform" x="200" y="200" width="32" height="32">
    <properties>
-       <property name="destinationX" value="500"/>
-       <property name="destinationY" value="400"/>
-       <property name="requiresSwitch" value="forest-button-1"/>
+    <property name="destinationX" value="500"/>
+    <property name="destinationY" value="400"/>
+    <property name="requiresSwitch" value="forest-button-1"/>
    </properties>
   </object>
   <object id="20" name="button-mountain-switch-11" type="button" x="200" y="440" width="32" height="32">

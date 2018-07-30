@@ -9,8 +9,7 @@ public:
 
     virtual void Update();
     virtual void Draw(Renderer* renderer, float deltaTime);
-
-
+    virtual inline const Vector2D& velocity() { return _displacement; }
     const Vector2D& displacement() const { return _displacement; }
 
 private:

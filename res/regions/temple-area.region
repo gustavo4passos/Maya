@@ -6,6 +6,7 @@
                 <soundeffect filename="../res/audio/sfx/dagger_swing.mp3" id="dagger_swing"/>
                 <soundeffect filename="../res/audio/sfx/damage.mp3" id="damage"/>
                 <soundeffect filename="../res/audio/sfx/forest_sounds.mp3" id="forest_sounds"/>
+                <soundeffect filename="../res/audio/sfx/button-press.wav" id="button-press"/>
             </soundeffects>
 
             <songs>
@@ -38,5 +39,5 @@
         <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
     </leveldata>
 
-    <startinglevel id="TempleEntrance1"/>
+    <startinglevel id="forest_2"/>
 </region>

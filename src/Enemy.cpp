@@ -8,6 +8,7 @@
 Enemy::Enemy(float x, float y, int w, int h): GameObject(x, y, w, h)
 {
 	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
+	_kind = Kind::ENEMY;
 }
 
 Enemy::Enemy(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject(collisionRect, spriteW, spriteH)

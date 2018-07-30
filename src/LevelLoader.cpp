@@ -2,18 +2,17 @@
 
 #include <algorithm>
 
-#include "../include/ResourceManager.h"
-#include "../include/Level.h"
-#include "../include/ErrorHandler.h"
-#include "../include/Layer.h"
-#include "../include/Door.h"
-#include "../include/Golem.h"
 #include "../include/Button.h"
+#include "../include/Door.h"
+#include "../include/ErrorHandler.h"
 #include "../include/Golem.h"
-#include "../include/Region.h"
-#include "../include/PlatformSwitch.h"
+#include "../include/Layer.h"
+#include "../include/Level.h"
 #include "../include/MovingPlatform.h"
-
+#include "../include/PlatformSwitch.h"
+#include "../include/Region.h"
+#include "../include/ResourceManager.h"
+#include "../include/TeleportZone.h"
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
     // create the XML document
@@ -322,6 +321,11 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                 e->Attribute("width", &width);
                 e->Attribute("height", &height);
 
+				if(e->Attribute("type") == NULL) {
+					LOG_WARNING("Zone's type is missing. Ignoring...");
+					return;
+				}
+
 				TiXmlElement* propertiesNode = e->FirstChildElement();
 				if(std::string(propertiesNode->Value()) != std::string("properties"))
                     continue;
@@ -353,14 +357,8 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                         continue;
                     }
 
-					zoneNode = GetProperty(propertiesNode, "type");
-
-                    if(zoneNode != NULL){
-                        zoneType = std::string(zoneNode->Attribute("value"));
-                    } else {
-                        LOG_WARNING("Zone's type is missing, zone not loaded");
-                        continue;
-                    }
+					level->AddGameObject(new TeleportZone(Rect(x, y, width, height),
+						destinationLevel, Vector2D(destinationX, destinationY)));
                 }
 			}
 		}
