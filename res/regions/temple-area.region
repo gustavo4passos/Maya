@@ -39,7 +39,9 @@
         <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
         <level filename="temple-room-1.tmx" id="temple-room-2"/>
         <level filename="temple-entrance-10.tmx" id="temple-entrance-10"/>
+        <level filename="temple-entrance-0.tmx" id="temple-entrance-0"/>
+        <level filename="temple-entrance-2.tmx" id="temple-entrance-2"/>
     </leveldata>
 
-    <startinglevel id="temple-room-2"/>
+    <startinglevel id="temple-entrance-0"/>
 </region>
