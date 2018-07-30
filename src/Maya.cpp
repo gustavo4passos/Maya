@@ -15,9 +15,11 @@ Maya::Maya(const CollisionRect& collisionRect, int spriteW, int spriteH) : Playe
     _textureName = "maya_standing";
     _currentState = STAND;
     _kind = Kind::PLAYER;
+    _invencible = false;
+    _invencibleTime = 0;
     _speed = 2.5f;
 	_impulse = 8.f;
-    _health = 3;
+    _health = 6;
     _weapon = new Weapon(x(),y(), 23, 4);
     _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::IGNORE);
     _collisionRect.setOffsetX(12);
@@ -221,6 +223,12 @@ void Maya::Update()
     _weapon->setPosition(x(),y());
 
     if(_health <= 0 && PhysicsEngine::OnGround(this) && _currentState != DEAD) ChangeState(DYING);
+    
+    if(_invencible){
+        _invencibleTime++;        
+    }
+    else _invencibleTime = 0;
+    if(_invencibleTime >= 100) _invencible = false;
 
     if (_currentState == DEAD){
         if(_frameTime == 50) std::cout << "Morreu.\n"; //EventDispatcher::Notify();
@@ -263,7 +271,9 @@ void Maya::Update()
     else if (_currentState == STAND){
         if(!PhysicsEngine::OnGround(this)){
             ChangeState(JUMP);
-        }  
+        }
+        
+          
     }
 
     else if (_currentState == RUN){
@@ -283,10 +293,11 @@ void Maya::Update()
         CollisionEvent e = _unresolvedCollisionEvents.front();
 
         if(e.kind == Kind::ENEMY){
-            if(_currentState != BOUNCE_STUCK && _currentState != DYING && _currentState != DEAD){
+            if(_currentState != DYING && _currentState != DEAD &&  !_invencible){
                 if(_facingright) _velocity = Vector2D(-2, -4);
                 else             _velocity = Vector2D(2, -4);
                 _health--;
+                _invencible = true;
                 ChangeState(BOUNCE_STUCK);
             }                
         }

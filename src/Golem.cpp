@@ -33,6 +33,13 @@ void Golem::Update(){
 
 	Enemy::Update();
 
+    if(_invencible) _invencibleTime++;
+    else _invencibleTime = 0;
+    if(_invencibleTime >= 16) _invencible = false;
+
+    std::cout << "_invencible:" << _invencibleTime << std::endl;
+
+
 	if(_currentState == CROUCH){
 		if(_switchRequired != "" && ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired))
         {
@@ -84,7 +91,7 @@ void Golem::Update(){
 
     else if (_currentState == STUCK){
         _velocity.setX(0);
-        if(_frameTime >= 60) ChangeState(WALK);
+        if(_frameTime >= 120) ChangeState(WALK);
     }
     
     if(_currentState != CROUCH){
@@ -92,7 +99,8 @@ void Golem::Update(){
             CollisionEvent event = _unresolvedCollisionEvents.front();
             _unresolvedCollisionEvents.pop();
 
-            if(event.kind == Kind::WEAPON) {
+            if(event.kind == Kind::WEAPON && !_invencible) {
+                _invencible = true;
                 _life -= event.damage;
                 _velocity.setX(0);
                 if(_life == 0) ChangeState(DEAD);
@@ -110,6 +118,8 @@ void Golem::StandWalk(){
         _velocity.setX(0.5);
         _facingright = true;
     }
+    else if(_facingright) _velocity.setX(0.5);
+    else _velocity.setX(-0.5);
 }
 
 void Golem::ChangeState(GolemState state){

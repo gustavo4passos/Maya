@@ -34,6 +34,7 @@ protected:
         BOUNCE_STUCK,
         BOUNCE,
         DRAG_WALL,
+        INVENCIBLE,
         DYING,
         DEAD,
     };

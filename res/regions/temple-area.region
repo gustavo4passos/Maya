@@ -40,5 +40,5 @@
         <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
     </leveldata>
 
-    <startinglevel id="TempleEntrance1"/>
+    <startinglevel id="forest_2"/>
 </region>
