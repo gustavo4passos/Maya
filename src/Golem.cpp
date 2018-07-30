@@ -37,9 +37,6 @@ void Golem::Update(){
     else _invencibleTime = 0;
     if(_invencibleTime >= 16) _invencible = false;
 
-    std::cout << "_invencible:" << _invencibleTime << std::endl;
-
-
 	if(_currentState == CROUCH){
 		if(_switchRequired != "" && ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired))
         {

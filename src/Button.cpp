@@ -14,24 +14,21 @@ Button::Button(float x, float y, const std::string& activatesSwitch, bool isAlre
     _activatesSwitch(activatesSwitch),
     _isPressed(isAlreadyPressed)
 {
-    _kind = Kind::ZONE;
+    _kind = Kind::BUTTON;
 }
 
 void Button::Update() {
 
-    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
-
-    if(!_isPressed){
-        if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
+    while(!_unresolvedCollisionEvents.empty()) {
+        CollisionEvent collision = _unresolvedCollisionEvents.front();
+        if(collision.collisionPosition == CollisionPosition::TOP_COLLISION && !_isPressed) {
             TurnOn();
-            _collisionRect.setH(0);
-            _collisionRect.setW(0);
             _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
             ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
+        
         }
+        _unresolvedCollisionEvents.pop();
     }
-
-
 }
 
 void Button::Draw(Renderer* renderer, float deltatime) {

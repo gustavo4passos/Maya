@@ -15,6 +15,7 @@ MovingPlatform::MovingPlatform(Vector2D origin, Vector2D destination, bool loops
 {
     if(_switchRequired == "") _on = true;
     _textureName = "moving-platform";
+    _kind = Kind::MOVING_PLATFORM;
 }
 
 void MovingPlatform::Move() {
@@ -42,13 +43,9 @@ void MovingPlatform::Move() {
         }
         if((int)_origin.x() == (int)x()) {
             _reachedDestination = false;
-        }
+        } 
     }
 
-    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
-    if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
-        ServiceLocator::GetPlayer()->setPosition(ServiceLocator::GetPlayer()->x() + _displacement.x(), ServiceLocator::GetPlayer()->y());
-    }
 }
 
 void MovingPlatform::Update() {
@@ -66,6 +63,19 @@ void MovingPlatform::Update() {
     }
     
     if(_on) Move();
+
+
+    std::set<GameObject*> objectsOnTop;
+
+    while(!_unresolvedCollisionEvents.empty()) {
+        CollisionEvent collision = _unresolvedCollisionEvents.front();
+        objectsOnTop.insert(collision.subject);
+        _unresolvedCollisionEvents.pop();
+    }
+
+    for(auto object = objectsOnTop.begin(); object != objectsOnTop.end(); object++) {
+        (*object)->setPosition((*object)->x() + _displacement.x(), (*object)->y());
+    }
 }
 
 void MovingPlatform::Draw(Renderer* renderer, float deltaTime) {

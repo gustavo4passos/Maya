@@ -12,25 +12,38 @@ PlatformSwitch::PlatformSwitch(float x, float y, const std::string& activatesSwi
     _originPosition(x, y),
     _on(false),
     _displacement(0.f, 0.f),
-    _distanceFromActivationArea(20.f)
+    _distanceFromActivationArea(30.f),
+    _isBeingSteppedOn(false)
 {
     _textureName = "platform-switch";
+    _kind = Kind::PLATFORM_SWITCH;
 }
 
 void PlatformSwitch::Update() {
-    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
-    if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
+    _isBeingSteppedOn = false;
+    std::set<GameObject*> objectsOnTop;
+    while(!_unresolvedCollisionEvents.empty()) {
+        CollisionEvent collision = _unresolvedCollisionEvents.front();
+        if(collision.collisionPosition == CollisionPosition::TOP_COLLISION) _isBeingSteppedOn = true;
+        objectsOnTop.insert(collision.subject);
+        _unresolvedCollisionEvents.pop();
+    }
+    
+    if(_isBeingSteppedOn) {
         if(y() < (_originPosition.y() + _distanceFromActivationArea)){
             _velocity.setY(1.f);
             _displacement.setY(_velocity.y());
             setPosition(x(), y() + _velocity.y());
-            ServiceLocator::GetPlayer()->setPosition(ServiceLocator::GetPlayer()->x(),  ServiceLocator::GetPlayer()->y() + _displacement.y());
+            for(auto object = objectsOnTop.begin(); object != objectsOnTop.end(); object++) {
+               (*object)->setPosition((*object)->x() , (*object)->y() + _displacement.y());
+            }
         }
         else {
             if(!_on) {
                 SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("button-press"), false);
-                _velocity.setY(0);
                 ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
+                _velocity.setY(0);
+                _displacement.setY(0.f);                
                 _on = true;
             }
         }
@@ -47,6 +60,7 @@ void PlatformSwitch::Update() {
         }
         else {
             _velocity.setY(0.f);
+            _displacement.setY(0.f);
         }
     }
 }

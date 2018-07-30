@@ -6,6 +6,7 @@
 #include "../include/ResourceManager.h"
 #include "../include/Weapon.h"
 #include "../include/EventDispatcher.h"
+#include "../include/PlayerDiedEvent.h"
 
 Maya::Maya(float x, float y): Maya(CollisionRect(x, y, 10, 30, 12, 7), 36, 39)
 {}
@@ -202,7 +203,8 @@ void Maya::ChangeState(PlayerState state)
             _velocity = Vector2D(0, 0);
             _numFrames = 1;
             _numRows = 1;
-            _textureName = "maya_dead"; 
+            _textureName = "maya_dead";
+            EventDispatcher::Notify(new PlayerDiedEvent());
         }
 
         else if (state == DYING){
@@ -301,7 +303,6 @@ void Maya::Update()
                 ChangeState(BOUNCE_STUCK);
             }                
         }
-
         _unresolvedCollisionEvents.pop();        
     }
 

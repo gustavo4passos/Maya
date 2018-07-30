@@ -2,5 +2,5 @@ window = {
   w = 960,
   h = 544,
   vsync = true,
-  fullscreen = false
+  fullscreen = true
 }

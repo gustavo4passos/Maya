@@ -120,7 +120,6 @@ bool PhysicsEngine::IsOnTop(Rect* bottom, Rect* top) {
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
 
   MoveAndCheckCollision2(gameObject);
-  //std::set<std::pair<GameObject*, CollisionEvent>> _unsentCollisionEvents;
   for(auto it=_unsentCollisionEvents.begin(); it!=_unsentCollisionEvents.end(); it++){
       it->first->EnqueueCollisionEvent(it->second);
   }
@@ -239,11 +238,11 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(GameObject* gameObject, const Vec
 void PhysicsEngine::NewUnsentCollisonEvent(GameObject* gameObject1, GameObject* gameObject2){
 
     CollisionEvent collisionEvent1 = { gameObject1->_kind, CheckCollisionPosition(gameObject2, gameObject1),
-         gameObject1->velocity(), gameObject1->damage() };
+         gameObject1->velocity(), gameObject1->damage(), gameObject1 };
     _unsentCollisionEvents.insert(std::make_pair(gameObject2, collisionEvent1));
 
     CollisionEvent collisionEvent2 = { gameObject2->_kind, CheckCollisionPosition(gameObject1, gameObject2),
-         gameObject2->velocity(), gameObject2->damage() };
+         gameObject2->velocity(), gameObject2->damage(), gameObject2 };
     _unsentCollisionEvents.insert(std::make_pair(gameObject1, collisionEvent2));
 }
 

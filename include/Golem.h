@@ -27,7 +27,6 @@ private:
 	void ChangeState(GolemState state);
 	void StandWalk();
 
-
 	int _life = 5;
 	bool _attacking = false;
 	bool _invencible = false;

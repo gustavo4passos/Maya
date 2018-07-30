@@ -16,6 +16,7 @@ private:
     bool _on;
     Vector2D _displacement;
     float _distanceFromActivationArea;
+    bool _isBeingSteppedOn;
 };
 
 #endif

@@ -7,7 +7,6 @@
 
 Enemy::Enemy(float x, float y, int w, int h): GameObject(x, y, w, h)
 {}
-
 Enemy::Enemy(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject(collisionRect, spriteW, spriteH)
 {}
 
