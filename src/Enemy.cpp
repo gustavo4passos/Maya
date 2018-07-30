@@ -50,4 +50,4 @@ void Enemy::Update()
 }
 
 bool Enemy::OnNotify(Event* event)
-{}
+{return false; }

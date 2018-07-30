@@ -57,4 +57,5 @@ void Player::Update()
     
 }
 
-bool Player::OnNotify(Event* event){}
+bool Player::OnNotify(Event* event)
+{ return false; }

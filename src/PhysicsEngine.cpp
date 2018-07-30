@@ -5,7 +5,6 @@
 #include "../include/ErrorHandler.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Enemy.h"
-#include "../include/PlayerCollisionEvent.h"
 #include "../include/ActivateSwitchEvent.h"
 
 Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.4);
