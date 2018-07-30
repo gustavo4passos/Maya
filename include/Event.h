@@ -2,10 +2,6 @@
 #define EVENT_H
 
 enum class EventType {
-    // Collision events
-    PLAYER_ENEMY_COLLIDED,
-    ENEMY_COLLIDED,
-
     // Switch events
     SWITCH_ACTIVATED,
 

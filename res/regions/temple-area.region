@@ -24,6 +24,8 @@
             <sprite filename="../res/assets/Maya_Combat Attack v003.png" id="maya_attacking"/>
             <sprite filename="../res/assets/Maya_Standing.png" id="maya_standing"/>
             <sprite filename="../res/assets/Maya_Climbing.png" id="maya_climbing"/>
+            <sprite filename="../res/assets/maya-dying.png" id="maya_dying"/>
+            <sprite filename="../res/assets/maya-dead.png" id="maya_dead"/>
             <sprite filename="../res/assets/box.png" id="box"/>
             <sprite filename="../res/sprites/button-red.png" id="button"/>
             <sprite filename="../res/sprites/door.png" id="door"/>

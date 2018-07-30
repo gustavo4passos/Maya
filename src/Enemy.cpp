@@ -6,19 +6,13 @@
 #include "../include/EventDispatcher.h"
 
 Enemy::Enemy(float x, float y, int w, int h): GameObject(x, y, w, h)
-{
-	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
-}
+{}
 
 Enemy::Enemy(const CollisionRect& collisionRect, int spriteW, int spriteH) : GameObject(collisionRect, spriteW, spriteH)
-{
-	EventDispatcher::AddListener(this, EventType::PLAYER_ENEMY_COLLIDED);
-}
+{}
 
 Enemy::~Enemy()
-{
-	EventDispatcher::RemoveListener(this, EventType::PLAYER_ENEMY_COLLIDED);
-}
+{}
 
 void Enemy::Draw(Renderer* renderer, float deltaTime)
 {

@@ -22,7 +22,7 @@ void Golem::Draw(Renderer* renderer, float deltaTime){
 }
 
 bool Golem::OnNotify(Event* event){
-	if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {}
+	//if(event->type() == EventType::PLAYER_ENEMY_COLLIDED) {}
 	return false;
 }
 

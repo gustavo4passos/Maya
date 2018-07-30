@@ -5,6 +5,7 @@
 #include "../include/InputModule.h"
 #include "../include/ResourceManager.h"
 #include "../include/Weapon.h"
+#include "../include/EventDispatcher.h"
 
 Maya::Maya(float x, float y): Maya(CollisionRect(x, y, 10, 30, 12, 7), 36, 39)
 {}
@@ -41,8 +42,10 @@ void Maya::HandleInput()
     bool leftPressed = InputModule::IsKeyPressed(InputModule::LEFT);
     bool rightPressed = InputModule::IsKeyPressed(InputModule::RIGHT);
 
-    if(leftPressed) _facingright = false;
-    if(rightPressed) _facingright = true;
+    if(_currentState != DEAD){
+        if(leftPressed) _facingright = false;
+        if(rightPressed) _facingright = true;
+    }    
 
     if  (_currentState == STAND){
         _velocity.setX(0);
@@ -191,30 +194,51 @@ void Maya::ChangeState(PlayerState state)
             _textureName = "maya_jumping";           
         }
 
-         else if (state == DEAD){
-             _velocity = Vector2D(0, 0);
-            _currentState = DEAD;        
+        else if (state == DEAD){
+            _collisionRect.setOffsetX(12);            
+            _currentState = DEAD;
+            _velocity = Vector2D(0, 0);
+            _numFrames = 1;
+            _numRows = 1;
+            _textureName = "maya_dead"; 
+        }
+
+        else if (state == DYING){
+            _collisionRect.setOffsetX(12);
+            _currentState = DYING;
+            _velocity = Vector2D(0, 0);            
+            _numFrames = 4;
+            _numRows = 2;
+            _textureName = "maya_dying";
         }
     }
 }
 
 void Maya::Update()
 {  
-    Player::Update();
-
-    if(_health <= 0 && PhysicsEngine::OnGround(this)) ChangeState(DEAD);
+    Player::Update();    
     
     _weapon->setPosition(x(),y());
+
+    if(_health <= 0 && PhysicsEngine::OnGround(this) && _currentState != DEAD) ChangeState(DYING);
+
+    if (_currentState == DEAD){
+        if(_frameTime == 50) std::cout << "Morreu.\n"; //EventDispatcher::Notify();
+    }
+
+    else if (_currentState == DYING){
+        if (_currentFrame == 2 && _currentRow == 1) ChangeState(DEAD);
+    }
         
-    if (_currentState == JUMP){
+    else if (_currentState == JUMP){
         if (PhysicsEngine::OnGround(this)){
-            ChangeState(STAND);
+           if(_health > 0) ChangeState(STAND);
         }
     }
     
     else if (_currentState == BOUNCE_STUCK || _currentState == BOUNCE){
         if(PhysicsEngine::OnGround(this)){
-            ChangeState(STAND);
+            if(_health > 0) ChangeState(STAND);
         }
     }
 
@@ -258,7 +282,7 @@ void Maya::Update()
         CollisionEvent e = _unresolvedCollisionEvents.front();
 
         if(e.kind == Kind::ENEMY){
-            if(_currentState != BOUNCE_STUCK){
+            if(_currentState != BOUNCE_STUCK && _currentState != DYING && _currentState != DEAD){
                 if(_facingright) _velocity = Vector2D(-2, -4);
                 else             _velocity = Vector2D(2, -4);
                 _health--;
@@ -268,6 +292,8 @@ void Maya::Update()
 
         _unresolvedCollisionEvents.pop();        
     }
+
+    
 }
 
 bool Maya::OnNotify(Event* event){
