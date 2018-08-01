@@ -2,6 +2,7 @@
 #define BUTTON_H
 
 #include "GameObject.h"
+#include "Animation.h"
 
 class Button : public GameObject {
 public:    
@@ -18,6 +19,8 @@ public:
 private:
     std::string _activatesSwitch;
     bool _isPressed;
+
+    Animation _animation;
 };
 
 #endif

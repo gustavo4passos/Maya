@@ -2,6 +2,7 @@
 #define MOVINGPLATFORM_H
 
 #include "GameObject.h"
+#include "Spritesheet.h"
 
 class MovingPlatform : public GameObject {
 public:
@@ -9,8 +10,7 @@ public:
 
     virtual void Update();
     virtual void Draw(Renderer* renderer, float deltaTime);
-
-
+    virtual inline const Vector2D& velocity() { return _displacement; }
     const Vector2D& displacement() const { return _displacement; }
 
 private:
@@ -20,6 +20,7 @@ private:
     bool _loops;
     std::string _switchRequired;
     bool _reachedDestination;
+    Spritesheet _spritesheet;
 
     Vector2D _displacement;
     bool _on;

@@ -6,6 +6,7 @@
                 <soundeffect filename="../res/audio/sfx/dagger_swing.mp3" id="dagger_swing"/>
                 <soundeffect filename="../res/audio/sfx/damage.mp3" id="damage"/>
                 <soundeffect filename="../res/audio/sfx/forest_sounds.mp3" id="forest_sounds"/>
+                <soundeffect filename="../res/audio/sfx/button-press.wav" id="button-press"/>
             </soundeffects>
 
             <songs>
@@ -24,6 +25,8 @@
             <sprite filename="../res/assets/Maya_Combat Attack v003.png" id="maya_attacking"/>
             <sprite filename="../res/assets/Maya_Standing.png" id="maya_standing"/>
             <sprite filename="../res/assets/Maya_Climbing.png" id="maya_climbing"/>
+            <sprite filename="../res/assets/maya-dying.png" id="maya_dying"/>
+            <sprite filename="../res/assets/maya-dead.png" id="maya_dead"/>
             <sprite filename="../res/assets/box.png" id="box"/>
             <sprite filename="../res/sprites/button-red.png" id="button"/>
             <sprite filename="../res/sprites/door.png" id="door"/>
@@ -33,10 +36,13 @@
     </resources>
 
     <leveldata>
-        <level filename="../res/levels/forest_2.tmx" id="forest_2"/>
-        <level filename="../res/levels/mountain.tmx" id="mountain"/>
         <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
+        <level filename="temple-room-1.tmx" id="temple-room-2"/>
+        <level filename="temple-entrance-10.tmx" id="temple-entrance-10"/>
+        <level filename="temple-entrance-0.tmx" id="temple-entrance-0"/>
+        <level filename="temple-entrance-2.tmx" id="temple-entrance-2"/>
+        <level filename="temple-entrance-3.tmx" id="temple-entrance-3"/>
     </leveldata>
 
-    <startinglevel id="TempleEntrance1"/>
+    <startinglevel id="temple-entrance-0"/>
 </region>

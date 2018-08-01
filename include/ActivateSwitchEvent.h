@@ -9,8 +9,8 @@
 class ActivateSwitchEvent : public Event {
 public:
     ActivateSwitchEvent(const std::string& switchID) 
-    : Event(EventType::SWITCH_ACTIVATED),
-     _switchID(switchID)
+    :   Event(EventType::SWITCH_ACTIVATED),
+        _switchID(switchID)
     { }
 
     inline const std::string& switchID() const { return _switchID; }

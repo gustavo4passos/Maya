@@ -12,36 +12,35 @@
 Button::Button(float x, float y, const std::string& activatesSwitch, bool isAlreadyPressed)
 :   GameObject(CollisionRect(Rect(x, y, 31, 12), CollisionBehavior::BLOCK, 1, 19), 32, 32),
     _activatesSwitch(activatesSwitch),
-    _isPressed(isAlreadyPressed)
+    _isPressed(isAlreadyPressed),
+    _animation(Spritesheet("button", 1, 2), 2)
 {
-    _kind = Kind::ZONE;
+    _animation.PauseAtFrame(0);
+    _kind = Kind::BUTTON;
 }
 
 void Button::Update() {
 
-    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
-
     if(!_isPressed){
-        if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
-            TurnOn();
-            _collisionRect.setH(0);
-            _collisionRect.setW(0);
-            _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
-            ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
+        while(!_unresolvedCollisionEvents.empty()) {
+            CollisionEvent collision = _unresolvedCollisionEvents.front();
+            if(collision.collisionPosition == CollisionPosition::TOP_COLLISION && !_isPressed) {
+
+                TurnOn();
+                // Show pressed animation
+                _animation.PauseAtFrame(1);
+                _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
+                ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
+            
+            }
+            _unresolvedCollisionEvents.pop();
         }
+        _animation.Update();
     }
-
-
 }
 
 void Button::Draw(Renderer* renderer, float deltatime) {
-    Rect src = Rect(0.f, 0.f, 32, 32);
-    if(_isPressed){
-        src.setX(32);
-    }
-
-    Rect dst = Rect(_collisionRect.originX(), _collisionRect.originY(), _spriteW, _spriteH);
-    renderer->Draw(ResourceManager::GetTexture("button"), &src, &dst);
+    _animation.Render(renderer, _collisionRect.origin()); 
 }
 
 void Button::TurnOn() {

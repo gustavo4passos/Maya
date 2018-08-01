@@ -22,6 +22,8 @@ private:
     void ChangeState(PlayerState);
     GameObject* _weapon;
     PlayerState _lastState;
+    bool _invencible;
+    int _invencibleTime;
 };
 
 #endif

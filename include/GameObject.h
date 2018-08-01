@@ -1,4 +1,4 @@
-	#ifndef GAMEOBJECT_H
+#ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
 #include <queue>
@@ -14,6 +14,9 @@ enum class Kind {
 	PLAYER,
 	WEAPON,
 	ZONE,
+	MOVING_PLATFORM,
+	PLATFORM_SWITCH,
+	BUTTON,
 	TELEPORT_ZONE
 };
 
@@ -26,7 +29,7 @@ public:
 
 	inline const CollisionRect& collisionRect() { return _collisionRect; }	
 	inline const Vector2D& position() { return _collisionRect.position(); }
-	inline const Vector2D& velocity()  { return _velocity; }
+	virtual inline const Vector2D& velocity() { return _velocity; }
 	inline const float x() const { return _collisionRect.x(); }
 	inline const float y() const { return _collisionRect.y(); }
 	inline const float w() const { return _collisionRect.w(); }
@@ -67,10 +70,12 @@ protected:
 	
 	// Physics
 	Vector2D _velocity;
+	Vector2D _startPosition;
 	CollisionRect _collisionRect;
 	float _speed;
 	float _impulse;
 	int _damage;
+	
 
 	// Flags
 	bool  _facingright;

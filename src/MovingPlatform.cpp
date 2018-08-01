@@ -11,10 +11,12 @@ MovingPlatform::MovingPlatform(Vector2D origin, Vector2D destination, bool loops
     _destination(destination),
     _loops(loops),
     _switchRequired(switchRequired),
-    _reachedDestination(false)
+    _reachedDestination(false),
+    _spritesheet("moving-platform", 1, 2)
 {
     if(_switchRequired == "") _on = true;
     _textureName = "moving-platform";
+    _kind = Kind::MOVING_PLATFORM;
 }
 
 void MovingPlatform::Move() {
@@ -30,9 +32,23 @@ void MovingPlatform::Move() {
         if((int)_destination.x() == (int)x()) {
             _reachedDestination = true;
         }
+        
+        if(false) {
+            if(y() < _destination.y()) {
+                setPosition(x(), y() + _velocity.y());
+                _displacement = velocity();
+            }
+            else {
+                setPosition(x(), y() + _velocity.y());
+                _displacement = -_velocity;
+            }
+            if((int)_destination.y() == (int)y()) {
+                _reachedDestination = true;
+            }
+        }
     }
     else if(_loops) {
-            if(x() < _origin.x()) {
+        if(x() < _origin.x()) {
             setPosition(x() + _velocity.x(), y());
             _displacement = _velocity;
         }
@@ -42,20 +58,30 @@ void MovingPlatform::Move() {
         }
         if((int)_origin.x() == (int)x()) {
             _reachedDestination = false;
+        } 
+
+        if(false) {
+            if(y() > _origin.y()) {
+                setPosition(x(), y() + _velocity.y());
+                _displacement = _velocity;
+            }
+            else {
+                setPosition(x(), y() - _velocity.y());
+                _displacement = -_velocity;
+            }
+            if((int)_origin.y() == (int)y()) {
+                _reachedDestination = false;
+            } 
         }
     }
 
-    Rect playerRect = ServiceLocator::GetPlayer()->collisionRect();
-    if(PhysicsEngine::IsOnTop(&_collisionRect, &playerRect)) {
-        ServiceLocator::GetPlayer()->setPosition(ServiceLocator::GetPlayer()->x() + _displacement.x(), ServiceLocator::GetPlayer()->y());
-    }
 }
 
 void MovingPlatform::Update() {
     if(_switchRequired != "") {
         if(ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired)) {
             _on = true;
-            _velocity.setX(0.8f);
+            _velocity.setX(1.f);
             
         }
         else {
@@ -66,6 +92,19 @@ void MovingPlatform::Update() {
     }
     
     if(_on) Move();
+
+
+    std::set<GameObject*> objectsOnTop;
+
+    while(!_unresolvedCollisionEvents.empty()) {
+        CollisionEvent collision = _unresolvedCollisionEvents.front();
+        objectsOnTop.insert(collision.subject);
+        _unresolvedCollisionEvents.pop();
+    }
+
+    for(auto object = objectsOnTop.begin(); object != objectsOnTop.end(); object++) {
+        (*object)->setPosition((*object)->x() + _displacement.x(), (*object)->y());
+    }
 }
 
 void MovingPlatform::Draw(Renderer* renderer, float deltaTime) {

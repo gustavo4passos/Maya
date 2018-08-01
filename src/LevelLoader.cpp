@@ -2,18 +2,18 @@
 
 #include <algorithm>
 
-#include "../include/ResourceManager.h"
-#include "../include/Level.h"
-#include "../include/ErrorHandler.h"
-#include "../include/Layer.h"
-#include "../include/Door.h"
-#include "../include/Golem.h"
 #include "../include/Button.h"
+#include "../include/Door.h"
+#include "../include/ErrorHandler.h"
 #include "../include/Golem.h"
-#include "../include/Region.h"
-#include "../include/PlatformSwitch.h"
+#include "../include/Layer.h"
+#include "../include/Level.h"
 #include "../include/MovingPlatform.h"
-
+#include "../include/PlatformSwitch.h"
+#include "../include/Region.h"
+#include "../include/ResourceManager.h"
+#include "../include/TeleportZone.h"
+#include "../include/PushableObject.h"
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
     // create the XML document
@@ -70,7 +70,12 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 				return NULL;
 			}
 
-			level->AddBackgroundLayer(layer);
+			if(!layer->IsForeground()) {
+				level->AddBackgroundLayer(layer);
+			}
+			else {
+				level->AddForegroundLayer(layer);
+			}
         }
     }
 
@@ -196,12 +201,16 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					e->QueryFloatAttribute("x", &x);
 					e->QueryFloatAttribute("y", &y);
 					TiXmlElement* propertiesNode = e->FirstChildElement();
+					if(propertiesNode == NULL) {
+						LOG_WARNING("Button missing properties field. Ignoring...");
+						continue;
+					}
 					if(std::string(propertiesNode->Value()) != std::string("properties"))
 						continue;
 					else{
 						TiXmlElement* activatesSwitchNode = GetProperty(propertiesNode, "activatesSwitch");
 						if(activatesSwitchNode == NULL){
-							LOG_WARNING("Button's activeatesSwitch is missing, button not loaded");
+							LOG_WARNING("Button's activatesSwitch is missing, button not loaded");
 							continue;
 						}
 
@@ -215,6 +224,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					e->QueryFloatAttribute("x", &x);
 					e->QueryFloatAttribute("y", &y);
 					TiXmlElement* propertiesNode = e->FirstChildElement();
+
 					if(std::string(propertiesNode->Value()) != std::string("properties"))
 						continue;
 					else{
@@ -262,6 +272,11 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 
 						level->AddGameObject(new MovingPlatform(Vector2D(x, y), Vector2D(destinationX, destinationY), true, requiresSwitch));
 					}
+				}
+				else if(temp == std::string("pushableObject")) {
+					e->QueryFloatAttribute("x", &x);
+					e->QueryFloatAttribute("y", &y);
+					level->AddGameObject(new PushableObject(x, y));
 				}
 			}
 		}
@@ -322,6 +337,11 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                 e->Attribute("width", &width);
                 e->Attribute("height", &height);
 
+				if(e->Attribute("type") == NULL) {
+					LOG_WARNING("Zone's type is missing. Ignoring...");
+					return;
+				}
+
 				TiXmlElement* propertiesNode = e->FirstChildElement();
 				if(std::string(propertiesNode->Value()) != std::string("properties"))
                     continue;
@@ -353,14 +373,8 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                         continue;
                     }
 
-					zoneNode = GetProperty(propertiesNode, "type");
-
-                    if(zoneNode != NULL){
-                        zoneType = std::string(zoneNode->Attribute("value"));
-                    } else {
-                        LOG_WARNING("Zone's type is missing, zone not loaded");
-                        continue;
-                    }
+					level->AddGameObject(new TeleportZone(Rect(x, y, width, height),
+						destinationLevel, Vector2D(destinationX, destinationY)));
                 }
 			}
 		}
@@ -438,6 +452,7 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 	std::string name;
 	std::vector<int> layerData;
 	int width, height;
+	bool isForeground = false;
 	// Append the level filename to the layer name, to avoid duplicate
 	// entries in the mesh map in case two layers from different levels
 	// have the same name and needs to be in memory simultaneously.
@@ -462,8 +477,13 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 			std::string loweredCasePropertyName = propertyElement->Attribute("name");
 			std::transform(loweredCasePropertyName.begin(), loweredCasePropertyName.end(), loweredCasePropertyName.begin(), ::tolower);
 
-			  if(loweredCasePropertyName == std::string("zdistance")){
+			if(loweredCasePropertyName == std::string("zdistance")){
 				propertyElement->Attribute("value", &zDistance);
+			}
+			else if(loweredCasePropertyName == std::string("foreground")) {
+				if(propertyElement->Attribute("value") == std::string("true")) {
+					isForeground = true;
+				}
 			}
 			else {
 				LOG_ERROR("Unknown property in " + name + ": " + propertyElement->Attribute("name"));
@@ -480,7 +500,7 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 		}
 	}
 
-	return new Layer(name, width, height, tileset, zDistance);
+	return new Layer(name, width, height, tileset, zDistance, isForeground);
 }
 
 std::vector<int> LevelLoader::ParseLayerData(TiXmlElement* dataNode){

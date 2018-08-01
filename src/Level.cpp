@@ -74,12 +74,27 @@ void Level::DrawBackground(Renderer* renderer, float deltaTime){
 	}
 }
 
+void Level::DrawForeground(Renderer* renderer, float deltaTime) {
+	for(auto layer : _foregroundLayers) {
+		layer->Draw(renderer);
+	}
+}
+
 void Level::AddBackgroundLayer(Layer* layer){
 	if(layer == nullptr){
 		LOG_ERROR("Unable to add Background Layer: Layer is NULL");
 		return;
 	}
 	_backgroundLayers.push_back(layer);
+}
+
+void Level::AddForegroundLayer(Layer* layer) {
+	if(layer == nullptr) {
+		LOG_ERROR("Unable to add Foreground Layer: Layer is NULL");
+		return;
+	}
+
+	_foregroundLayers.push_back(layer);
 }
 
 void Level::AddCollisionRect(CollisionRect* rect){

@@ -37,7 +37,7 @@ bool Game::Init() {
         return false;
     }
 
-    _renderer->SetClearColor(0.09f, .60f, 0.85f, 1.f);
+    _renderer->SetClearColor(0.f, 0.f, 0.f, 1.f);
     _renderer->SetViewportSize(_window->width(), _window->height());
 
     if(!InputModule::Init()){
@@ -45,9 +45,9 @@ bool Game::Init() {
        return false;
     }
 
-    //if(!InputModule::InitJoysticks()){
-    //   LOG_ERROR("Unable to initialize Joysticks");
-    //}
+    if(!InputModule::InitJoysticks()){
+      LOG_ERROR("Unable to initialize Joysticks");
+    }
 
     if(!SoundPlayer::Init()){
         LOG_ERROR("Unable to initialize SoundPlayer.");
@@ -62,6 +62,8 @@ bool Game::Init() {
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
     ServiceLocator::GetGameSwitches()->PushSwitch("golemtest");
+    ServiceLocator::GetGameSwitches()->PushSwitch("platform-1-temple-entrance-2");
+    ServiceLocator::GetGameSwitches()->PushSwitch("platform-3-golem");
     GameStateMachine::PushState(new PlayState());
     
     _running = false;

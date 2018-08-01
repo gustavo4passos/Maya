@@ -22,6 +22,7 @@ struct CollisionEvent {
     CollisionPosition collisionPosition;
     Vector2D velocity;
     int damage;
+    GameObject* subject;
     
     bool operator < (const CollisionEvent& rhs) const{
         bool sameKind = kind == rhs.kind;

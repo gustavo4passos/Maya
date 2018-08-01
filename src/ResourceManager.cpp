@@ -18,7 +18,7 @@ bool ResourceManager::LoadTexture(const std::string& filename, const std::string
 
 	std::map<std::string, Texture*>::const_iterator it = _textureMap.find(name);
 	if(it != _textureMap.end()) {
-		LOG_ERROR("Unable to load texture [\"" + name + "\"] into texture map: A texture with the same name already exists");
+		LOG_WARNING("Unable to load texture [\"" + name + "\"] into texture map: A texture with the same name already exists");
 		return true;
 	}
 
@@ -148,7 +148,7 @@ void ResourceManager::CleanAudio() {
 bool ResourceManager::LoadMesh(const void* data, std::size_t size, unsigned int count, const std::string& name) {
 	std::map<std::string, Mesh*>::const_iterator it = _meshMap.find(name.c_str());
 	if(it != _meshMap.end()){
-		LOG_ERROR("Unable to load mesh into mesh map: [\"" + name + "\"]. A mesh with the same name already exists.");
+		LOG_WARNING("Unable to load mesh into mesh map: [\"" + name + "\"]. A mesh with the same name already exists.");
 		return true;
 	}
 
