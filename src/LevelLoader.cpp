@@ -70,7 +70,12 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 				return NULL;
 			}
 
-			level->AddBackgroundLayer(layer);
+			if(!layer->IsForeground()) {
+				level->AddBackgroundLayer(layer);
+			}
+			else {
+				level->AddForegroundLayer(layer);
+			}
         }
     }
 
@@ -269,7 +274,6 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					}
 				}
 				else if(temp == std::string("pushableObject")) {
-					std::cout << "MINHA " << std::endl;
 					e->QueryFloatAttribute("x", &x);
 					e->QueryFloatAttribute("y", &y);
 					level->AddGameObject(new PushableObject(x, y));
@@ -448,6 +452,7 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 	std::string name;
 	std::vector<int> layerData;
 	int width, height;
+	bool isForeground = false;
 	// Append the level filename to the layer name, to avoid duplicate
 	// entries in the mesh map in case two layers from different levels
 	// have the same name and needs to be in memory simultaneously.
@@ -472,8 +477,13 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 			std::string loweredCasePropertyName = propertyElement->Attribute("name");
 			std::transform(loweredCasePropertyName.begin(), loweredCasePropertyName.end(), loweredCasePropertyName.begin(), ::tolower);
 
-			  if(loweredCasePropertyName == std::string("zdistance")){
+			if(loweredCasePropertyName == std::string("zdistance")){
 				propertyElement->Attribute("value", &zDistance);
+			}
+			else if(loweredCasePropertyName == std::string("foreground")) {
+				if(propertyElement->Attribute("value") == std::string("true")) {
+					isForeground = true;
+				}
 			}
 			else {
 				LOG_ERROR("Unknown property in " + name + ": " + propertyElement->Attribute("name"));
@@ -490,7 +500,7 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 		}
 	}
 
-	return new Layer(name, width, height, tileset, zDistance);
+	return new Layer(name, width, height, tileset, zDistance, isForeground);
 }
 
 std::vector<int> LevelLoader::ParseLayerData(TiXmlElement* dataNode){

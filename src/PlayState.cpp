@@ -7,7 +7,7 @@
 #include "../include/PushableObject.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameStateMachine.h"
-#include "../include/InfoMenu.h"
+#include "../include/InfoMenuGL3.h"
 #include "../include/InputModule.h"
 #include "../include/LevelLoader.h"
 #include "../include/Maya.h"
@@ -32,22 +32,23 @@ void PlayState::Update(){
 	_camera->Update();
 }
 
-void PlayState::Render(Renderer* renderer, float deltatime){
+void PlayState::Render(Renderer* renderer, float deltaTime){
 	//TODO(Gustavo): Below is a temporary solution for the camera position interpolation problem.
 	// This solution must be integrated properly withing the camera code
 	Vector2D pos = _maya->collisionRect().position();
-	_maya->setPosition(pos.x() + _maya->velocity().x() * deltatime,
-				  		 pos.y() + _maya->velocity().y() * deltatime);
+	_maya->setPosition(pos.x() + _maya->velocity().x() * deltaTime,
+				  		 pos.y() + _maya->velocity().y() * deltaTime);
 	_camera->Update();
 	_maya->setPosition(pos.x(), pos.y());
-	_region->Render(renderer, deltatime);
-	_maya->Draw(renderer, deltatime);
+	_region->RenderBackground(renderer, deltaTime);
+	_maya->Draw(renderer, deltaTime);
+	_region->RenderForeground(renderer, deltaTime);
 	_infoMenu->Render(renderer);	
 }
 
 bool PlayState::OnEnter(){		
 	
-	_maya = new Maya(100, 0);
+	_maya = new Maya(100, 500);
 	ServiceLocator::ProvidePlayer(_maya);
 
 	_camera = new Camera(480, 270, 0, 0, 0, 0, _maya);
@@ -58,26 +59,6 @@ bool PlayState::OnEnter(){
 	ServiceLocator::ProvideCurrentRegion(_region);
 
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
-
-	//_region->ChangeCurrentLevel("templeEntrance");
-	//Level* forest = LevelLoader::ParseLevel("../res/levels/forest_2.tmx");
-	//Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
-	//Level* templeEntrance = LevelLoader::ParseLevel("../res/levels/TempleEntrance1.tmx");
-	//templeEntrance->AddGameObject(new PushableObject(CollisionRect(Rect(300, 0, 47, 41), CollisionBehavior::BLOCK), 47, 41));
-
-	// _region->AddLevel(forest, "forest");
-	// _region->AddLevel(mountain, "mountain");
-	// _region->AddLevel(templeEntrance, "templeEntrance");
-
-	//_region->ChangeCurrentLevel("forest");
-	
-
-	//Level* mountain = LevelLoader::ParseLevel("../res/levels/mountain.tmx");
-
-	//_region->AddLevel(forest, "forest");
-	//_region->AddLevel(mountain, "mountain");
-	//_region->ChangeCurrentLevel("forest");
-
 	SoundPlayer::PlayBGM(ResourceManager::GetMusic("piano-theme"), true);
 
 

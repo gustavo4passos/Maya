@@ -11,7 +11,8 @@ MovingPlatform::MovingPlatform(Vector2D origin, Vector2D destination, bool loops
     _destination(destination),
     _loops(loops),
     _switchRequired(switchRequired),
-    _reachedDestination(false)
+    _reachedDestination(false),
+    _spritesheet("moving-platform", 1, 2)
 {
     if(_switchRequired == "") _on = true;
     _textureName = "moving-platform";
@@ -80,7 +81,7 @@ void MovingPlatform::Update() {
     if(_switchRequired != "") {
         if(ServiceLocator::GetGameSwitches()->CheckSwitch(_switchRequired)) {
             _on = true;
-            _velocity.setX(0.8f);
+            _velocity.setX(1.f);
             
         }
         else {

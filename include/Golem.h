@@ -12,6 +12,7 @@ protected:
 		WALK,
 		ATTACKING,
 		CHASING,
+		STUCK,
 		DEAD,
 	};
 
@@ -25,15 +26,13 @@ public:
 private:
 	void ChangeState(GolemState state);
 	void StandWalk();
-	void GetUp();
 
-	int _life = 24;
-
+	int _life = 5;
 	bool _attacking = false;
+	bool _invencible = false;
+	int _invencibleTime = 0;
 	GolemState _currentState;
 	std::string _switchRequired;
-
-	Vector2D _startPosition;
 };
 
 #endif

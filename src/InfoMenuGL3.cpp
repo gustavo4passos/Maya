@@ -1,4 +1,4 @@
-#include "../include/InfoMenu.h"
+#include "../include/InfoMenuGL3.h"
 
 #include <sstream>
 

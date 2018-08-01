@@ -27,7 +27,7 @@ public:
 
 private:
     Camera* _camera;
-	Maya* _maya;
+	Player* _maya;
 	InfoMenuGL3* _infoMenu;
     Region* _region;
 

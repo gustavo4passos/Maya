@@ -2,6 +2,7 @@
 #define MOVINGPLATFORM_H
 
 #include "GameObject.h"
+#include "Spritesheet.h"
 
 class MovingPlatform : public GameObject {
 public:
@@ -19,6 +20,7 @@ private:
     bool _loops;
     std::string _switchRequired;
     bool _reachedDestination;
+    Spritesheet _spritesheet;
 
     Vector2D _displacement;
     bool _on;

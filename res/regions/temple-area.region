@@ -25,6 +25,8 @@
             <sprite filename="../res/assets/Maya_Combat Attack v003.png" id="maya_attacking"/>
             <sprite filename="../res/assets/Maya_Standing.png" id="maya_standing"/>
             <sprite filename="../res/assets/Maya_Climbing.png" id="maya_climbing"/>
+            <sprite filename="../res/assets/maya-dying.png" id="maya_dying"/>
+            <sprite filename="../res/assets/maya-dead.png" id="maya_dead"/>
             <sprite filename="../res/assets/box.png" id="box"/>
             <sprite filename="../res/sprites/button-red.png" id="button"/>
             <sprite filename="../res/sprites/door.png" id="door"/>
@@ -34,8 +36,6 @@
     </resources>
 
     <leveldata>
-        <level filename="../res/levels/forest_2.tmx" id="forest_2"/>
-        <level filename="../res/levels/mountain.tmx" id="mountain"/>
         <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
         <level filename="temple-room-1.tmx" id="temple-room-2"/>
         <level filename="temple-entrance-10.tmx" id="temple-entrance-10"/>
@@ -44,5 +44,5 @@
         <level filename="temple-entrance-3.tmx" id="temple-entrance-3"/>
     </leveldata>
 
-    <startinglevel id="temple-entrance-3"/>
+    <startinglevel id="temple-entrance-0"/>
 </region>

@@ -21,6 +21,7 @@ public:
     CollisionRect(const Rect& bounds, CollisionBehavior collisionBehavior = CollisionBehavior::IGNORE, float offsetX = 0, float offsetY = 0);
     CollisionRect(const CollisionRect& c);
 
+    inline Vector2D origin() const { return Vector2D(originX(), originY()); }
     inline float originX() const { return _position.x() - _offsetX; }
     inline float originY() const { return _position.y() - _offsetY; }
     inline float offsetX() const { return _offsetX; }

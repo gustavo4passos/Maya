@@ -18,6 +18,7 @@ public:
 	
 	void Update();
 	void DrawBackground(Renderer* renderer, float deltaTime);
+	void DrawForeground(Renderer* renderer, float deltaTime);
 	
 	void AddBackgroundLayer(Layer* layer);
 	void AddForegroundLayer(Layer* layer);
@@ -41,9 +42,9 @@ public:
 	friend class InfoMenuGL3;
 
 private:
-	Level* _currentLevel;
     Tileset* _tileset;
 	std::vector<Layer*> _backgroundLayers;
+	std::vector<Layer*> _foregroundLayers;
 	std::vector<GameObject*> _gameObjects;
 	std::vector<CollisionRect*> _collisionRects;
 	std::vector<Enemy*> _enemies;

@@ -17,8 +17,8 @@ public:
     ~Region();
     void HandleInput();
     void Update();
-    void Render(Renderer* renderer, float  deltaTime);
-
+    void RenderBackground(Renderer* renderer, float  deltaTime);
+    void RenderForeground(Renderer* renderer, float deltaTime);
     bool AddResource(ResourceType resourceType, const std::string& resourceID);
     
     bool AddLevel(Level* level, const std::string& levelID);

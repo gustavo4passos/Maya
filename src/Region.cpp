@@ -61,11 +61,18 @@ void Region::Update() {
     }
 }
 
-void Region::Render(Renderer* renderer, float deltaTime) {
+void Region::RenderBackground(Renderer* renderer, float deltaTime) {
      if(!HasLevelBenSet()){
         return;
     }
     _levels[_currentLevel]->DrawBackground(renderer, deltaTime);
+}
+
+void Region::RenderForeground(Renderer* renderer, float deltaTime) {
+     if(!HasLevelBenSet()){
+        return;
+    }
+    _levels[_currentLevel]->DrawForeground(renderer, deltaTime);
 }
 
 bool Region::AddResource(ResourceType resourceType, const std::string& resourceID) {

@@ -2,12 +2,13 @@
 
 #include "../include/ResourceManager.h"
 
-Layer::Layer(const std::string& name, int width, int height, Tileset* tileset, float zDistance) :
-	_name(name.c_str()),
+Layer::Layer(const std::string& name, int width, int height, Tileset* tileset, float zDistance, bool foreground) 
+:	_name(name.c_str()),
 	_width(width),
 	_height(height),
 	_zDistance(zDistance),
-	_tileset(tileset)
+	_tileset(tileset),
+	_foreground(foreground)
 {  }
 
 Layer::~Layer() {

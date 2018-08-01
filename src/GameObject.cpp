@@ -13,12 +13,13 @@ GameObject::GameObject(float x, float y, int w, int h)
 { }
 
 GameObject::GameObject(const CollisionRect& collisionRect, int spriteW, int spriteH)
-:	_collisionRect(collisionRect),
-	_spriteW(spriteW),
-	_spriteH(spriteH),	
+:	_velocity(0.f, 0.f),
+	_startPosition(collisionRect.x(), collisionRect.y()),
+	_collisionRect(collisionRect),
 	_facingright(true),
-	_velocity(0.f, 0.f),
-    _frameTime(0)
+	_frameTime(0),
+	_spriteW(spriteW),
+	_spriteH(spriteH)    
 {}
 
 GameObject::~GameObject() 
@@ -42,4 +43,4 @@ void GameObject::Update() {
 void GameObject::Draw(Renderer* renderer, float deltaTime) {}
 
 bool GameObject::OnNotify(Event* event)
-{}
+{return false;}

@@ -34,7 +34,9 @@ protected:
         BOUNCE_STUCK,
         BOUNCE,
         DRAG_WALL,
-        DEAD
+        INVENCIBLE,
+        DYING,
+        DEAD,
     };
 
     PlayerState _currentState;

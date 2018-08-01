@@ -9,7 +9,7 @@
 
 class Layer {
 public:
-	Layer(const std::string& name, int width, int height, Tileset* tileset, float zDistance = 1.f);
+	Layer(const std::string& name, int width, int height, Tileset* tileset, float zDistance, bool foreground = false);
 	~Layer();
 
 	void Draw(Renderer* renderer);
@@ -18,12 +18,14 @@ public:
 	inline int width() const { return _width; }
 	inline int height() const { return _height; } 
 	inline float zDistance() const { return _zDistance; }
+	inline bool IsForeground() const { return _foreground; }
 	
 private:
 	std::string _name;
 	int _width, _height;
 	float _zDistance;
 	Tileset* _tileset;
+	bool _foreground;
 };
 
 #endif
