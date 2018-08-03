@@ -19,6 +19,15 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
     // create the XML document
 	TiXmlDocument xmlDoc;
 
+	TiXmlDocument myFile;
+	if(!myFile.LoadFile("nada me impede de ser feliz.xml")) {
+		std::cout << "kinda deu ruim" << std::endl;
+	} else {
+		TiXmlElement* root = myFile.RootElement();;
+		root->SetAttribute("path", "www.instagram.com");
+		myFile.SaveFile();
+	}
+
 	// load the XML document
 	if (!xmlDoc.LoadFile(filename)) {
         LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
@@ -649,7 +658,7 @@ Region* LevelLoader::ParseRegion(const std::string& filename){
 
 	TiXmlElement* e = NULL;
 
-	Region* region = new Region();
+	Region* region = new Region(filename);
 
 	for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
 		if(std::string(e->Value()) == std::string("resources")){

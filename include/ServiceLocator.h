@@ -7,6 +7,7 @@ class GameSwitches;
 class Level;
 class Region;
 class Renderer;
+class SaveSystem;
 class Window;
 
 class ServiceLocator {
@@ -18,6 +19,7 @@ public:
     static Region* GetCurrentRegion();
     static Renderer* GetRenderer();
     static Window* GetWindow();
+    static SaveSystem* GetSaveSystem();
 
     static void ProvideCurrentLevel(Level* currentLevel) { _currentLevel = currentLevel; }
     static void ProvideGame(Game* game) { _game = game; }
@@ -26,6 +28,7 @@ public:
     static void ProvideCurrentRegion(Region* currentRegion) { _currentRegion = currentRegion; }
     static void ProvideRenderer(Renderer* renderer) { _renderer = renderer; }
     static void ProvideWindow(Window* window) { _window = window; }
+    static void ProvideSaveSystem(SaveSystem* saveSystem) { _saveSystem = saveSystem; }
 
 private:
     static Game* _game;
@@ -34,6 +37,7 @@ private:
     static Level* _currentLevel;
     static Region* _currentRegion;
     static Renderer* _renderer;
+    static SaveSystem* _saveSystem;
     static Window* _window;
 };
 

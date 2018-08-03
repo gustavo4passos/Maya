@@ -4,6 +4,8 @@
 
 #include "../include/EventDispatcher.h"
 #include "../include/PlayerHitTeleportEvent.h"
+#include "../include/SaveSystem.h"
+#include "../include/ServiceLocator.h"
 
 #include <iostream>
 
@@ -24,6 +26,7 @@ void TeleportZone::Update() {
 
         // Notify the EventDispatcher system that the player hit a teleport zone
         if(collisionEvent.kind == Kind::PLAYER) {
+        	ServiceLocator::GetSaveSystem()->SaveGame();
             std::unique_ptr<Event> teleportCollisionEvent(new PlayerHitTeleportEvent(_destinationLevel, _destinationPosition));
             EventDispatcher::Notify(teleportCollisionEvent.get());
         }

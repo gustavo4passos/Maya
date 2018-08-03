@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <save>
-    <regiondata>
-        <region filename="../regions/forest.region"/>
-        <region subregion="outside_temple"/>
-    </regiondata>
-
-    <playerdata>
-        <position x="30" y="90"/>
-    </playerdata>
+    <regiondata filename="../res/regions/temple-area.region"  subregion="temple-entrance-0" />
+    <playerposition x="100" y="528" />
 
     <switches>
         <switch id="got-sword" state="false"/>

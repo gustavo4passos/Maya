@@ -237,7 +237,11 @@ void Maya::Update()
     }
 
     else if (_currentState == DYING){
-        if (_currentFrame == 2 && _currentRow == 1) ChangeState(DEAD);
+        if (_currentFrame == 2 && _currentRow == 1) { 
+			ChangeState(DEAD);
+			std::unique_ptr<PlayerDiedEvent> playerDiedEvent(new PlayerDiedEvent());
+			EventDispatcher::Notify(playerDiedEvent.get());
+		}
     }
         
     else if (_currentState == JUMP){

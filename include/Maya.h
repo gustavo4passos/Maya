@@ -17,7 +17,7 @@ public:
     bool OnNotify(Event* event);
 
     GameObject* weapon() { return _weapon; }
-
+    
 private:
     void ChangeState(PlayerState);
     GameObject* _weapon;

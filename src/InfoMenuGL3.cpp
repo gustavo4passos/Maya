@@ -10,6 +10,7 @@
 #include "../include/Enemy.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InputModule.h"
+#include "../include/Maya.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
 #include "../include/ServiceLocator.h"
@@ -26,7 +27,7 @@ InfoMenuGL3::InfoMenuGL3() :
 {
 	_gameptr = ServiceLocator::GetGame(); 
 	_windowptr = ServiceLocator::GetWindow();
-	_object = ServiceLocator::GetPlayer();
+	_player = ServiceLocator::GetPlayer();
 	_levelptr = ServiceLocator::GetCurrentLevel();
 
 	IMGUI_CHECKVERSION();
@@ -175,9 +176,12 @@ bool InfoMenuGL3::OnNotify(Event* event) {
 }
 
 void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
-	Rect rct = _object->collisionRect();
-	DrawCollisionBox(&rct, renderer);
+	Rect mayaRct = _player->collisionRect();
+	Rect weaponRct = dynamic_cast<Maya*>(_player)->weapon()->collisionRect();
 
+	DrawCollisionBox(&mayaRct, renderer);
+	DrawCollisionBox(&weaponRct, renderer);
+	
 	if(_levelptr != NULL) {
 		for(std::vector<CollisionRect*>::iterator it = _levelptr->_collisionRects.begin();  
 			it != _levelptr->_collisionRects.end(); ++it)
@@ -324,29 +328,29 @@ void InfoMenuGL3::RenderGameObjectInfoMenu(){
 		ImGui::Text("Position");
 
 		LOCAL_PERSIST float x, y;
-		x = _object->position().x();	
-		y = _object->position().y();
+		x = _player->position().x();	
+		y = _player->position().y();
 		Level* currentLevel = ServiceLocator::GetCurrentLevel();
 		float maxLevelPositionX = currentLevel->width() * currentLevel->tileWidth() - ServiceLocator::GetPlayer()->w();
 		float maxLevelPositionY = currentLevel->height() * currentLevel->tileHeight() - ServiceLocator::GetPlayer()->w();
 		if(ImGui::SliderFloat("X", &x, 0, maxLevelPositionX)){
-			_object->setPosition(x, _object->position().y());
+			_player->setPosition(x, _player->position().y());
 		}
 		if(ImGui::SliderFloat("Y", &y, 0, maxLevelPositionY)){
-			_object->setPosition(_object->position().x(), y);
+			_player->setPosition(_player->position().x(), y);
 		}
 
-		LOCAL_PERSIST float speed = _object->_speed;
+		LOCAL_PERSIST float speed = _player->_speed;
 		if(ImGui::InputFloat("Speed", &speed)){
-		  _object->_speed = speed;
+		  _player->_speed = speed;
 		}
 
-		LOCAL_PERSIST float impulse = _object->_impulse;
+		LOCAL_PERSIST float impulse = _player->_impulse;
 		if(ImGui::InputFloat("Impulse", &impulse)){
-		  	_object->_impulse = impulse;
+		  	_player->_impulse = impulse;
 		}
-		ImGui::Value("VelX", _object->velocity().x());
-		ImGui::Value("VelY", _object->velocity().y());
+		ImGui::Value("VelX", _player->velocity().x());
+		ImGui::Value("VelY", _player->velocity().y());
 
 		ImGui::Spacing();
 		LOCAL_PERSIST float gravity = PhysicsEngine::_gravity.y();

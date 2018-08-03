@@ -1,10 +1,6 @@
 #include "../include/Game.h"
 
-#include <thread>
-
 #include <SDL2/SDL.h>
-#include "imgui.h"
-#include "imgui_impl_sdl_gl3.h"
 
 #include "../include/ErrorHandler.h"
 #include "../include/GameStateMachine.h"
@@ -12,11 +8,9 @@
 #include "../include/InputModule.h"
 #include "../include/LuaScript.h"
 #include "../include/ResourceManager.h"
-#include "../include/SoundPlayer.h"
-#include "../include/PhysicsEngine.h"
+#include "../include/SaveSystem.h"
 #include "../include/ServiceLocator.h"
 #include "../include/PlayState.h"
-#include "../include/EventDispatcher.h"
 
 bool Game::Init() {
     LuaScript lua = LuaScript("../res/config.lua");
@@ -45,9 +39,9 @@ bool Game::Init() {
        return false;
     }
 
-    if(!InputModule::InitJoysticks()){
-      LOG_ERROR("Unable to initialize Joysticks");
-    }
+    // if(!InputModule::InitJoysticks()){
+    //   LOG_ERROR("Unable to initialize Joysticks");
+    // }
 
     if(!SoundPlayer::Init()){
         LOG_ERROR("Unable to initialize SoundPlayer.");
@@ -57,8 +51,9 @@ bool Game::Init() {
     ServiceLocator::ProvideGame(this);
     ServiceLocator::ProvideWindow(_window); 
     ServiceLocator::ProvideRenderer(_renderer);
-
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
+    ServiceLocator::ProvideSaveSystem(new SaveSystem());
+
     ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
     ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
     ServiceLocator::GetGameSwitches()->PushSwitch("golemtest");

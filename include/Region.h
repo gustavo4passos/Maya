@@ -13,7 +13,7 @@ class Renderer;
 
 class Region : public EventListener {
 public:
-    Region();
+    Region(const std::string& filename);
     ~Region();
     void HandleInput();
     void Update();
@@ -27,10 +27,14 @@ public:
     const std::string& currentSubRegion() const { return _currentLevel; }
     std::vector<std::string> SubRegionList();
 
+    const std::string& filename() const { return _filename; }
     virtual bool OnNotify(Event* event);
 
-private:
+private:    
     bool HasLevelBenSet();
+
+    std::string _filename;
+
     std::string _currentLevel;
     std::map<std::string, Level*> _levels;
 

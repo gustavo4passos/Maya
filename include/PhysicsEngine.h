@@ -52,9 +52,10 @@ public:
 
     inline static void setCurrentLevel(Level* currentLevel){ _currentLevel = currentLevel; }
     static void MoveAndCheckCollision(GameObject* gameObject);
-  static void MoveAndCheckCollision2(GameObject* gameObject);
+    static void MoveAndCheckCollision2(GameObject* gameObject);
     static void CheckCollisionAgainstEnemies(GameObject* gameObject);
 
+    // DEBUG: Allows the debug menu to access and change gravity
 	friend class InfoMenuGL3;
     
 private:

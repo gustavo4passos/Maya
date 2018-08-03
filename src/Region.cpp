@@ -11,8 +11,9 @@
 #include "../include/PlayerHitTeleportEvent.h"
 #include "../include/ServiceLocator.h"
 
-Region::Region()
-:   _currentLevel("")
+Region::Region(const std::string& filename)
+:   _filename(filename),
+    _currentLevel("")
 {
     EventDispatcher::AddListener(this, EventType::PLAYER_HIT_TELEPORT);
 }
