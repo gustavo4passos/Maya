@@ -6,7 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../extern/stb/stb_image.h"
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/Layer.h"
 
 std::map<std::string, Texture*> ResourceManager::_textureMap;

@@ -1,6 +1,6 @@
 #include "../include/Texture.h"
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/GLCall.h"
 
 Texture::Texture(const void* data, int width, int height, int nChannels) :

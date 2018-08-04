@@ -2,7 +2,7 @@
 
 #include <tinyxml2.h>
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameObject.h"
 #include "../include/Level.h"

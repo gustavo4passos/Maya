@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/Event.h"
 #include "../include/EventListener.h"
 

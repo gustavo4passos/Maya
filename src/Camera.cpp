@@ -1,6 +1,6 @@
 #include "../include/Camera.h"
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/EventDispatcher.h"
 #include "../include/GameObject.h"
 #include "../include/LevelChangedEvent.h"

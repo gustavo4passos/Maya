@@ -2,22 +2,23 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/GameStateMachine.h"
 #include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
 #include "../include/LuaScript.h"
 #include "../include/ResourceManager.h"
 #include "../include/SaveSystem.h"
+#include "../include/SettingsManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/PlayState.h"
 
 bool Game::Init() {
-    LuaScript lua = LuaScript("../res/config.lua");
-    int width = lua.Get<int>("window.w");
-    int height = lua.Get<int>("window.h");
-    bool vsync = lua.Get<bool>("window.vsync");
-    bool fullscreen = lua.Get<bool>("window.fullscreen");
+    _settingsManager = SettingsManager();
+    int width = _settingsManager.WindowWidth();
+    int height = _settingsManager.WindowHeight();
+    bool vsync = _settingsManager.Vsync();
+    bool fullscreen = _settingsManager.Fullscreen();
 
     _window = new Window("Maya", width, height, 3, 3, vsync, fullscreen);
     if(!_window->Init()){
@@ -100,29 +101,6 @@ void Game::Update() {
     GameStateMachine::Update();
 }
 
-void Game::Clean() {
-    GameStateMachine::Clean();
-	ResourceManager::Clean();
-    InputModule::Clean();
-
-    delete _renderer;
-    delete _window;
-
-    _renderer = NULL;
-    _window = NULL;
-}
-
-void Game::EndGameRequest() {
-	_window->SetFullscreen(false);
-	_renderer->SetViewportSize(_window->width(), _window->height());
-	if(_window->ShowQuitMessageBox()) _running = false;
-}
-
-void Game::ChangeResolution(int width, int height) {
-    _window->SetResolution(width, height);
-    _renderer->SetViewportSize(width, height);
-}
-	
 void Game::HandleEvents() {
     InputModule::Update();
 
@@ -137,4 +115,39 @@ void Game::HandleEvents() {
     }
 
     GameStateMachine::HandleInput();
+}
+
+void Game::EndGameRequest() {
+	_window->SetFullscreen(false);
+	_renderer->SetViewportSize(_window->width(), _window->height());
+	if(_window->ShowQuitMessageBox()) _running = false;
+}
+
+void Game::Clean() {
+    GameStateMachine::Clean();
+	ResourceManager::Clean();
+    InputModule::Clean();
+
+    delete _renderer;
+    delete _window;
+
+    _renderer = NULL;
+    _window = NULL;
+}
+
+void Game::ChangeResolution(int width, int height) {
+    _window->SetResolution(width, height);
+    _renderer->SetViewportSize(width, height);
+    _settingsManager.SetResolution(width, height);
+}
+	
+void Game::SetVsync(bool active) {
+    _window->SetVsync(active);
+    _settingsManager.SetVsync(active);
+}
+
+void Game::SetFullscreen(bool active) {
+    _window->SetFullscreen(active);
+    _renderer->SetViewportSize(_window->width(), _window->height());
+    _settingsManager.SetFullscreen(active);
 }

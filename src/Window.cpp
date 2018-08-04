@@ -5,7 +5,7 @@
 #include "GL/glew.h"
 #define GLEW_STATIC
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 
 Window::Window(const char* title, int width, int height, int openGLMajorVersion,
   int openGLMinorVersion, bool vsync, bool fullscreen) :

@@ -4,7 +4,7 @@
 
 #include "../include/Button.h"
 #include "../include/Door.h"
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/Golem.h"
 #include "../include/Layer.h"
 #include "../include/Level.h"

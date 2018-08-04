@@ -13,6 +13,7 @@
 #include "../include/Maya.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
+#include "../include/SettingsManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/LevelLoader.h"
 #include "../include/Renderer.h"
@@ -139,13 +140,12 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 
 					bool vsync = _windowptr->_vsync;
 					if(ImGui::Checkbox("Vsync", &vsync)){
-						_windowptr->SetVsync(vsync);
+						ServiceLocator::GetGame()->SetVsync(vsync);
 					}
 
 					bool fullscreen = _windowptr->_fullscreen;
 					if(ImGui::Checkbox("Fullscreen", &fullscreen)){
-						_windowptr->SetFullscreen(fullscreen);
-						renderer->SetViewportSize(_windowptr->width(), _windowptr->height());
+						ServiceLocator::GetGame()->SetFullscreen(fullscreen);
 					}
 
 					ImGui::Dummy(ImVec2(20, 20));

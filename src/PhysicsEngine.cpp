@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Enemy.h"
 #include "../include/ActivateSwitchEvent.h"

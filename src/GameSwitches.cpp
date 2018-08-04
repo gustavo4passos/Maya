@@ -1,6 +1,6 @@
 #include "../include/GameSwitches.h"
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/EventDispatcher.h"
 #include "../include/ActivateSwitchEvent.h"
 #include "../include/PlayerDiedEvent.h"

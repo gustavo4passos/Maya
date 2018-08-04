@@ -1,15 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "ErrorHandler.h"
-#include "Window.h"
-#include "Player.h"
-#include "Level.h"
-#include "Camera.h"
+#include "SettingsManager.h"
 
-class Texture; 
-class Mesh;
-class InfoMenuGL3;
+#include "Window.h"
+#include "Renderer.h"
 
 class Game {
 public:
@@ -23,13 +18,18 @@ public:
     void HandleEvents();
 
 	void EndGameRequest();
-    void ChangeResolution(int width, int height);
     void Clean();
     bool running() { return _running; }
 
+    // Change settings
+    void ChangeResolution(int width, int height);
+    void SetVsync(bool active);
+    void SetFullscreen(bool active);
+    
 private:
     Window* _window;
     Renderer* _renderer;
+    SettingsManager _settingsManager;
     unsigned int _lastFrame;
     bool _running;
 };

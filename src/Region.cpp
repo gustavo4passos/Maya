@@ -2,7 +2,7 @@
 
 #include <memory> // For std::unique_ptr
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Level.h"
 #include "../include/LevelChangedEvent.h"

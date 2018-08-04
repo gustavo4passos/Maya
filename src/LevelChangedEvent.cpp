@@ -1,6 +1,6 @@
 #include "../include/LevelChangedEvent.h"
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 
 LevelChangedEvent::LevelChangedEvent(Level* newLevel) 
 :   Event(EventType::LEVEL_CHANGED),

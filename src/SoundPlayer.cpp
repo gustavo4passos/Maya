@@ -1,6 +1,6 @@
 #include "../include/SoundPlayer.h"
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 
 SoundPlayer::SoundPlayer() {}
 SoundPlayer::~SoundPlayer() {}
