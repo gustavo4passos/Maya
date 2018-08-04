@@ -4,6 +4,8 @@
 
 #include "../include/EventDispatcher.h"
 #include "../include/PlayerHitTeleportEvent.h"
+#include "../include/SaveSystem.h"
+#include "../include/ServiceLocator.h"
 
 #include <iostream>
 

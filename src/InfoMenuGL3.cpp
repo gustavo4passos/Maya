@@ -10,8 +10,10 @@
 #include "../include/Enemy.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InputModule.h"
+#include "../include/Maya.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
+#include "../include/SettingsManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/LevelLoader.h"
 #include "../include/Renderer.h"
@@ -26,7 +28,7 @@ InfoMenuGL3::InfoMenuGL3() :
 {
 	_gameptr = ServiceLocator::GetGame(); 
 	_windowptr = ServiceLocator::GetWindow();
-	_object = ServiceLocator::GetPlayer();
+	_player = ServiceLocator::GetPlayer();
 	_levelptr = ServiceLocator::GetCurrentLevel();
 
 	IMGUI_CHECKVERSION();
@@ -75,7 +77,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 
 	if(_currentMenu){
 		int flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
-		ImVec2 size(200, 200);
+		ImVec2 size(200, 230);
 		ImVec2 pos((_windowptr->width() - size.x) / 2, (_windowptr->height() - size.y) / 2);
 
 		ImGui::SetNextWindowSize(size);
@@ -124,21 +126,26 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 					ImGui::Indent();
 					
 					ImGui::Dummy(ImVec2(0, 10));
+
 					std::stringstream resolution;
 					resolution << "  Resolution\n   " << _windowptr->width() << "x" << _windowptr->height(); 
 					ImGui::Text(resolution.str().c_str());
 
+					if(!ServiceLocator::GetWindow()->IsFullscreen()) {
+						if(ImGui::Button("Set resolution")) {
+							_currentMenu = SET_RESOLUTION_MENU;
+						}
+					}
 					ImGui::Dummy(ImVec2(20, 20));
 
 					bool vsync = _windowptr->_vsync;
 					if(ImGui::Checkbox("Vsync", &vsync)){
-						_windowptr->SetVsync(vsync);
+						ServiceLocator::GetGame()->SetVsync(vsync);
 					}
 
 					bool fullscreen = _windowptr->_fullscreen;
 					if(ImGui::Checkbox("Fullscreen", &fullscreen)){
-						_windowptr->SetFullscreen(fullscreen);
-						renderer->SetViewportSize(_windowptr->width(), _windowptr->height());
+						ServiceLocator::GetGame()->SetFullscreen(fullscreen);
 					}
 
 					ImGui::Dummy(ImVec2(20, 20));
@@ -151,6 +158,65 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 					ImGui::End();
 				}
 			} break;
+			case SET_RESOLUTION_MENU:
+			{
+				size.x += 150;
+				ImVec2 pos((_windowptr->width() - size.x) / 2, (_windowptr->height() - size.y) / 2);
+				ImGui::SetNextWindowSize(size);
+				ImGui::SetNextWindowPos(pos);
+
+				// This menu shouldn't be available when in fullscreen mode
+				// (Fullscreen is now implement by using a borderless fullscreen with the desktop dimensions)
+				// So if the screen is fullscreenized while at the set resolution menu, return to the video menu
+				if(ServiceLocator::GetWindow()->IsFullscreen()) _currentMenu = VIDEO_MENU;
+				else {
+					if(ImGui::Begin("Set Resolution", NULL, flags)) {
+						ImGui::Indent();
+						ImGui::Indent();
+						ImGui::Dummy(ImVec2(0, 10));
+
+
+						// Create resolution strings from available resolutions
+						std::vector<std::string> resolutions;
+						std::set<std::pair<int, int> > availableDisplayModes = ServiceLocator::GetWindow()->RetrieveDisplayModes();
+						static int selectedItem = -1;
+						for(auto displayMode : availableDisplayModes) {
+							std::stringstream mode;
+							mode << std::to_string(displayMode.first) << "x" << std::to_string(displayMode.second);
+							resolutions.push_back(mode.str());
+						}
+								
+						// Make a vector of null terminated strings for ImGui
+						const char** nullTerminatedResolutionStrings = new const char * [resolutions.size()];
+
+						for(unsigned i = 0; i < resolutions.size(); i++) {
+							nullTerminatedResolutionStrings[i] = resolutions[i].c_str();
+						}
+
+						ImGui::ListBox("", &selectedItem, nullTerminatedResolutionStrings, resolutions.size());
+
+						if(ImGui::Button("Apply")) {
+							int count = 0;
+							for(auto mode : availableDisplayModes) {
+								if(count == selectedItem) {
+									ServiceLocator::GetGame()->ChangeResolution(mode.first, mode.second);
+									ImVec2 pos((_windowptr->width() - size.x) / 2, (_windowptr->height() - size.y) / 2);
+									ImGui::SetNextWindowPos(pos);
+									break; 
+								}
+								count++;
+							}
+						}
+						if(ImGui::Button("Back")) {
+							_currentMenu = VIDEO_MENU;
+						} 
+
+						delete[] nullTerminatedResolutionStrings;
+						ImGui::End();
+					}
+				}
+			} break;
+
 			default:
 			break;
 		}
@@ -175,9 +241,12 @@ bool InfoMenuGL3::OnNotify(Event* event) {
 }
 
 void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
-	Rect rct = _object->collisionRect();
-	DrawCollisionBox(&rct, renderer);
+	Rect mayaRct = _player->collisionRect();
+	Rect weaponRct = dynamic_cast<Maya*>(_player)->weapon()->collisionRect();
 
+	DrawCollisionBox(&mayaRct, renderer);
+	DrawCollisionBox(&weaponRct, renderer);
+	
 	if(_levelptr != NULL) {
 		for(std::vector<CollisionRect*>::iterator it = _levelptr->_collisionRects.begin();  
 			it != _levelptr->_collisionRects.end(); ++it)
@@ -206,52 +275,51 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		if(ImGui::BeginMenu("Clear color")){
-			ImGui::ColorEdit4("Color picker", _clearColor);
-			renderer->SetClearColor(_clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
-			ImGui::EndMenu();
-		}
+		// if(ImGui::BeginMenu("Clear color")){
+		// 	ImGui::ColorEdit4("Color picker", _clearColor);
+		// 	renderer->SetClearColor(_clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
+		// 	ImGui::EndMenu();
+		// // }
 
+		// ImGui::Spacing();
+		// ImGui::Separator();
+		// ImGui::Spacing();
 
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
-
-	if(_levelptr != NULL) {
-		if(ImGui::BeginMenu("Collision rects")){
-			for(unsigned int i = 0; i < _levelptr->_collisionRects.size(); i++){
-				std::stringstream objectname;
-				objectname << "Object " << i;
-				if(ImGui::BeginMenu(objectname.str().c_str())){
-					DrawCollisionBox(_levelptr->_collisionRects[i], renderer);
-					float x, y;
-					x = _levelptr->_collisionRects[i]->x();
-					y = _levelptr->_collisionRects[i]->y();
-					int w, h;
-					w = _levelptr->_collisionRects[i]->w();
-					h = _levelptr->_collisionRects[i]->h();
+	// if(_levelptr != NULL) {
+	// 	if(ImGui::BeginMenu("Collision rects")){
+	// 		for(unsigned int i = 0; i < _levelptr->_collisionRects.size(); i++){
+	// 			std::stringstream objectname;
+	// 			objectname << "Object " << i;
+	// 			if(ImGui::BeginMenu(objectname.str().c_str())){
+	// 				DrawCollisionBox(_levelptr->_collisionRects[i], renderer);
+	// 				float x, y;
+	// 				x = _levelptr->_collisionRects[i]->x();
+	// 				y = _levelptr->_collisionRects[i]->y();
+	// 				int w, h;
+	// 				w = _levelptr->_collisionRects[i]->w();
+	// 				h = _levelptr->_collisionRects[i]->h();
 					
-					if(ImGui::SliderFloat("X", &x, -400, 880)) {
-						_levelptr->_collisionRects[i]->setX(x);
-					}
-					if(ImGui::SliderFloat("Y", &y, -400, 880)) {
-						_levelptr->_collisionRects[i]->setY(y);
-					}
-					if(ImGui::SliderInt("Width", &w, 0, 900)) {
-						_levelptr->_collisionRects[i]->setW(w);
-					}
-					if(ImGui::SliderInt("Height", &h, 0, 900)) {
-						_levelptr->_collisionRects[i]->setH(h);
-					}
-					ImGui::EndMenu();
-				}
-			}
-			ImGui::EndMenu();
-		}
-	}
-	else {
-		ImGui::Text("No active level");
-	}
+	// 				if(ImGui::SliderFloat("X", &x, -400, 880)) {
+	// 					_levelptr->_collisionRects[i]->setX(x);
+	// 				}
+	// 				if(ImGui::SliderFloat("Y", &y, -400, 880)) {
+	// 					_levelptr->_collisionRects[i]->setY(y);
+	// 				}
+	// 				if(ImGui::SliderInt("Width", &w, 0, 900)) {
+	// 					_levelptr->_collisionRects[i]->setW(w);
+	// 				}
+	// 				if(ImGui::SliderInt("Height", &h, 0, 900)) {
+	// 					_levelptr->_collisionRects[i]->setH(h);
+	// 				}
+	// 				ImGui::EndMenu();
+	// 			}
+	// 		}
+	// 		ImGui::EndMenu();
+	// 	}
+	// }
+	// else {
+	// 	ImGui::Text("No active level");
+	// }
 
 		ImGui::Separator();
 
@@ -324,29 +392,29 @@ void InfoMenuGL3::RenderGameObjectInfoMenu(){
 		ImGui::Text("Position");
 
 		LOCAL_PERSIST float x, y;
-		x = _object->position().x();	
-		y = _object->position().y();
+		x = _player->position().x();	
+		y = _player->position().y();
 		Level* currentLevel = ServiceLocator::GetCurrentLevel();
 		float maxLevelPositionX = currentLevel->width() * currentLevel->tileWidth() - ServiceLocator::GetPlayer()->w();
 		float maxLevelPositionY = currentLevel->height() * currentLevel->tileHeight() - ServiceLocator::GetPlayer()->w();
 		if(ImGui::SliderFloat("X", &x, 0, maxLevelPositionX)){
-			_object->setPosition(x, _object->position().y());
+			_player->setPosition(x, _player->position().y());
 		}
 		if(ImGui::SliderFloat("Y", &y, 0, maxLevelPositionY)){
-			_object->setPosition(_object->position().x(), y);
+			_player->setPosition(_player->position().x(), y);
 		}
 
-		LOCAL_PERSIST float speed = _object->_speed;
+		LOCAL_PERSIST float speed = _player->_speed;
 		if(ImGui::InputFloat("Speed", &speed)){
-		  _object->_speed = speed;
+		  _player->_speed = speed;
 		}
 
-		LOCAL_PERSIST float impulse = _object->_impulse;
+		LOCAL_PERSIST float impulse = _player->_impulse;
 		if(ImGui::InputFloat("Impulse", &impulse)){
-		  	_object->_impulse = impulse;
+		  	_player->_impulse = impulse;
 		}
-		ImGui::Value("VelX", _object->velocity().x());
-		ImGui::Value("VelY", _object->velocity().y());
+		ImGui::Value("VelX", _player->velocity().x());
+		ImGui::Value("VelY", _player->velocity().y());
 
 		ImGui::Spacing();
 		LOCAL_PERSIST float gravity = PhysicsEngine::_gravity.y();

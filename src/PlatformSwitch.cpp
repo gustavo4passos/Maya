@@ -49,9 +49,9 @@ void PlatformSwitch::Update() {
         }
     }
     else {
+        ServiceLocator::GetGameSwitches()->DeactivateSwitch(_activatesSwitch);
         if(_on) {
             _on = false;
-            ServiceLocator::GetGameSwitches()->DeactivateSwitch(_activatesSwitch);
         }
         if(y() > _originPosition.y()) {
             _velocity.setY(-1.f);

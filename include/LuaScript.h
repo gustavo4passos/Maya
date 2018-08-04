@@ -10,6 +10,16 @@ extern "C" {
 #include "lualib.h"
 }
 
+/* Usage example:
+{
+    LuaScript lua = LuaScript("../res/config.lua");
+    int width = lua.Get<int>("window.w");
+    int height = lua.Get<int>("window.h");
+    bool vsync = lua.Get<bool>("window.vsync");
+    bool fullscreen = lua.Get<bool>("window.fullscreen");
+}
+*/
+
 class LuaScript {
 public:
   LuaScript(const std::string& filename);

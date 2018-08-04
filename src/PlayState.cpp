@@ -1,22 +1,14 @@
 #include "../include/PlayState.h"
 
-#include "../include/Button.h"
-#include "../include/Door.h"
 #include "../include/EventDispatcher.h"
-#include "../include/Golem.h"
-#include "../include/PushableObject.h"
-#include "../include/GameSwitches.h"
-#include "../include/GameStateMachine.h"
+#include "../include/SaveSystem.h"
 #include "../include/InfoMenuGL3.h"
 #include "../include/InputModule.h"
 #include "../include/LevelLoader.h"
 #include "../include/Maya.h"
-#include "../include/MovingPlatform.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
 #include "../include/Region.h"
-#include "../include/Renderer.h"
-#include "../include/PlatformSwitch.h"
 
 const std::string PlayState::_playID = "PLAY";
 
@@ -48,24 +40,31 @@ void PlayState::Render(Renderer* renderer, float deltaTime){
 
 bool PlayState::OnEnter(){		
 	
-	_maya = new Maya(100, 500);
+
+	Save* save = ServiceLocator::GetSaveSystem()->LoadGame();
+	if(save == nullptr) return false;
+	
+	_maya = new Maya(save->playerPosition.x(), save->playerPosition.y());
 	ServiceLocator::ProvidePlayer(_maya);
 
 	_camera = new Camera(480, 270, 0, 0, 0, 0, _maya);
 	ServiceLocator::GetRenderer()->UseCamera(_camera);
 	_infoMenu = new InfoMenuGL3();
 
-	_region = LevelLoader::ParseRegion("../res/regions/temple-area.region");	
+	_region = LevelLoader::ParseRegion(save->regionFilename);
+	_region->ChangeCurrentLevel(save->subregionName);
 	ServiceLocator::ProvideCurrentRegion(_region);
 
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	SoundPlayer::PlayBGM(ResourceManager::GetMusic("piano-theme"), true);
 
-
+	delete save;
     return true;
 }
 
 bool PlayState::OnExit(){
+	_infoMenu->Clean();
+	
 	delete _region;
 	delete _maya;
 	delete _camera;

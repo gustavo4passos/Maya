@@ -1,6 +1,6 @@
 #include "../include/GameStateMachine.h"
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 
 std::stack<GameState*> GameStateMachine::_gameStates;
 

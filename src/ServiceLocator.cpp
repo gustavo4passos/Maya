@@ -4,13 +4,14 @@
 #include "../include/Level.h"
 #include "../include/Renderer.h"
 
+Level* ServiceLocator::_currentLevel = nullptr;
+Region* ServiceLocator::_currentRegion = nullptr;
 Game* ServiceLocator::_game = nullptr;
 GameSwitches* ServiceLocator::_gameSwitches = nullptr;
 GameObject* ServiceLocator::_player = nullptr;
-Level* ServiceLocator::_currentLevel = nullptr;
 Renderer* ServiceLocator::_renderer = nullptr;
+SaveSystem* ServiceLocator::_saveSystem = nullptr;
 Window* ServiceLocator::_window = nullptr;
-Region* ServiceLocator::_currentRegion = nullptr;
 
 Game* ServiceLocator::GetGame() { 
     if(_game == nullptr) {
@@ -52,6 +53,13 @@ Renderer* ServiceLocator::GetRenderer() {
         LOG_ERROR("Renderer service has not been provided. Returning nullptr."); 
     }
     return _renderer;
+}
+
+SaveSystem* ServiceLocator::GetSaveSystem() {
+    if(_renderer == nullptr) {
+        LOG_ERROR("Save System service has not been provided. Returning nullptr.");
+    }
+    return _saveSystem;
 }
 
 Window* ServiceLocator::GetWindow() {

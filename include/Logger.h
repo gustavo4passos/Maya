@@ -1,5 +1,5 @@
-#ifndef ERRORHANDLER_H
-#define ERRORHANDLER_H
+#ifndef LOGGER_H
+#define LOGGER_H
 
 #include <iostream>
 

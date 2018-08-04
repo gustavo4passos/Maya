@@ -10,7 +10,7 @@ enum class EventType {
 
     // Player Events
     PLAYER_HIT_TELEPORT,
-    PLAYER_DIED_EVENT
+    PLAYER_DIED
 };
 
 class Event {

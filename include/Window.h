@@ -1,6 +1,9 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <utility> // for std::pair
+#include <set>
+
 #include <SDL2/SDL.h>
 
 class Window {
@@ -16,6 +19,7 @@ public:
 	// Current window size
 	inline int width() const { return _width; }
 	inline int height() const { return _height; }
+	inline bool IsFullscreen() const { return _fullscreen; }
 
 	void SetResolution(int width, int height);
 	void SetVsync(bool vsync);
@@ -27,9 +31,11 @@ public:
 	void ToggleFullscreen();
 
 	bool ShowQuitMessageBox();
-	
+
+	std::set<std::pair<int,int> > RetrieveDisplayModes();
+
 	friend class InfoMenuGL3;
-	
+
 private:
 	const char* _title;
 	int _width;

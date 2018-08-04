@@ -4,7 +4,7 @@
 
 #include "../include/Button.h"
 #include "../include/Door.h"
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/Golem.h"
 #include "../include/Layer.h"
 #include "../include/Level.h"
@@ -18,6 +18,15 @@
 Level* LevelLoader::ParseLevel(const std::string& filename){
     // create the XML document
 	TiXmlDocument xmlDoc;
+
+	TiXmlDocument myFile;
+	if(!myFile.LoadFile("nada me impede de ser feliz.xml")) {
+		std::cout << "kinda deu ruim" << std::endl;
+	} else {
+		TiXmlElement* root = myFile.RootElement();;
+		root->SetAttribute("path", "www.instagram.com");
+		myFile.SaveFile();
+	}
 
 	// load the XML document
 	if (!xmlDoc.LoadFile(filename)) {
@@ -649,7 +658,7 @@ Region* LevelLoader::ParseRegion(const std::string& filename){
 
 	TiXmlElement* e = NULL;
 
-	Region* region = new Region();
+	Region* region = new Region(filename);
 
 	for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
 		if(std::string(e->Value()) == std::string("resources")){

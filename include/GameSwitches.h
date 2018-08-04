@@ -12,16 +12,23 @@ public:
     GameSwitches();
     ~GameSwitches() { }
     
-    void ActivateSwitch(std::string id);
-    void DeactivateSwitch(std::string id);
-    bool CheckSwitch(std::string id);
-    void PushSwitch(std::string id, bool state = false);
+    void ActivateSwitch(const std::string& id);
+    void DeactivateSwitch(const std::string& id);
+    bool CheckSwitch(const std::string& id);
+    void PushSwitch(const std::string& id, bool state = false);
 
     bool OnNotify(Event* event);
+
+    // Grants access to the game switches map when saving the game
+    friend class SaveSystem;
 
 private:
     std::map<std::string, bool> _switches;
 
+	std::map<std::string, bool> _gameSwitchesSnapshot;
+
+	void TakeSnapshot();
+	void RestoreGameSwitchesFromSnapshot();
 };
 
 #endif

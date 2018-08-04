@@ -5,7 +5,7 @@
 
 #include <GL/glew.h>
 
-#include "ErrorHandler.h"
+#include "Logger.h"
 
 struct VertexBufferLayoutElement {
     GLenum type;

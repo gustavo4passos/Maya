@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save>
+    <regiondata filename="../res/regions/temple-area.region"  subregion="temple-entrance-0" />
+    <playerposition x="100" y="528" />
+    <switches>
+        <switch id="forest-button-1" state="false"/>
+        <switch id="golemtest" state="false"/>
+        <switch id="mountain-switch-10" state="false"/>
+        <switch id="platform-1-temple-entrance-2" state="false"/>
+        <switch id="platform-3-golem" state="false"/>
+    </switches>
+</save>

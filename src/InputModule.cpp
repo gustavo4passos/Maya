@@ -1,5 +1,5 @@
 #include "../include/InputModule.h"
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/imgui.h"
 #include "../include/imgui_impl_sdl_gl3.h"
 #include <iostream>

@@ -8,7 +8,7 @@
 class PlayerDiedEvent : public Event {
 public:
     PlayerDiedEvent()
-    :   Event(EventType::PLAYER_DIED_EVENT)
+    :   Event(EventType::PLAYER_DIED)
     { }
 };
 

@@ -38,14 +38,14 @@ private:
 	enum MenuType {
 		NO_MENU,
 		OPTIONS_MENU,
-		VIDEO_MENU
+		VIDEO_MENU,
+		SET_RESOLUTION_MENU
 	};
 
 	Game* _gameptr;
 	Window* _windowptr;
 	Level* _levelptr;
-	Player* _playerptr;
-	GameObject* _object;
+	GameObject* _player;
 	Camera* _camera;
 
 	float _clearColor[4];

@@ -2,7 +2,7 @@
 
 #include <memory> // For std::unique_ptr
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Level.h"
 #include "../include/LevelChangedEvent.h"
@@ -11,8 +11,9 @@
 #include "../include/PlayerHitTeleportEvent.h"
 #include "../include/ServiceLocator.h"
 
-Region::Region()
-:   _currentLevel("")
+Region::Region(const std::string& filename)
+:   _filename(filename),
+    _currentLevel("")
 {
     EventDispatcher::AddListener(this, EventType::PLAYER_HIT_TELEPORT);
 }

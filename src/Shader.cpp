@@ -4,7 +4,7 @@
 #include <sstream>
 #include <GL/glu.h>
 
-#include "../include/ErrorHandler.h"
+#include "../include/Logger.h"
 #include "../include/GLCall.h"
 
 Shader::Shader(const std::string& vsFilepath, const std::string& fsFilepath)
