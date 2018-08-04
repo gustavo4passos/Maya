@@ -139,6 +139,9 @@ void Window::SetResolution(int width, int height){
   }
 
   SDL_SetWindowSize(_windowHndl, width, height);
+
+  _width = width;
+  _height = height;
 }
 
 void Window::SetVsync(bool vsync) {
@@ -197,4 +200,22 @@ bool Window::InitSDLVideoSubsystem() {
   }
 
   return true;
+}
+
+std::set<std::pair<int, int> > Window::RetrieveDisplayModes()  {
+    std::set<std::pair<int, int> > displayModes;
+
+    int nDisplayModes = SDL_GetNumDisplayModes(0);
+
+    for(int i = 0; i < nDisplayModes; i++) {
+        SDL_DisplayMode displayMode;
+        SDL_GetDisplayMode(0, i, &displayMode);
+
+        // Ignore mode if it's refresh rate is < 60
+        if(displayMode.refresh_rate < 60) continue;
+
+        displayModes.insert(std::make_pair(displayMode.w, displayMode.h));
+    }
+
+    return displayModes;
 }

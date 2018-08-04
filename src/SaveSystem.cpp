@@ -55,7 +55,7 @@ void SaveSystem::SaveGame() {
     }
 }
 
-Save* SaveSystem::LoadSave() {
+Save* SaveSystem::LoadGame() {
     using namespace tinyxml2;
 
     Save* save = nullptr;

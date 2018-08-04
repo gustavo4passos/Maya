@@ -19,7 +19,7 @@ Maya::Maya(const CollisionRect& collisionRect, int spriteW, int spriteH) : Playe
     _invencible = false;
     _invencibleTime = 0;
     _speed = 2.5f;
-	_impulse = 7.5f;
+	_impulse = 6.5f;
     _health = 6;
     _weapon = new Weapon(x(),y(), 23, 4);
     _weapon->collisionRectCHANGEBLE().setCollisionBehavior(CollisionBehavior::IGNORE);

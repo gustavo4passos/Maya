@@ -41,7 +41,7 @@ void PlayState::Render(Renderer* renderer, float deltaTime){
 bool PlayState::OnEnter(){		
 	
 
-	Save* save = ServiceLocator::GetSaveSystem()->LoadSave();
+	Save* save = ServiceLocator::GetSaveSystem()->LoadGame();
 	if(save == nullptr) return false;
 	
 	_maya = new Maya(save->playerPosition.x(), save->playerPosition.y());
@@ -63,6 +63,8 @@ bool PlayState::OnEnter(){
 }
 
 bool PlayState::OnExit(){
+	_infoMenu->Clean();
+	
 	delete _region;
 	delete _maya;
 	delete _camera;

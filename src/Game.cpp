@@ -61,6 +61,8 @@ bool Game::Init() {
     ServiceLocator::GetGameSwitches()->PushSwitch("platform-3-golem");
     GameStateMachine::PushState(new PlayState());
     
+    _window->RetrieveDisplayModes();
+
     _running = false;
     return true;
 }
@@ -114,6 +116,11 @@ void Game::EndGameRequest() {
 	_window->SetFullscreen(false);
 	_renderer->SetViewportSize(_window->width(), _window->height());
 	if(_window->ShowQuitMessageBox()) _running = false;
+}
+
+void Game::ChangeResolution(int width, int height) {
+    _window->SetResolution(width, height);
+    _renderer->SetViewportSize(width, height);
 }
 	
 void Game::HandleEvents() {

@@ -22,20 +22,16 @@ Button::Button(float x, float y, const std::string& activatesSwitch, bool isAlre
 void Button::Update() {
 
     if(!_isPressed){
+        // Checks if the switch activated by the button is not already on
+        if(ServiceLocator::GetGameSwitches()->CheckSwitch(_activatesSwitch)) TurnOn();
+
         while(!_unresolvedCollisionEvents.empty()) {
             CollisionEvent collision = _unresolvedCollisionEvents.front();
             if(collision.collisionPosition == CollisionPosition::TOP_COLLISION && !_isPressed) {
-
-                TurnOn();
-                // Show pressed animation
-                _animation.PauseAtFrame(1);
-                _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
-                ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
-            
+                TurnOn();            
             }
             _unresolvedCollisionEvents.pop();
         }
-        _animation.Update();
     }
 }
 
@@ -46,4 +42,8 @@ void Button::Draw(Renderer* renderer, float deltatime) {
 void Button::TurnOn() {
     _isPressed = true;
     SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("button-press"), false);
+     // Show pressed animation
+    _animation.PauseAtFrame(1);
+    _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);
+    ServiceLocator::GetGameSwitches()->ActivateSwitch(_activatesSwitch);
 }

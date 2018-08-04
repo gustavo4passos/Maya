@@ -38,7 +38,8 @@ private:
 	enum MenuType {
 		NO_MENU,
 		OPTIONS_MENU,
-		VIDEO_MENU
+		VIDEO_MENU,
+		SET_RESOLUTION_MENU
 	};
 
 	Game* _gameptr;

@@ -23,6 +23,7 @@ public:
     void HandleEvents();
 
 	void EndGameRequest();
+    void ChangeResolution(int width, int height);
     void Clean();
     bool running() { return _running; }
 

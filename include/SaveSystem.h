@@ -18,7 +18,7 @@ public:
     SaveSystem();
 
     void SaveGame();
-    Save* LoadSave();
+    Save* LoadGame();
 };
 
 #endif
