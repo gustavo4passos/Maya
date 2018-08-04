@@ -95,6 +95,7 @@ void Window::Swap() {
 
 void Window::SetFullscreen(bool fullscreen) {
   if(fullscreen) {
+
     // Get current display mode
     SDL_DisplayMode current;
     
@@ -140,6 +141,8 @@ void Window::SetResolution(int width, int height){
 
   SDL_SetWindowSize(_windowHndl, width, height);
 
+  _windowedWidth = width;
+  _windowedHeight = height;
   _width = width;
   _height = height;
 }
