@@ -41,6 +41,9 @@ public:
 	// TODO(Gustavo): The mesh rendering should not implement parallax
 	void DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax = 1.f);
 
+	// TODO(Gustavo): Poor generalization, not robust. Need a more generic way of drawing repeating textures.
+	void DrawRepeatingLayer(Texture* tex, int textureHeight, float y, float parallax = 1.f);
+
 	void DrawRect(Rect* rect, Color* color);
 	void DrawFillRect(Rect* rect, Color* color);
 

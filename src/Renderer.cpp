@@ -188,6 +188,19 @@ void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax){
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, mesh->count()));
 }
 
+void Renderer::DrawRepeatingLayer(Texture* tex, int textureHeight, float y,  float parallax) {
+	Rect src = Rect(0 , 0, INTERNAL_RESOLUTION_W, textureHeight);
+	Rect dst = Rect(0, y, INTERNAL_RESOLUTION_W, textureHeight);
+	
+	if(_camera != nullptr) {
+		src.setX(_camera->x() * parallax);
+		dst.setX(_camera->x());
+		dst.setY(y + _camera->y());
+	}
+
+	Draw(tex, &src, &dst);
+}
+
 void Renderer::DrawRect(Rect* rect, Color* color) {
 	if(!rect){
 		LOG_ERROR("Rect is NULL.");

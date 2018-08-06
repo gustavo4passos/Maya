@@ -2,17 +2,14 @@
 #define LAYER_H
 
 #include <string>
-
-#include "Mesh.h"
-#include "Tileset.h"
 #include "Renderer.h"
 
 class Layer {
 public:
-	Layer(const std::string& name, int width, int height, Tileset* tileset, float zDistance, bool foreground = false);
+	Layer(const std::string& name, int width, int height, const std::string& tilesetName, float zDistance = 1.0, bool foreground = false);
 	~Layer();
 
-	void Draw(Renderer* renderer);
+	virtual void Draw(Renderer* renderer);
 
 	inline const std::string& name() const { return _name; }
 	inline int width() const { return _width; }
@@ -20,11 +17,11 @@ public:
 	inline float zDistance() const { return _zDistance; }
 	inline bool IsForeground() const { return _foreground; }
 	
-private:
+protected:
 	std::string _name;
 	int _width, _height;
 	float _zDistance;
-	Tileset* _tileset;
+	std::string _tilesetName;
 	bool _foreground;
 };
 

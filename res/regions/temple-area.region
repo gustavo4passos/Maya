@@ -32,6 +32,7 @@
             <sprite filename="../res/sprites/door.png" id="door"/>
             <sprite filename="../res/sprites/moving_platform_stretched.png" id="moving-platform"/>
             <sprite filename="../res/sprites/platform-switch.png" id="platform-switch"/>
+            <sprite filename="../res/sprites/mountains.png" id="mountainsBackground"/>
         </sprites>
     </resources>
 
