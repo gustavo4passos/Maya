@@ -194,8 +194,10 @@ void Renderer::DrawRepeatingLayer(Texture* tex, int textureHeight, float y,  flo
 	
 	if(_camera != nullptr) {
 		src.setX(_camera->x() * parallax);
+		src.setY(-y + _camera->y() * parallax);
+
 		dst.setX(_camera->x());
-		dst.setY(y + _camera->y());
+		dst.setY(_camera->y());
 	}
 
 	Draw(tex, &src, &dst);
