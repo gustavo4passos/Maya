@@ -135,7 +135,7 @@
    <properties>
     <property name="destinationLevel" value="temple-entrance-3"/>
     <property name="destinationX" value="1138"/>
-    <property name="destinationY" value="427"/>
+    <property name="destinationY" value="433"/>
    </properties>
   </object>
  </objectgroup>

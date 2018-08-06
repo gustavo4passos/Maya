@@ -41,7 +41,7 @@ void Texture::SetTexFiltering(bool magLinearFiltering, bool minLinearFiltering) 
 void Texture::SetTexRepeatBehavior(bool repeat){
     Bind();
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeat ? GL_REPEAT : GL_CLAMP_TO_BORDER));
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeat ? GL_REPEAT : GL_CLAMP_TO_BORDER));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
 }
 
 void Texture::UploadTexture(BYTE* data) {

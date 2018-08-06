@@ -368,9 +368,9 @@
  <objectgroup name="Zones">
   <object id="29" type="teleportZone" x="-138.56" y="214.348" width="121" height="751">
    <properties>
-    <property name="destinationLevel" value="temple-entrance-2"/>
-    <property name="destinationX" type="float" value="0"/>
-    <property name="destinationY" type="float" value="645"/>
+    <property name="destinationLevel" value="temple-entrance-0"/>
+    <property name="destinationX" type="float" value="1396"/>
+    <property name="destinationY" type="float" value="289"/>
    </properties>
   </object>
   <object id="33" type="teleportZone" x="-286.5" y="1228.5" width="1553" height="751">
@@ -384,7 +384,7 @@
    <properties>
     <property name="destinationLevel" value="temple-entrance-3"/>
     <property name="destinationX" type="float" value="0"/>
-    <property name="destinationY" type="float" value="635"/>
+    <property name="destinationY" type="float" value="641"/>
    </properties>
   </object>
  </objectgroup>

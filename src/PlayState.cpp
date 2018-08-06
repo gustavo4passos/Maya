@@ -28,8 +28,8 @@ void PlayState::Render(Renderer* renderer, float deltaTime){
 	//TODO(Gustavo): Below is a temporary solution for the camera position interpolation problem.
 	// This solution must be integrated properly withing the camera code
 	Vector2D pos = _maya->collisionRect().position();
-	_maya->setPosition(pos.x() + _maya->velocity().x() * deltaTime,
-				  		 pos.y() + _maya->velocity().y() * deltaTime);
+	_maya->setPosition( pos.x() + _maya->velocity().x() * deltaTime,
+		 				pos.y() + _maya->velocity().y() * deltaTime );
 	_camera->Update();
 	_maya->setPosition(pos.x(), pos.y());
 	_region->RenderBackground(renderer, deltaTime);
@@ -40,7 +40,6 @@ void PlayState::Render(Renderer* renderer, float deltaTime){
 
 bool PlayState::OnEnter(){		
 	
-
 	Save* save = ServiceLocator::GetSaveSystem()->LoadGame();
 	if(save == nullptr) return false;
 	

@@ -10,10 +10,11 @@
 #include "../include/Level.h"
 #include "../include/MovingPlatform.h"
 #include "../include/PlatformSwitch.h"
+#include "../include/PushableObject.h"
 #include "../include/Region.h"
+#include "../include/RepeatingLayer.h"
 #include "../include/ResourceManager.h"
 #include "../include/TeleportZone.h"
-#include "../include/PushableObject.h"
 
 Level* LevelLoader::ParseLevel(const std::string& filename){
     // create the XML document
@@ -86,6 +87,20 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 				level->AddForegroundLayer(layer);
 			}
         }
+		else if(e->Value() == std::string("imagelayer")) {
+			layer = ParseRepeatingLayer(e, level);
+
+			if(layer == nullptr) {
+				LOG_ERROR("Unable to parse repeating layer " + std::string(e->Attribute("name")) + ". Layer won't be loaded.");
+				continue;
+			}
+			if(!layer->IsForeground()) {
+				level->AddBackgroundLayer(layer);
+			}
+			else {
+				level->AddForegroundLayer(layer);
+			}
+		}
     }
 
 	for(e=pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
@@ -509,7 +524,67 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 		}
 	}
 
-	return new Layer(name, width, height, tileset, zDistance, isForeground);
+	return new Layer(name, width, height, tileset->name(), zDistance, isForeground);
+}
+
+Layer* LevelLoader::ParseRepeatingLayer(TiXmlElement* repeatingLayerNode, Level* level) {
+	if(repeatingLayerNode == nullptr) {
+		LOG_WARNING("Unable to parse repeating layer. Layer node is null");
+		return nullptr;
+	}
+
+	TiXmlElement* imageNode = repeatingLayerNode->FirstChildElement();
+	if(imageNode == nullptr || imageNode->Value() != std::string("image")) {
+		LOG_WARNING("Unable to find image node in repeating layer. Layer won't be loaded.");
+		return nullptr;
+	}
+
+	// Query layer info
+	std::string name;
+	float offsetX, offsetY;
+	float zDistance = 1.f;
+	int width, height;
+
+	if(repeatingLayerNode->Attribute("name") == nullptr) {
+		LOG_WARNING("Unable to read repeating layer name in level: " + level->filename() + ". Layer won't be loaded.");
+		return nullptr;
+	}
+	else {
+		name = repeatingLayerNode->Attribute("name");
+	}
+	if(repeatingLayerNode->QueryFloatAttribute("offsetx", &offsetX) != TIXML_SUCCESS) {
+		LOG_WARNING("Unable to read offsetx from repeating layer. Layer name: " + name + ". Layer won't be loaded.");
+		return nullptr;
+	}
+	if(repeatingLayerNode->QueryFloatAttribute("offsety", &offsetY) != TIXML_SUCCESS) {
+		LOG_WARNING("Unable to read offsety from repeating layer. Layer name: " + name + ". Layer won't be loaded.");
+		return nullptr;
+	}
+	if(imageNode->QueryIntAttribute("width", &width) != TIXML_SUCCESS) {
+		LOG_WARNING("Unable to read width from repeating layer. Layer name: " + name + ". Layer won't be loaded.");
+		return nullptr;
+	}
+	if(imageNode->QueryIntAttribute("height", &height) != TIXML_SUCCESS) {
+		LOG_WARNING("Unable to read height from repeating layer. Layer name: " + name + ". Layer won't be loaded.");
+		return nullptr;
+	}
+
+	TiXmlElement* propertiesNode = nullptr;
+	for(TiXmlElement* e = repeatingLayerNode->FirstChildElement(); e != nullptr; e = e->NextSiblingElement()) {
+		if(e->Value() == std::string("properties")) {
+			propertiesNode = e;
+		}
+	}
+
+	TiXmlElement* zDistanceNode = GetProperty(propertiesNode, "zdistance");
+	if(zDistanceNode != nullptr) {
+		if(zDistanceNode->QueryFloatAttribute("value", &zDistance) != TIXML_SUCCESS) {
+			LOG_WARNING("Unable to read zdistance from repeating layer. Layer name: " + name + "Setting it as default (1.0)");
+			zDistance = 1.f;
+		}
+	}
+
+	return new RepeatingLayer(name, width, height, Vector2D(offsetX, offsetY), zDistance);
 }
 
 std::vector<int> LevelLoader::ParseLayerData(TiXmlElement* dataNode){

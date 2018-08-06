@@ -26,6 +26,7 @@ private:
     static void ParseObjectGroup(TiXmlElement* objectsNode, Level* level);
     static CollisionRect* ParseRect(TiXmlElement* objectNode);
     static Layer* ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset);
+    static Layer* ParseRepeatingLayer(TiXmlElement* repeatingLayerNode, Level* level);
     static std::vector<int> ParseLayerData(TiXmlElement* dataNode);
     static void LoadLayerMesh(std::vector<int>& layerData, Level* level, Tileset* tileset, const std::string& name);
     static TiXmlElement* GetProperty(TiXmlElement* propertiesNode, std::string propertyName);

@@ -217,14 +217,14 @@
    <properties>
     <property name="destinationLevel" value="temple-room-2"/>
     <property name="destinationX" value="0"/>
-    <property name="destinationY" value="575"/>
+    <property name="destinationY" value="577"/>
    </properties>
   </object>
   <object id="33" type="teleportZone" x="-160" y="320" width="144" height="656">
    <properties>
     <property name="destinationLevel" value="temple-entrance-2"/>
     <property name="destinationX" type="float" value="1280"/>
-    <property name="destinationY" type="float" value="626"/>
+    <property name="destinationY" type="float" value="641"/>
    </properties>
   </object>
  </objectgroup>
