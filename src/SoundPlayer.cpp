@@ -2,12 +2,14 @@
 
 #include "../include/Logger.h"
 
+int SoundPlayer::_masterVolume = MIX_MAX_VOLUME;
+
 SoundPlayer::SoundPlayer() {}
 SoundPlayer::~SoundPlayer() {}
 
 bool SoundPlayer::Init() {
 	if (!SDL_WasInit(SDL_INIT_AUDIO)) {
-		if (SDL_InitSubSystem(SDL_INIT_AUDIO)) { 
+		if (SDL_InitSubSystem(SDL_INIT_AUDIO)) {
 			LOG_ERROR("Unable to initialize the Sound subsystem: " + std::string(SDL_GetError()));
 			return false;
 		}
@@ -18,7 +20,7 @@ bool SoundPlayer::Init() {
 		return false;
 	}
 
-	int mixerflags = MIX_INIT_OGG | MIX_INIT_MP3; 
+	int mixerflags = MIX_INIT_OGG | MIX_INIT_MP3;
 	int initted = Mix_Init(mixerflags);
 	if ((mixerflags & initted) != mixerflags) {
 		LOG_ERROR("Unable to initialize the SDL Mixer: " + std::string(Mix_GetError()));
@@ -40,8 +42,16 @@ bool SoundPlayer::PlayBGM(Music* music, bool loop) {
 	if (Mix_PlayMusic(music, loop ? -1 : 0) < 0) {
 		LOG_ERROR("Unable to play song: " + std::string(Mix_GetError()));
 		return false;
-	} 
+	}
 	return true;
+}
+
+void SoundPlayer::SetMasterVolume(int masterVolume) {
+	if (masterVolume < 0) masterVolume = 0;
+	if (masterVolume > 128) masterVolume = 128;
+	Mix_Volume(-1, masterVolume);
+	Mix_VolumeMusic(masterVolume);
+	_masterVolume = masterVolume;
 }
 
 void SoundPlayer::Clean() {
