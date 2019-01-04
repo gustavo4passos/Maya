@@ -29,7 +29,6 @@ Vector2D InputModule::_mousePosition;
 
 
 // MAIN FUNCTIONS
-
 bool InputModule::Init()
 {
 	if(!SDL_WasInit(SDL_INIT_EVENTS))

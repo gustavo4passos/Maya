@@ -22,8 +22,9 @@ public:
 	// BGM
 	static bool PlayBGM(Music* music, bool loop);
 
-	static void SetMasterVolume(int volume);
-	static int MasterVolume() { return _masterVolume; }
+	// VOL
+	static int MasterVolume() { return _masterVolume; } //returns master volume
+	static void SetMasterVolume(int masterVolume);
 
 private:
 	static int _masterVolume;
