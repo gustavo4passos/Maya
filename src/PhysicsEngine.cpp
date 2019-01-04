@@ -7,7 +7,7 @@
 #include "../include/Enemy.h"
 #include "../include/ActivateSwitchEvent.h"
 
-Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.38);
+Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.32);
 Level* PhysicsEngine::_currentLevel = NULL;
 std::set<std::pair<GameObject*, CollisionEvent>> PhysicsEngine::_unsentCollisionEvents;
 

@@ -7,7 +7,7 @@
 class Layer {
 public:
 	Layer(const std::string& name, int width, int height, const std::string& tilesetName, float zDistance = 1.0, bool foreground = false);
-	~Layer();
+	virtual ~Layer();
 
 	virtual void Draw(Renderer* renderer);
 

@@ -39,6 +39,7 @@ private:
 		NO_MENU,
 		OPTIONS_MENU,
 		VIDEO_MENU,
+		SOUND_MENU,
 		SET_RESOLUTION_MENU
 	};
 
@@ -52,6 +53,9 @@ private:
 	bool _showmenu;
 	MenuType _currentMenu;
 	bool _showCollisionBoxes;
+
+	// Audio
+	int _masterVolume;
 
 	void RenderMenuBar(Renderer* renderer);
 	void RenderCollisionBoxes(Renderer* renderer);

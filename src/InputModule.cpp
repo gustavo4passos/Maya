@@ -57,6 +57,8 @@ bool InputModule::Init()
 		_mouseButtonStates.push_back(temp);
 	}  
 	_mousePosition = Vector2D(0, 0);
+
+	InitJoysticks();
 	return true;
 }
 

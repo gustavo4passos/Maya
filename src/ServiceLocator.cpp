@@ -11,6 +11,7 @@ GameSwitches* ServiceLocator::_gameSwitches = nullptr;
 GameObject* ServiceLocator::_player = nullptr;
 Renderer* ServiceLocator::_renderer = nullptr;
 SaveSystem* ServiceLocator::_saveSystem = nullptr;
+SettingsManager* ServiceLocator::_settingsManager = nullptr;
 Window* ServiceLocator::_window = nullptr;
 
 Game* ServiceLocator::GetGame() { 
@@ -60,6 +61,14 @@ SaveSystem* ServiceLocator::GetSaveSystem() {
         LOG_ERROR("Save System service has not been provided. Returning nullptr.");
     }
     return _saveSystem;
+}
+
+SettingsManager* ServiceLocator::GetSettingsManager() {
+    if(_settingsManager == nullptr) {
+        LOG_ERROR("Settings Manager service has not been provided. Returning nullptr.");
+    }
+
+    return _settingsManager;
 }
 
 Window* ServiceLocator::GetWindow() {

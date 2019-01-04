@@ -1,6 +1,10 @@
 #include "../include/SoundPlayer.h"
 
 #include "../include/Logger.h"
+#include "../include/ServiceLocator.h"
+#include "../include/SettingsManager.h"
+
+int SoundPlayer::_masterVolume = 128;
 
 SoundPlayer::SoundPlayer() {}
 SoundPlayer::~SoundPlayer() {}
@@ -42,6 +46,18 @@ bool SoundPlayer::PlayBGM(Music* music, bool loop) {
 		return false;
 	} 
 	return true;
+}
+
+void SoundPlayer::SetMasterVolume(int volume) {
+	// Volume must be in the range 0 ~ 128
+	if(volume < 0) volume = 0;
+	if(volume > 128) volume = 128;
+
+	_masterVolume = volume;
+	Mix_Volume(-1, _masterVolume);
+	Mix_VolumeMusic(_masterVolume);
+
+	ServiceLocator::GetSettingsManager()->SetMasterVolume(volume);
 }
 
 void SoundPlayer::Clean() {

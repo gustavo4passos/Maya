@@ -4,20 +4,21 @@
 
 #include "imgui_impl_sdl_gl3.h"
 
+#include "../include/Enemy.h"
 #include "../include/Event.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Game.h"
-#include "../include/Enemy.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InputModule.h"
+#include "../include/LevelLoader.h"
 #include "../include/Maya.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
-#include "../include/SettingsManager.h"
-#include "../include/ServiceLocator.h"
-#include "../include/LevelLoader.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
+#include "../include/ServiceLocator.h"
+#include "../include/SettingsManager.h"
+#include "../include/SoundPlayer.h"
 
 #define LOCAL_PERSIST static
 
@@ -44,6 +45,8 @@ InfoMenuGL3::InfoMenuGL3() :
 	_clearColor[2] = 0.f;
 	_clearColor[3] = 1.f;
 
+	_masterVolume = SoundPlayer::MasterVolume();
+	
 	EventDispatcher::AddListener(this, EventType::LEVEL_CHANGED);
 }	
 
@@ -100,7 +103,13 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 					}
 
 					ImGui::Spacing();
+
+					if(ImGui::Button("Sound Settings")) {
+						_currentMenu = SOUND_MENU;
+					}
+
 					ImGui::PushItemWidth(100);
+					ImGui::Spacing();
 					if(ImGui::Button("Return to Game")){
 						_currentMenu = NO_MENU;
 					}
@@ -214,6 +223,35 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 						delete[] nullTerminatedResolutionStrings;
 						ImGui::End();
 					}
+				}
+			} break;
+
+			case SOUND_MENU: 
+			{
+				if(ImGui::Begin("Sound Settings", NULL, flags)) {
+					ImGui::Indent();
+					ImGui::Indent();
+
+					ImGui::Dummy(ImVec2(0.f, 15.f));
+					ImGui::Text("Master Volume");
+
+					ImGui::Dummy(ImVec2(-10.f, 15.f));
+					_masterVolume = SoundPlayer::MasterVolume() / 1.28;
+					if(ImGui::SliderInt("", &_masterVolume, 0, 100))
+					{
+						SoundPlayer::SetMasterVolume(_masterVolume * 1.28);
+					}
+
+					ImGui::Dummy(ImVec2(0.f, 50.f));
+					if(ImGui::Button("Return to Game")) {
+						_currentMenu = NO_MENU;
+					}
+
+					ImGui::Dummy(ImVec2(20.f, 5.f));
+					if(ImGui::Button("Back")) {
+						_currentMenu = OPTIONS_MENU;
+					}
+					ImGui::End();
 				}
 			} break;
 
@@ -467,6 +505,11 @@ std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
 
 const char * InfoMenuGL3::OpenFileDialog() {
   return NULL;
+}
+
+std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
+	std::vector<std::string> files;
+	return files;
 }
 
 #endif

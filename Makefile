@@ -57,8 +57,6 @@ build/%.o: src/%.cpp
 	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
 	@echo =======================  
 
-
-
 clean:
 ifeq ($(OS), Windows_NT)
 	del build\*.o

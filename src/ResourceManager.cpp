@@ -77,7 +77,7 @@ bool ResourceManager::LoadSoundEffect(const std::string& filename, const std::st
 	Mix_Chunk* sample;
 	sample = Mix_LoadWAV(filename.c_str());
 	if (!sample) {
-		LOG_ERROR("Unable to load the sample: " + std::string(Mix_GetError()));
+		LOG_ERROR("Unable to load the sample: " + name + std::string(Mix_GetError()));
 		return false;
 	}
 

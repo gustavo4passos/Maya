@@ -13,7 +13,8 @@ SettingsManager::SettingsManager()
     _windowWidth(966),
     _windowHeight(544),
     _vsync(true),  
-    _fullscreen(false)
+    _fullscreen(false),
+    _masterVolume(128)
  {
     _settingsFile = new XMLDocument();
 
@@ -29,9 +30,6 @@ SettingsManager::SettingsManager()
     _windowElement = root->FirstChildElement();
 
     if(_windowElement == nullptr || std::string(_windowElement->Name()) != "window") {
-        delete _settingsFile;
-        _settingsFile = nullptr;
-
         if(!HandleInvalidSettingsFile()) return;
     }
 
@@ -40,9 +38,6 @@ SettingsManager::SettingsManager()
        _windowElement->Attribute("vsync")      == nullptr ||
        _windowElement->Attribute("fullscreen") == nullptr)
     {
-        delete _settingsFile;
-        _settingsFile = nullptr;
-
         if(!HandleInvalidSettingsFile()) return;
     }
 
@@ -50,6 +45,21 @@ SettingsManager::SettingsManager()
        _windowElement->QueryIntAttribute("height", &_windowHeight)    != XML_SUCCESS ||
        _windowElement->QueryBoolAttribute("vsync", &_vsync)           != XML_SUCCESS || 
        _windowElement->QueryBoolAttribute("fullscreen", &_fullscreen) != XML_SUCCESS)
+    {
+        if(!HandleInvalidSettingsFile()) return;
+    }
+
+    _soundElement = _windowElement->NextSiblingElement();
+
+    if(_soundElement == nullptr || std::string(_soundElement->Name()) != "sound") {
+        if(!HandleInvalidSettingsFile()) return;
+    }
+
+    if(_soundElement->Attribute("mastervolume") == nullptr) {
+        if(!HandleInvalidSettingsFile()) return;
+    }
+
+    if(_soundElement->QueryIntAttribute("mastervolume", &_masterVolume) != XML_SUCCESS)
     {
         delete _settingsFile;
         _settingsFile = nullptr;
@@ -88,17 +98,37 @@ void SettingsManager::SetFullscreen(bool active) {
     }
 }
 
+void SettingsManager::SetMasterVolume(int volume) {
+    // Avoids bad values (volume must be between 0 ~ 128)
+    if(volume < 0) volume = 0;
+    if(volume > 128) volume = 128;
+
+    _masterVolume = volume; 
+
+    if(_settingsFile != nullptr && _soundElement != nullptr) {
+        _soundElement->SetAttribute("mastervolume", volume);
+        SaveFile();
+    }
+}
+
 
 XMLDocument* SettingsManager::CreateDefaultSettingsFile() {
     XMLDocument* defaultSettingsDocument = new XMLDocument();
     XMLDeclaration* declaration = defaultSettingsDocument->NewDeclaration();
     XMLElement* mainElement = defaultSettingsDocument->NewElement("settings");
-    XMLElement* dataElement = defaultSettingsDocument->NewElement("window");
-    dataElement->SetAttribute("width", "966");
-    dataElement->SetAttribute("height", "544");
-    dataElement->SetAttribute("vsync", "true");
-    dataElement->SetAttribute("fullscreen", "false");
-    mainElement->InsertEndChild(dataElement);
+    XMLElement* windowDataElement = defaultSettingsDocument->NewElement("window");
+    XMLElement* soundDataElement = defaultSettingsDocument->NewElement("sound");
+
+    // Default window settings data
+    windowDataElement->SetAttribute("width", "966");
+    windowDataElement->SetAttribute("height", "544");
+    windowDataElement->SetAttribute("vsync", "true");
+    windowDataElement->SetAttribute("fullscreen", "false");
+    mainElement->InsertEndChild(windowDataElement);
+
+    // Default sound settings data
+    soundDataElement->SetAttribute("mastervolume", (int)128);
+    mainElement->InsertEndChild(soundDataElement);
 
     defaultSettingsDocument->InsertEndChild(declaration);
     defaultSettingsDocument->InsertEndChild(mainElement);
@@ -124,6 +154,8 @@ void SettingsManager::SaveFile() {
 
 bool SettingsManager::HandleInvalidSettingsFile() {
         LOG_WARNING("Unable to open settings file. Using default settings.");
+        delete _settingsFile;
+        _settingsFile = nullptr;
         _settingsFile = CreateDefaultSettingsFile();
 
         if(_settingsFile == nullptr) {
@@ -133,6 +165,7 @@ bool SettingsManager::HandleInvalidSettingsFile() {
         } 
         else {
             _windowElement = _settingsFile->RootElement()->FirstChildElement();
+            _soundElement = _windowElement->NextSiblingElement();
         }
 
         return true;

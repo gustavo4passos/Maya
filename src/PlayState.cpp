@@ -55,7 +55,7 @@ bool PlayState::OnEnter(){
 	ServiceLocator::ProvideCurrentRegion(_region);
 
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
-	SoundPlayer::PlayBGM(ResourceManager::GetMusic("piano-theme"), true);
+	SoundPlayer::PlayBGM(ResourceManager::GetMusic("hello"), true);
 
 	delete save;
     return true;
