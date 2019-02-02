@@ -11,6 +11,10 @@ Animation::Animation(const Spritesheet& spritesheet, int nFrames, int speed)
     _time(0)
 { }
 
+Animation::Animation(const Animation& a)
+: 	Animation(a._spritesheet, a._nFrames, a._speed)
+{ }
+
 void Animation::Update() {
     if(_playing) {
         _time++;

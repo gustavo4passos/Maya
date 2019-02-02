@@ -10,6 +10,7 @@
 #include "../include/Layer.h"
 
 std::map<std::string, Texture*> ResourceManager::_textureMap;
+std::map<std::string, Spritesheet*> ResourceManager::_spritesheetMap;
 std::map<std::string, Mesh*> ResourceManager::_meshMap;
 std::map<std::string, Sound*> ResourceManager::_soundEffectsMap;
 std::map<std::string, Music*> ResourceManager::_musicMap;
@@ -48,7 +49,7 @@ Texture* const ResourceManager::GetTexture(const std::string& name){
     std::map<std::string, Texture*>::const_iterator texEntry = _textureMap.find(name);
     if(texEntry == _textureMap.end()){
 	    LOG_ERROR("Texture is not in texture map: " << name);
-	    DEBUG_BREAK();
+	    // DEBUG_BREAK();
 	    return NULL;
     }
     return texEntry->second;
@@ -71,6 +72,34 @@ void ResourceManager::CleanTextures() {
         delete it->second;
     }
     _textureMap.clear();
+}
+
+bool ResourceManager::LoadSpritesheet(const std::string& textureName, const std::string& name, int nRows, int nColumns)
+{
+	auto it = _spritesheetMap.find(name);
+	if(it != _spritesheetMap.end()) {
+		LOG_WARNING("Unable to load spritesheet [" + name + "] into spritesheet map. A spritesheet with the same name already exists.");
+		return false;
+	}
+
+	Texture* spritesheetTex = GetTexture(textureName); 
+
+	if(spritesheetTex == nullptr) {
+		LOG_ERROR("Unable to load spritesheet [" + name + "]. The spritesheet texture has not been loaded.");
+		return false;
+	}
+
+	Spritesheet* spritesheet = nullptr;
+	spritesheet = new Spritesheet(textureName, nRows, nColumns);
+
+	if(spritesheet == nullptr)
+	{
+		LOG_ERROR(std::string("Unable to load spritesheet").append(name).append(". Unable to create spritesheet instance."));
+		return false;
+	}
+
+	
+	return true;
 }
 
 bool ResourceManager::LoadSoundEffect(const std::string& filename, const std::string& name) {
@@ -163,7 +192,7 @@ Mesh* const ResourceManager::GetMesh(const std::string& name) {
 
 	if(meshEntry == _meshMap.end()){
 		LOG_ERROR("Mesh is not in mesh map: " + name);
-		DEBUG_BREAK();
+		// DEBUG_BREAK();
 		return NULL;
 	}
 	return meshEntry->second;
@@ -211,6 +240,7 @@ void ResourceManager::CleanResource(ResourceType resourceType, const std::string
 }
 
 void ResourceManager::Clean() {
-	CleanMeshes();
 	CleanTextures();
+	CleanAudio();
+	CleanMeshes();
 }

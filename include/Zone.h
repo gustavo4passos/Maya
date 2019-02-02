@@ -3,7 +3,7 @@
 
 #include "GameObject.h"
 
-class Zone : public GameObject{
+class Zone : public GameObject {
 
 public:
     Zone(const Rect& bounds) 

@@ -124,7 +124,7 @@ void Game::Clean() {
     delete _window;
 
     _renderer = NULL;
-    _window = NULL;
+    _window = NULL; 
 }
 
 void Game::ChangeResolution(int width, int height) {

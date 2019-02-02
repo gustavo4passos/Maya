@@ -35,6 +35,7 @@ public:
 	std::set<std::pair<int,int> > RetrieveDisplayModes();
 
 	friend class InfoMenuGL3;
+	friend class LevelEditorState;
 
 private:
 	const char* _title;

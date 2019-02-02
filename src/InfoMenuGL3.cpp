@@ -10,6 +10,7 @@
 #include "../include/Game.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InputModule.h"
+#include "../include/LevelEditorState.h"
 #include "../include/LevelLoader.h"
 #include "../include/Maya.h"
 #include "../include/PhysicsEngine.h"
@@ -379,10 +380,10 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		ImGui::Separator();
 
 		ImGui::Dummy(ImVec2(10.f, 0.f));
-		if(ImGui::BeginMenu("Add Subregion")){
+		if(ImGui::BeginMenu("Add Subregion")) {
 			std::vector<std::string> levels = GetFilenamesInLevelsFolder();
 			for(auto level = levels.begin(); level != levels.end(); level++){
-				if((*level) != "." && (*level) != "..") {
+				if((*level) != "." && (*level) != "..") { 
 					if(ImGui::Button((*level).c_str())){
 						(*level).insert(0, "../res/levels/");
 						Level* newSubregion = LevelLoader::ParseLevel((*level).c_str());
@@ -419,6 +420,13 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		}
 		else {
 			ImGui::Text("No active region");
+		}
+
+		ImGui::Dummy(ImVec2(10.f, 0.f));
+		ImGui::Separator();
+		
+		if(ImGui::Button("Level Editor")) {
+			GameStateMachine::PushState(new LevelEditorState());
 		}
 
 		ImGui::EndMainMenuBar();
@@ -483,9 +491,9 @@ std::string InfoMenuGL3::OpenFileDialog(){
 	c.nMaxFile = sizeof(filename);
 	c.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
-	GetOpenFileName(&c);
+	bool userSelectedFile = GetOpenFileName(&c);
 
-	return std::string(filename);
+	return userSelectedFile ? std::string(filename) : "";
 }
 
 std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
@@ -502,11 +510,6 @@ std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
 }
 
 #else
-
-std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
-  std::vector<std::string> files;
-  return files;
-}
 
 std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
 	std::vector<std::string> files;

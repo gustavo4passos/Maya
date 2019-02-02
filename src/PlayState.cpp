@@ -27,6 +27,7 @@ void PlayState::Update(){
 void PlayState::Render(Renderer* renderer, float deltaTime){
 	//TODO(Gustavo): Below is a temporary solution for the camera position interpolation problem.
 	// This solution must be integrated properly withing the camera code
+	// Maybe the object the camera is following should have a velocity attribute? 
 	Vector2D pos = _maya->collisionRect().position();
 	_maya->setPosition( pos.x() + _maya->velocity().x() * deltaTime,
 		 				pos.y() + _maya->velocity().y() * deltaTime );
@@ -36,6 +37,7 @@ void PlayState::Render(Renderer* renderer, float deltaTime){
 	_maya->Draw(renderer, deltaTime);
 	_region->RenderForeground(renderer, deltaTime);
 	_infoMenu->Render(renderer);	
+	_camera->Update();
 }
 
 bool PlayState::OnEnter(){		
@@ -54,6 +56,7 @@ bool PlayState::OnEnter(){
 	_region->ChangeCurrentLevel(save->subregionName);
 	ServiceLocator::ProvideCurrentRegion(_region);
 
+	ResourceManager::LoadSpritesheet("golem-walk", "golem-walk", 2);
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	SoundPlayer::PlayBGM(ResourceManager::GetMusic("hello"), true);
 

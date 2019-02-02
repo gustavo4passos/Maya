@@ -6,6 +6,7 @@
 class Animation {
 public:
     Animation(const Spritesheet& spritesheet, int nFrames, int speed = 20);
+	Animation(const Animation& a);
 
     // Start playing the animation
     void Play(bool loop = false);
