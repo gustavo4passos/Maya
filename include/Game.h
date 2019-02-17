@@ -19,7 +19,7 @@ public:
 
 	void EndGameRequest();
     void Clean();
-    bool running() { return _running; }
+    bool running() const { return _running; }
 
     // Change settings
     void ChangeResolution(int width, int height);

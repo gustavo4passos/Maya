@@ -39,7 +39,6 @@ public:
 	inline Kind kind() const { return _kind;  }
 
 
-
 	//TEMPORARIAAAAA
 	inline CollisionRect& collisionRectCHANGEBLE() { return _collisionRect; }
 	//TEMPORARIAAAA

@@ -2,12 +2,17 @@
 
 #include "../include/Renderer.h"
 
-Animation::Animation(const Spritesheet& spritesheet, int nFrames) 
+Animation::Animation(const Spritesheet& spritesheet, int nFrames, int speed) 
 :   _spritesheet(spritesheet),
     _nFrames(nFrames),
     _currentFrame(0),
-    _speed(20),
+    _speed(speed),
+    _done(false),
     _time(0)
+{ }
+
+Animation::Animation(const Animation& a)
+: 	Animation(a._spritesheet, a._nFrames, a._speed)
 { }
 
 void Animation::Update() {
@@ -17,13 +22,15 @@ void Animation::Update() {
 
         // Check if animation has finished playing
         if(_currentFrame > (_nFrames - 1)) {
+            
             // If looping, start again
             if(_looping) {
                 _currentFrame = 0;
                 _time = 0;
-            } // Otherwise, stop it
+            } // Otherwise, stop it, and set as done
             else {
                 Pause();
+                _done = true;
             }
         }
     }
@@ -50,6 +57,12 @@ void Animation::PauseAtFrame(int frame) {
 }
 
 void Animation::Stop() {
+    _currentFrame = 0;
+    _playing = false;
+    _time = 0;
+}
+
+void Animation::Reset() {
     _currentFrame = 0;
     _playing = false;
     _time = 0;

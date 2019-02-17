@@ -2,16 +2,17 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/Logger.h"
+#include "../include/AnimationPlayer.h"
 #include "../include/GameStateMachine.h"
 #include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
+#include "../include/Logger.h"
 #include "../include/LuaScript.h"
+#include "../include/PlayState.h"
 #include "../include/ResourceManager.h"
 #include "../include/SaveSystem.h"
 #include "../include/SettingsManager.h"
 #include "../include/ServiceLocator.h"
-#include "../include/PlayState.h"
 
 bool Game::Init() {
     _settingsManager = SettingsManager();
@@ -21,13 +22,13 @@ bool Game::Init() {
     bool fullscreen = _settingsManager.Fullscreen();
 
     _window = new Window("Maya", width, height, 3, 3, vsync, fullscreen);
-    if(!_window->Init()){
+    if(!_window->Init()) {
         LOG_ERROR("Unable to initialize window.");
         return false;
     }
 
     _renderer = new Renderer();
-    if(!_renderer->Init()){
+    if(!_renderer->Init()) {
         LOG_ERROR("Unable to initialize renderer.");
         return false;
     }
@@ -35,16 +36,12 @@ bool Game::Init() {
     _renderer->SetClearColor(0.f, 0.f, 0.f, 1.f);
     _renderer->SetViewportSize(_window->width(), _window->height());
 
-    if(!InputModule::Init()){
+    if(!InputModule::Init()) {
         LOG_ERROR("Unable to initialize InputModule.");
-       return false;
+        return false;
     }
 
-    // if(!InputModule::InitJoysticks()){
-    //   LOG_ERROR("Unable to initialize Joysticks");
-    // }
-
-    if(!SoundPlayer::Init()){
+    if(!SoundPlayer::Init()) {
         LOG_ERROR("Unable to initialize SoundPlayer.");
         return false;
     }
@@ -54,16 +51,13 @@ bool Game::Init() {
     ServiceLocator::ProvideRenderer(_renderer);
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
     ServiceLocator::ProvideSaveSystem(new SaveSystem());
+    ServiceLocator::ProvideAnimationPlayer(new AnimationPlayer());
+    ServiceLocator::ProvideSettingsManager(&_settingsManager);
 
-    ServiceLocator::GetGameSwitches()->PushSwitch("forest-button-1");
-    ServiceLocator::GetGameSwitches()->PushSwitch("mountain-switch-10");
-    ServiceLocator::GetGameSwitches()->PushSwitch("golemtest");
-    ServiceLocator::GetGameSwitches()->PushSwitch("platform-1-temple-entrance-2");
-    ServiceLocator::GetGameSwitches()->PushSwitch("platform-3-golem");
+    SoundPlayer::SetMasterVolume(_settingsManager.MasterVolume());
+    
     GameStateMachine::PushState(new PlayState());
     
-    _window->RetrieveDisplayModes();
-
     _running = false;
     return true;
 }
@@ -132,7 +126,7 @@ void Game::Clean() {
     delete _window;
 
     _renderer = NULL;
-    _window = NULL;
+    _window = NULL; 
 }
 
 void Game::ChangeResolution(int width, int height) {
@@ -150,4 +144,4 @@ void Game::SetFullscreen(bool active) {
     _window->SetFullscreen(active);
     _renderer->SetViewportSize(_window->width(), _window->height());
     _settingsManager.SetFullscreen(active);
-}
+} 

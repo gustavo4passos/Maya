@@ -1,6 +1,7 @@
 #include "../include/MovingPlatform.h"
 
 #include "../include/GameSwitches.h"
+#include "../include/PhysicsEngine.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
 #include "../include/ServiceLocator.h"
@@ -90,21 +91,16 @@ void MovingPlatform::Update() {
 
         }
     }
-    
+
+    float oldX = this->x();
     if(_on) Move();
+    float displacement = oldX - this->x();
 
-
-    std::set<GameObject*> objectsOnTop;
-
-    while(!_unresolvedCollisionEvents.empty()) {
-        CollisionEvent collision = _unresolvedCollisionEvents.front();
-        objectsOnTop.insert(collision.subject);
-        _unresolvedCollisionEvents.pop();
+    Rect playerCollision = ServiceLocator::GetPlayer()->collisionRect();
+    if(PhysicsEngine::CheckCollision(&playerCollision, &this->_collisionRect)) {
+        ServiceLocator::GetPlayer()->setPosition(ServiceLocator::GetPlayer()->x() + displacement, ServiceLocator::GetPlayer()->y());
     }
-
-    for(auto object = objectsOnTop.begin(); object != objectsOnTop.end(); object++) {
-        (*object)->setPosition((*object)->x() + _displacement.x(), (*object)->y());
-    }
+    
 }
 
 void MovingPlatform::Draw(Renderer* renderer, float deltaTime) {

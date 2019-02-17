@@ -10,6 +10,8 @@
 #include "../include/Layer.h"
 
 std::map<std::string, Texture*> ResourceManager::_textureMap;
+std::map<std::string, Spritesheet*> ResourceManager::_spritesheetMap;
+std::map<std::string, Animation*> ResourceManager::_animationMap;
 std::map<std::string, Mesh*> ResourceManager::_meshMap;
 std::map<std::string, Sound*> ResourceManager::_soundEffectsMap;
 std::map<std::string, Music*> ResourceManager::_musicMap;
@@ -38,6 +40,7 @@ bool ResourceManager::LoadTexture(const std::string& filename, const std::string
     return true;
 }
 
+
 // NOTE(Gustavo): For the release version, consider returning map[entry] instead of using find()
 // However map[entry] will create a new item in map if 'entry' isn't a valid entry
 // and the caller will never be notified that the index he's trying to access is invalid,
@@ -45,13 +48,16 @@ bool ResourceManager::LoadTexture(const std::string& filename, const std::string
 // In the final version, however, this type of access error must be sorted out, and this method
 // can possibly be implemented by returning the requested entry
 Texture* const ResourceManager::GetTexture(const std::string& name){
-    std::map<std::string, Texture*>::const_iterator texEntry = _textureMap.find(name);
-    if(texEntry == _textureMap.end()){
-	    LOG_ERROR("Texture is not in texture map: " << name);
-	    DEBUG_BREAK();
-	    return NULL;
-    }
-    return texEntry->second;
+	#ifdef M_DEBUG
+		std::map<std::string, Texture*>::const_iterator texEntry = _textureMap.find(name);
+		if(texEntry == _textureMap.end()){
+			LOG_ERROR("Texture is not in texture map: " << name);
+			return NULL;
+		}
+		return texEntry->second;
+	#else
+		return _textureMap[name];
+	#endif
 }
 
 void ResourceManager::DeleteTexture(const std::string& textureName) {
@@ -73,11 +79,120 @@ void ResourceManager::CleanTextures() {
     _textureMap.clear();
 }
 
+bool ResourceManager::LoadSpritesheet(const std::string& textureName, const std::string& name, int nRows, int nColumns)
+{
+	auto it = _spritesheetMap.find(name);
+	if(it != _spritesheetMap.end()) {
+		LOG_WARNING("Unable to load spritesheet [" + name + "] into spritesheet map. A spritesheet with the same name already exists.");
+		return false;
+	}
+
+	Texture* spritesheetTex = GetTexture(textureName); 
+
+	if(spritesheetTex == nullptr) {
+		LOG_ERROR("Unable to load spritesheet [" + name + "]. The spritesheet texture has not been loaded.");
+		return false;
+	}
+
+	Spritesheet* spritesheet = nullptr;
+	spritesheet = new Spritesheet(textureName, nRows, nColumns);
+
+	if(spritesheet == nullptr)
+	{
+		LOG_ERROR(std::string("Unable to load spritesheet").append(name).append(". Unable to create spritesheet instance."));
+		return false;
+	}
+
+	_spritesheetMap[name.c_str()] = spritesheet;
+	return true;
+}
+
+void ResourceManager::DeleteSpritesheet(const std::string& name) {
+	auto it = _spritesheetMap.find(name);
+	if(it != _spritesheetMap.end()) {
+		LOG_WARNING("Unable to delete spritesheet [\"" + name + "\"]. The spritesheet is not in memory");
+	}
+	else {
+		delete it->second;
+		_spritesheetMap.erase(it);
+	}
+}
+
+Spritesheet* ResourceManager::GetSpritesheet(const std::string& name) {
+	#ifdef M_DEBUG
+		auto it = _spritesheetMap.find(name);
+		if(it == _spritesheetMap.end()) {
+			LOG_ERROR("Texture is not in texture map [\"" + name + "\"]. Returning nullptr.");
+			return nullptr;
+		}
+		return it->second;
+	#else
+		return _spritesheetMap[name];
+	#endif	
+}
+
+void ResourceManager::CleanSpritesheets() {
+	for(auto it = _spritesheetMap.begin(); it != _spritesheetMap.end(); it++) {
+		delete it->second;
+	}
+
+	_spritesheetMap.clear();
+}
+
+bool ResourceManager::LoadAnimation(const std::string& spritesheetName, const std::string& name, int nFrames, int speed) {
+	auto it = _animationMap.find(name);
+	if(it != _animationMap.end()) {
+		LOG_WARNING("Unable to load animation [\"" + name + "\"] into animation map. An animation with the same name already exists.");
+		return false;
+	}
+
+	Spritesheet* spritesheet = GetSpritesheet(spritesheetName);
+	if(spritesheet == nullptr) {
+		LOG_WARNING("Unable to load animation [" + name + "] into animation map. The spritesheet [" + spritesheetName + "] is not in memory.");
+		return false;
+	}
+
+	Animation* animation = nullptr;
+	animation = new Animation(*spritesheet, nFrames, speed);
+
+	if(animation == nullptr) {
+		LOG_ERROR(std::string("Unable to load animation [\"" + name + "\" unable to create spritesheet instance."));
+		return false;
+	}
+
+	_animationMap[name] = animation;
+	return true;
+}
+
+void ResourceManager::DeleteAnimation(const std::string& name) {
+	auto it = _animationMap.find(name);
+	if(it != _animationMap.end()) {
+		LOG_WARNING("Unable to delete animation [\"" + name + "\"]. The animation is not in memory");
+	}
+	else {
+		delete it->second;
+		_animationMap.erase(it);
+	}
+}
+
+Animation* ResourceManager::GetAnimation(const std::string& name) {
+	#ifdef M_DEBUG
+		auto it = _animationMap.find(name);
+		if(it == _animationMap.end()) {
+			LOG_ERROR("Texture is not in texture map [\"" + name + "\"]. Returning nullptr.");
+			return nullptr;
+		}
+		return it->second;
+	#else
+		return _animationMap[name];
+	#endif	
+}
+
 bool ResourceManager::LoadSoundEffect(const std::string& filename, const std::string& name) {
 	Mix_Chunk* sample;
 	sample = Mix_LoadWAV(filename.c_str());
 	if (!sample) {
-		LOG_ERROR("Unable to load the sample: " + std::string(Mix_GetError()));
+		LOG_ERROR("Unable to load the sample: " + name + std::string(Mix_GetError()));
 		return false;
 	}
 
@@ -95,6 +210,14 @@ bool ResourceManager::LoadMusic(const std::string& filename, const std::string& 
 
 	_musicMap.insert(std::pair<std::string, Music*>(name, sample));
 	return true;
+}
+
+void ResourceManager::CleanAnimations() {
+	for(auto it = _animationMap.begin(); it != _animationMap.end(); it++) {
+		delete it->second;
+	}
+
+	_animationMap.clear();
 }
 
 Sound* ResourceManager::GetSoundEffect(const std::string& name) {
@@ -163,7 +286,7 @@ Mesh* const ResourceManager::GetMesh(const std::string& name) {
 
 	if(meshEntry == _meshMap.end()){
 		LOG_ERROR("Mesh is not in mesh map: " + name);
-		DEBUG_BREAK();
+		// DEBUG_BREAK();
 		return NULL;
 	}
 	return meshEntry->second;
@@ -204,6 +327,12 @@ void ResourceManager::CleanResource(ResourceType resourceType, const std::string
 		case ResourceType::SONG:
 			DeleteMusic(name);
 			break;
+		case ResourceType::ANIMATION:
+			DeleteAnimation(name);
+			break;
+		case ResourceType::SPRITESHEET:
+			DeleteSpritesheet(name);
+			break;
 		default:
 			LOG_WARNING("Unable to delete resource. Resource type is unknown.");
 			break;
@@ -211,6 +340,9 @@ void ResourceManager::CleanResource(ResourceType resourceType, const std::string
 }
 
 void ResourceManager::Clean() {
-	CleanMeshes();
 	CleanTextures();
+	CleanAudio();
+	CleanMeshes();
+	CleanAnimations();
+	CleanSpritesheets();
 }

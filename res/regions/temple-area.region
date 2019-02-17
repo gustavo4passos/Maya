@@ -11,6 +11,7 @@
 
             <songs>
                 <song filename="../res/audio/music/piano-theme-drums.mp3" id="piano-theme"/>
+                <song filename="../res/audio/music/hello.mp3" id="hello"/>
             </songs>
 
         </audio>

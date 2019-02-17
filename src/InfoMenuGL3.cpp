@@ -4,20 +4,22 @@
 
 #include "imgui_impl_sdl_gl3.h"
 
+#include "../include/Enemy.h"
 #include "../include/Event.h"
 #include "../include/EventDispatcher.h"
 #include "../include/Game.h"
-#include "../include/Enemy.h"
 #include "../include/GameStateMachine.h"
 #include "../include/InputModule.h"
+#include "../include/LevelEditorState.h"
+#include "../include/LevelLoader.h"
 #include "../include/Maya.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
-#include "../include/SettingsManager.h"
-#include "../include/ServiceLocator.h"
-#include "../include/LevelLoader.h"
 #include "../include/Renderer.h"
 #include "../include/ResourceManager.h"
+#include "../include/ServiceLocator.h"
+#include "../include/SettingsManager.h"
+#include "../include/SoundPlayer.h"
 
 #define LOCAL_PERSIST static
 
@@ -26,7 +28,7 @@ InfoMenuGL3::InfoMenuGL3() :
 	_currentMenu(NO_MENU),
 	_showCollisionBoxes(false)
 {
-	_gameptr = ServiceLocator::GetGame(); 
+	_gameptr = ServiceLocator::GetGame();
 	_windowptr = ServiceLocator::GetWindow();
 	_player = ServiceLocator::GetPlayer();
 	_levelptr = ServiceLocator::GetCurrentLevel();
@@ -44,8 +46,10 @@ InfoMenuGL3::InfoMenuGL3() :
 	_clearColor[2] = 0.f;
 	_clearColor[3] = 1.f;
 
+	_masterVolume = SoundPlayer::MasterVolume();
+	
 	EventDispatcher::AddListener(this, EventType::LEVEL_CHANGED);
-}	
+}
 
 InfoMenuGL3::~InfoMenuGL3() {
 	EventDispatcher::RemoveListener(this, EventType::LEVEL_CHANGED);
@@ -71,7 +75,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 
 	RenderMenuBar(renderer);
 
-	if(_showmenu){ 
+	if(_showmenu){
 		RenderGameObjectInfoMenu();
 	}
 
@@ -84,7 +88,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 		ImGui::SetNextWindowPos(pos);
 
 		switch(_currentMenu){
-			case OPTIONS_MENU: 
+			case OPTIONS_MENU:
 			{
 				if(ImGui::Begin("Settings", NULL, flags)){
 					ImFont font = *ImGui::GetFont();
@@ -100,7 +104,13 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 					}
 
 					ImGui::Spacing();
+
+					if(ImGui::Button("Sound Settings")) {
+						_currentMenu = SOUND_MENU;
+					}
+
 					ImGui::PushItemWidth(100);
+					ImGui::Spacing();
 					if(ImGui::Button("Return to Game")){
 						_currentMenu = NO_MENU;
 					}
@@ -114,21 +124,21 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 					if(ImGui::Button("Quit game")){
 						_gameptr->EndGameRequest();
 					}
-					ImGui::PopFont();	
+					ImGui::PopFont();
 					ImGui::End();
 				}
 			} break;
-			case VIDEO_MENU: 
+			case VIDEO_MENU:
 			{
 				if(ImGui::Begin("Video Options", NULL, flags)){
 
 					ImGui::Indent();
 					ImGui::Indent();
-					
+
 					ImGui::Dummy(ImVec2(0, 10));
 
 					std::stringstream resolution;
-					resolution << "  Resolution\n   " << _windowptr->width() << "x" << _windowptr->height(); 
+					resolution << "  Resolution\n   " << _windowptr->width() << "x" << _windowptr->height();
 					ImGui::Text(resolution.str().c_str());
 
 					if(!ServiceLocator::GetWindow()->IsFullscreen()) {
@@ -185,7 +195,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 							mode << std::to_string(displayMode.first) << "x" << std::to_string(displayMode.second);
 							resolutions.push_back(mode.str());
 						}
-								
+
 						// Make a vector of null terminated strings for ImGui
 						const char** nullTerminatedResolutionStrings = new const char * [resolutions.size()];
 
@@ -202,18 +212,47 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 									ServiceLocator::GetGame()->ChangeResolution(mode.first, mode.second);
 									ImVec2 pos((_windowptr->width() - size.x) / 2, (_windowptr->height() - size.y) / 2);
 									ImGui::SetNextWindowPos(pos);
-									break; 
+									break;
 								}
 								count++;
 							}
 						}
 						if(ImGui::Button("Back")) {
 							_currentMenu = VIDEO_MENU;
-						} 
+						}
 
 						delete[] nullTerminatedResolutionStrings;
 						ImGui::End();
 					}
+				}
+			} break;
+
+			case SOUND_MENU: 
+			{
+				if(ImGui::Begin("Sound Settings", NULL, flags)) {
+					ImGui::Indent();
+					ImGui::Indent();
+
+					ImGui::Dummy(ImVec2(0.f, 15.f));
+					ImGui::Text("Master Volume");
+
+					ImGui::Dummy(ImVec2(-10.f, 15.f));
+					_masterVolume = SoundPlayer::MasterVolume() / 1.28;
+					if(ImGui::SliderInt("", &_masterVolume, 0, 100))
+					{
+						SoundPlayer::SetMasterVolume(_masterVolume * 1.28);
+					}
+
+					ImGui::Dummy(ImVec2(0.f, 50.f));
+					if(ImGui::Button("Return to Game")) {
+						_currentMenu = NO_MENU;
+					}
+
+					ImGui::Dummy(ImVec2(20.f, 5.f));
+					if(ImGui::Button("Back")) {
+						_currentMenu = OPTIONS_MENU;
+					}
+					ImGui::End();
 				}
 			} break;
 
@@ -224,19 +263,19 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 
 	ImGui::Render();
 	ImGui_ImplSdlGL3_RenderDrawData(ImGui::GetDrawData());
-}	
+}
 
 void InfoMenuGL3::Clean(){
 	ImGui_ImplSdlGL3_Shutdown();
 	ImGui::DestroyContext();
-}	
+}
 
 bool InfoMenuGL3::OnNotify(Event* event) {
 	if(event->type() == EventType::LEVEL_CHANGED) {
 		_levelptr = ServiceLocator::GetCurrentLevel();
 		return false;
 	}
-	
+
 	return false;
 }
 
@@ -246,14 +285,14 @@ void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
 
 	DrawCollisionBox(&mayaRct, renderer);
 	DrawCollisionBox(&weaponRct, renderer);
-	
+
 	if(_levelptr != NULL) {
-		for(std::vector<CollisionRect*>::iterator it = _levelptr->_collisionRects.begin();  
+		for(std::vector<CollisionRect*>::iterator it = _levelptr->_collisionRects.begin();
 			it != _levelptr->_collisionRects.end(); ++it)
-		{	  
+		{
 			DrawCollisionBox(*it, renderer);
 		}
-		
+
 		for(auto enemy = _levelptr->_enemies.begin(); enemy != _levelptr->_enemies.end(); enemy++){
 			Rect enemyrct = (*enemy)->collisionRect();
 			DrawCollisionBox(&enemyrct, renderer);
@@ -298,7 +337,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 	// 				int w, h;
 	// 				w = _levelptr->_collisionRects[i]->w();
 	// 				h = _levelptr->_collisionRects[i]->h();
-					
+
 	// 				if(ImGui::SliderFloat("X", &x, -400, 880)) {
 	// 					_levelptr->_collisionRects[i]->setX(x);
 	// 				}
@@ -334,17 +373,17 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		  	RenderCollisionBoxes(renderer);
 		}
 		ImGui::Separator();
-	
+
 		ImGui::Dummy(ImVec2(30.f, 0.f));
 		ImGui::Text("Press tab to see player stats");
 		ImGui::Dummy(ImVec2(30.f, 0.f));
 		ImGui::Separator();
 
 		ImGui::Dummy(ImVec2(10.f, 0.f));
-		if(ImGui::BeginMenu("Add Subregion")){
+		if(ImGui::BeginMenu("Add Subregion")) {
 			std::vector<std::string> levels = GetFilenamesInLevelsFolder();
 			for(auto level = levels.begin(); level != levels.end(); level++){
-				if((*level) != "." && (*level) != "..") {
+				if((*level) != "." && (*level) != "..") { 
 					if(ImGui::Button((*level).c_str())){
 						(*level).insert(0, "../res/levels/");
 						Level* newSubregion = LevelLoader::ParseLevel((*level).c_str());
@@ -362,7 +401,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		}
 		ImGui::Dummy(ImVec2(10.f, 0.f));
 		ImGui::Separator();
-		
+
 		ImGui::Dummy(ImVec2(10.f, 0.f));
 		if(ServiceLocator::GetCurrentRegion() != nullptr) {
 			if(ImGui::BeginMenu("Change Subregion")) {
@@ -383,6 +422,13 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 			ImGui::Text("No active region");
 		}
 
+		ImGui::Dummy(ImVec2(10.f, 0.f));
+		ImGui::Separator();
+		
+		if(ImGui::Button("Level Editor")) {
+			GameStateMachine::PushState(new LevelEditorState());
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 }
@@ -392,7 +438,7 @@ void InfoMenuGL3::RenderGameObjectInfoMenu(){
 		ImGui::Text("Position");
 
 		LOCAL_PERSIST float x, y;
-		x = _player->position().x();	
+		x = _player->position().x();
 		y = _player->position().y();
 		Level* currentLevel = ServiceLocator::GetCurrentLevel();
 		float maxLevelPositionX = currentLevel->width() * currentLevel->tileWidth() - ServiceLocator::GetPlayer()->w();
@@ -445,9 +491,9 @@ std::string InfoMenuGL3::OpenFileDialog(){
 	c.nMaxFile = sizeof(filename);
 	c.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
-	GetOpenFileName(&c);
-	
-	return std::string(filename);
+	bool userSelectedFile = GetOpenFileName(&c);
+
+	return userSelectedFile ? std::string(filename) : "";
 }
 
 std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
@@ -463,10 +509,11 @@ std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
   return files;
 }
 
-#else 
+#else
 
-const char * InfoMenuGL3::OpenFileDialog() {
-  return NULL;
+std::vector<std::string> InfoMenuGL3::GetFilenamesInLevelsFolder() {
+	std::vector<std::string> files;
+	return files;
 }
 
 #endif

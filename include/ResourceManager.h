@@ -7,20 +7,23 @@
 
 #include <tinyxml.h>
 
-#include "Texture.h"
-#include "Tileset.h"
+#include "Animation.h"
 #include "Level.h"
 #include "SoundPlayer.h"
+#include "Texture.h"
+#include "Tileset.h"
 
 class CollisionRect;
 
 class Mesh;
 
 enum class ResourceType {
+	ANIMATION,
     TEXTURE,
     MESH,
     SOUND_EFFECT,
-    SONG
+    SONG,
+	SPRITESHEET
 };
 
 class ResourceManager {
@@ -32,6 +35,18 @@ public:
     static void DeleteTexture(const std::string& textureName);
     static Texture* const GetTexture(const std::string& textureName);
     static void CleanTextures();
+
+	// Spritesheets
+	static bool LoadSpritesheet(const std::string& textureName, const std::string& name, int nRows, int nColumns = 4);
+	static void DeleteSpritesheet(const std::string& name);
+	static Spritesheet* GetSpritesheet(const std::string& name);
+	static void CleanSpritesheets();
+
+	// Animations
+	static bool LoadAnimation(const std::string& spritesheetName, const std::string& name, int nFrames, int speed = 20);
+	static void DeleteAnimation(const std::string& name);
+	static Animation* GetAnimation(const std::string& name);
+	static void CleanAnimations();
 
     //Sounds & Music
     static bool LoadSoundEffect(const std::string& filename, const std::string& name);
@@ -57,6 +72,8 @@ private:
 
     // Data maps
     static std::map<std::string, Texture*> _textureMap;
+	static std::map<std::string, Spritesheet*> _spritesheetMap;
+    static std::map<std::string, Animation*> _animationMap;
     static std::map<std::string, Mesh*> _meshMap;
     static std::map<std::string, Sound*> _soundEffectsMap;
     static std::map<std::string, Music*> _musicMap;
