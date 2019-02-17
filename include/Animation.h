@@ -21,6 +21,8 @@ public:
     void Stop();
     // Resets animation to the first frame and continue playing
     void Reset();
+
+    void SetLooping(bool looping) { _looping = looping; }
     
     // The update assumes it is called at constant intervals
     // It MUST be called every frame

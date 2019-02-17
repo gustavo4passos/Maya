@@ -13,7 +13,7 @@ public:
 	void Update();
 	void Render(Renderer* renderer);
 
-	void PlayAnimation(Animation* animation, const Vector2D& pos);
+	void PlayAnimation(Animation* animation, const Vector2D& pos, bool loop = false);
 	int NumberOfActiveAnimations() const { return _activeAnimations.size(); }
 
 	struct PlayingAnimation {
@@ -23,7 +23,6 @@ public:
 
 private:
 	std::vector<PlayingAnimation> _activeAnimations;
-
 };
 
 #endif

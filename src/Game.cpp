@@ -2,16 +2,17 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/Logger.h"
+#include "../include/AnimationPlayer.h"
 #include "../include/GameStateMachine.h"
 #include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
+#include "../include/Logger.h"
 #include "../include/LuaScript.h"
+#include "../include/PlayState.h"
 #include "../include/ResourceManager.h"
 #include "../include/SaveSystem.h"
 #include "../include/SettingsManager.h"
 #include "../include/ServiceLocator.h"
-#include "../include/PlayState.h"
 
 bool Game::Init() {
     _settingsManager = SettingsManager();
@@ -50,6 +51,7 @@ bool Game::Init() {
     ServiceLocator::ProvideRenderer(_renderer);
     ServiceLocator::ProvideGameSwitches(new GameSwitches());
     ServiceLocator::ProvideSaveSystem(new SaveSystem());
+    ServiceLocator::ProvideAnimationPlayer(new AnimationPlayer());
     ServiceLocator::ProvideSettingsManager(&_settingsManager);
 
     SoundPlayer::SetMasterVolume(_settingsManager.MasterVolume());

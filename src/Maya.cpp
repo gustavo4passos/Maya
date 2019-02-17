@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "../include/InputModule.h"
+#include "../include/MovingPlatform.h"
 #include "../include/ResourceManager.h"
 #include "../include/Weapon.h"
 #include "../include/EventDispatcher.h"
@@ -298,7 +299,7 @@ void Maya::Update()
     while(!_unresolvedCollisionEvents.empty()){
         CollisionEvent e = _unresolvedCollisionEvents.front();
 
-        if(e.kind == Kind::ENEMY){
+        if(e.kind == Kind::ENEMY) {
             if(_currentState != DYING && _currentState != DEAD &&  !_invencible){
                 if(_facingright) _velocity = Vector2D(-2, -4);
                 else             _velocity = Vector2D(2, -4);
@@ -307,10 +308,13 @@ void Maya::Update()
                 ChangeState(BOUNCE_STUCK);
             }                
         }
+        else if(e.kind == Kind::MOVING_PLATFORM) {
+            setPosition(x() + static_cast<MovingPlatform*>(e.subject)->displacement().x(), 
+                        y() + static_cast<MovingPlatform*>(e.subject)->displacement().y());
+        }
+        
         _unresolvedCollisionEvents.pop();        
     }
-
-    
 }
 
 bool Maya::OnNotify(Event* event){

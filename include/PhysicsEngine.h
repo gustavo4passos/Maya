@@ -24,7 +24,8 @@ struct CollisionEvent {
     int damage;
     GameObject* subject;
     
-    bool operator < (const CollisionEvent& rhs) const{
+    bool operator < (const CollisionEvent& rhs) const {
+
         bool sameKind = kind == rhs.kind;
         bool sameVelocity = velocity == rhs.velocity;
         bool sameDamage = damage == rhs.damage;
@@ -59,12 +60,16 @@ public:
 	friend class InfoMenuGL3;
     
 private:
-    PhysicsEngine(){}
-    ~PhysicsEngine(){}
+    PhysicsEngine() {}
+    ~PhysicsEngine() {}
     static Level* _currentLevel;
     static void NewUnsentCollisonEvent(GameObject* gameObject1, GameObject* gameObject2);
-    static bool CheckCollisionAgainstLevel(Rect* rect);
-    static bool CheckCollisionAgainstLevel(GameObject* gameObject, const Vector2D* furthestPosition, const Vector2D* positionToTr);
+    static bool CheckCollisionAgainstLevel(GameObject* gameObject);
+    static bool CheckCollisionAgainstLevel(GameObject* gameObject, const Vector2D* furthestPosition, const Vector2D* positionToTry);
+    
+    static bool CheckCollisionAgainstLevelCollisionRects(Rect* rect);
+    static bool CheckCollisionAgainstLevelObjects(GameObject* gameObject);
+
     static Vector2D _gravity;
     static std::set<std::pair<GameObject*, CollisionEvent>> _unsentCollisionEvents;
 };

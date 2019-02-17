@@ -1,6 +1,7 @@
 #ifndef SERVICELOCATOR_H
 #define SERVICELOCATOR_H
 
+class AnimationPlayer;
 class Game;
 class GameObject;
 class GameSwitches;
@@ -13,6 +14,7 @@ class Window;
 
 class ServiceLocator {
 public:
+    static AnimationPlayer* GetAnimationPlayer();
     static Game* GetGame();
     static GameObject* GetPlayer();
     static GameSwitches* GetGameSwitches();
@@ -23,6 +25,7 @@ public:
     static SettingsManager* GetSettingsManager();
     static Window* GetWindow();
 
+    static void ProvideAnimationPlayer(AnimationPlayer* animationPlayer) { _animationPlayer = animationPlayer; }
     static void ProvideCurrentLevel(Level* currentLevel) { _currentLevel = currentLevel; }
     static void ProvideCurrentRegion(Region* currentRegion) { _currentRegion = currentRegion; }
     static void ProvideGame(Game* game) { _game = game; }
@@ -34,6 +37,7 @@ public:
     static void ProvideWindow(Window* window) { _window = window; }
 
 private:
+    static AnimationPlayer* _animationPlayer;
     static Game* _game;
     static GameObject* _player;
     static GameSwitches* _gameSwitches;

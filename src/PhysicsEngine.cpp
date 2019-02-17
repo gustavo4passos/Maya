@@ -50,25 +50,21 @@ bool PhysicsEngine::OnGround(GameObject* gameObject){
         DEBUG_BREAK();
     }
 
-    Vector2D collisionObject = gameObject->collisionRect().position();
-    Vector2D offsetCollisionObject = collisionObject;
-	  offsetCollisionObject.setY(collisionObject.y() + 1.f);
-    if(CheckCollisionAgainstLevel(gameObject, &collisionObject, &offsetCollisionObject)){
-        return true;
-    }
-    else {
-        return false;
-    }
+    gameObject->setPosition(gameObject->x(), gameObject->y() + 1);
+    bool isOnGround = CheckCollisionAgainstLevel(gameObject);
+    gameObject->setPosition(gameObject->x(), gameObject->y() - 1);
+
+    return isOnGround;
 }
 
 bool PhysicsEngine::OnWall(GameObject* gameObject){
   	Rect offsetRect = gameObject->collisionRect();
 
 	offsetRect.setPosition(offsetRect.x() + 1, offsetRect.y());
-	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+	if(CheckCollisionAgainstLevelCollisionRects(&offsetRect)) return true;
 
 	offsetRect.setPosition(offsetRect.x() - 2, offsetRect.y());
-	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+	if(CheckCollisionAgainstLevelCollisionRects(&offsetRect)) return true;
 
 	return false;
 }
@@ -77,7 +73,7 @@ bool PhysicsEngine::OnWallRight(GameObject* gameObject){
   	Rect offsetRect = gameObject->collisionRect();
 
 	offsetRect.setPosition(offsetRect.x() + 1, offsetRect.y());
-	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+	if(CheckCollisionAgainstLevelCollisionRects(&offsetRect)) return true;
 
 	return false;
 }
@@ -86,25 +82,22 @@ bool PhysicsEngine::OnWallLeft(GameObject* gameObject){
   	Rect offsetRect = gameObject->collisionRect();
 
 	offsetRect.setPosition(offsetRect.x() - 2, offsetRect.y());
-	if(CheckCollisionAgainstLevel(&offsetRect)) return true;
+	if(CheckCollisionAgainstLevelCollisionRects(&offsetRect)) return true;
 
 	return false;
 }
 
 bool PhysicsEngine::HitHead(GameObject* gameObject){
-	if(!_currentLevel){
+    if(!_currentLevel){
         LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
-	}
+    }
 
-  Vector2D collisionObject = gameObject->collisionRect().position();
-  Vector2D offsetCollisionObject = collisionObject;
-  offsetCollisionObject.setY(collisionObject.y() - 1.f);
-  if(CheckCollisionAgainstLevel(gameObject, &collisionObject, &offsetCollisionObject)){
-		return true;
-	}
+    gameObject->setPosition(gameObject->x(), gameObject->y() - 1.f);
+    bool hitHead = CheckCollisionAgainstLevel(gameObject);
+    gameObject->setPosition(gameObject->x(), gameObject->y() + 1.f);    
 
-	return false;
+    return hitHead;
 }
 
 bool PhysicsEngine::IsOnTop(Rect* bottom, Rect* top) {
@@ -119,11 +112,11 @@ bool PhysicsEngine::IsOnTop(Rect* bottom, Rect* top) {
 
 void PhysicsEngine::MoveAndCheckCollision(GameObject* gameObject){
 
-  MoveAndCheckCollision2(gameObject);
-  for(auto it=_unsentCollisionEvents.begin(); it!=_unsentCollisionEvents.end(); it++){
-      it->first->EnqueueCollisionEvent(it->second);
-  }
-  _unsentCollisionEvents.clear();
+    MoveAndCheckCollision2(gameObject);
+    for(auto it=_unsentCollisionEvents.begin(); it!=_unsentCollisionEvents.end(); it++) {
+        it->first->EnqueueCollisionEvent(it->second);
+    }
+    _unsentCollisionEvents.clear();
 }
 
 void PhysicsEngine::MoveAndCheckCollision2(GameObject* gameObject){
@@ -157,29 +150,11 @@ void PhysicsEngine::MoveAndCheckCollision2(GameObject* gameObject){
     gameObject->setPosition( furthestPosition.x(), furthestPosition.y());
 }
 
-bool PhysicsEngine::CheckCollisionAgainstLevel(Rect* rect){
-    if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
-        DEBUG_BREAK();
-    }
-
-    for(std::vector<CollisionRect*>::const_iterator it = _currentLevel->collisionRects().begin();
-	    it!=_currentLevel->collisionRects().end(); it++){
-        if(CheckCollision(rect, *it)){
-            return true;
-        }
-    }
-
-    for(auto gameObject = _currentLevel->gameObjects().begin(); gameObject != _currentLevel->gameObjects().end(); gameObject++) {
-        if((*gameObject)->collisionRect().collisionBehavior() == CollisionBehavior::IGNORE) {
-            continue;
-        }
-
-        Rect collisionRect = (*gameObject)->collisionRect();
-        if(CheckCollision(rect, &collisionRect)) {
-            return true;
-        }
-    }
+bool PhysicsEngine::CheckCollisionAgainstLevel(GameObject* gameObject) {
+    Rect collisionRect = gameObject->collisionRect();
+    if(CheckCollisionAgainstLevelCollisionRects(&collisionRect) || 
+       CheckCollisionAgainstLevelObjects(gameObject)) 
+        return true;
 
     return false;
 }
@@ -244,6 +219,46 @@ void PhysicsEngine::NewUnsentCollisonEvent(GameObject* gameObject1, GameObject* 
     CollisionEvent collisionEvent2 = { gameObject2->_kind, CheckCollisionPosition(gameObject1, gameObject2),
          gameObject2->velocity(), gameObject2->damage(), gameObject2 };
     _unsentCollisionEvents.insert(std::make_pair(gameObject1, collisionEvent2));
+}
+
+bool PhysicsEngine::CheckCollisionAgainstLevelCollisionRects(Rect* rect) {
+    if(!_currentLevel){
+        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        DEBUG_BREAK();
+    }
+
+    for(std::vector<CollisionRect*>::const_iterator it = _currentLevel->collisionRects().begin();
+	    it!=_currentLevel->collisionRects().end(); it++){
+        if(CheckCollision(rect, *it)){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool PhysicsEngine::CheckCollisionAgainstLevelObjects(GameObject* gameObject) {
+    if(!_currentLevel){
+        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        DEBUG_BREAK();
+    }
+
+    for(auto levelObject = _currentLevel->gameObjects().begin(); levelObject != _currentLevel->gameObjects().end(); levelObject++) {
+        if( *levelObject == gameObject) continue;
+
+        if((*levelObject)->collisionRect().collisionBehavior() == CollisionBehavior::IGNORE) {
+            continue;
+        }
+
+        Rect collisionRect = (*levelObject)->collisionRect();
+        Rect gameObjectCollisionRect = gameObject->collisionRect();
+
+        if(CheckCollision(&gameObjectCollisionRect, &collisionRect)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){

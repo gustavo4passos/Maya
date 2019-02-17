@@ -33,8 +33,8 @@ void Player::Update()
     GameObject::Update();
 
     PhysicsEngine::ApplyGravity(this);
-	PhysicsEngine::CheckCollisionAgainstEnemies(this);
 	PhysicsEngine::MoveAndCheckCollision(this);
+	PhysicsEngine::CheckCollisionAgainstEnemies(this);
 
     if(PhysicsEngine::OnGround(this)){
 		_velocity.setY(0.f);
@@ -47,8 +47,6 @@ void Player::Update()
 	if(PhysicsEngine::OnWall(this)){
 		_velocity.setX(0.f);
 	}
-
-    
 }
 
 bool Player::OnNotify(Event* event)

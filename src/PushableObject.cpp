@@ -23,6 +23,7 @@ PushableObject::~PushableObject()
 void PushableObject::Update(){
 
     GameObject::Update();
+
     PhysicsEngine::ApplyGravity(this);
 	PhysicsEngine::MoveAndCheckCollision(this);    
 
@@ -30,9 +31,7 @@ void PushableObject::Update(){
 		_velocity.setY(0.f);
 	}
 
-    if(PhysicsEngine::OnWall(this)){
-		_velocity.setX(0.f);
-	}   
+	_velocity.setX(0.f);
 
     while(!_unresolvedCollisionEvents.empty()){
         CollisionEvent e = _unresolvedCollisionEvents.front();
@@ -40,7 +39,7 @@ void PushableObject::Update(){
         if(e.kind == Kind::PLAYER){
             if(e.collisionPosition == CollisionPosition::LEFT_COLLISION ||
                 e.collisionPosition == CollisionPosition::RIGHT_COLLISION){
-                _velocity.setX(e.velocity.x()/2);
+                _velocity.setX(e.velocity.x() / 2);
             }
         }
 

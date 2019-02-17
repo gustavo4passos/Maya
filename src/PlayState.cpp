@@ -1,5 +1,6 @@
 #include "../include/PlayState.h"
 
+#include "../include/AnimationPlayer.h"
 #include "../include/EventDispatcher.h"
 #include "../include/SaveSystem.h"
 #include "../include/InfoMenuGL3.h"
@@ -22,6 +23,7 @@ void PlayState::Update(){
 	_region->Update();
     _maya->Update();
 	_camera->Update();
+	ServiceLocator::GetAnimationPlayer()->Update();
 }
 
 void PlayState::Render(Renderer* renderer, float deltaTime){
@@ -36,6 +38,7 @@ void PlayState::Render(Renderer* renderer, float deltaTime){
 	_region->RenderBackground(renderer, deltaTime);
 	_maya->Draw(renderer, deltaTime);
 	_region->RenderForeground(renderer, deltaTime);
+	ServiceLocator::GetAnimationPlayer()->Render(renderer);
 	_infoMenu->Render(renderer);	
 	_camera->Update();
 }
@@ -56,9 +59,11 @@ bool PlayState::OnEnter(){
 	_region->ChangeCurrentLevel(save->subregionName);
 	ServiceLocator::ProvideCurrentRegion(_region);
 
-	ResourceManager::LoadSpritesheet("golem-walk", "golem-walk", 2);
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
 	SoundPlayer::PlayBGM(ResourceManager::GetMusic("hello"), true);
+
+	ResourceManager::LoadSpritesheet("maya_running", "maya_run", 2);
+	ResourceManager::LoadAnimation("maya_run", "maya_run_animation", 8, 10);
 
 	delete save;
     return true;

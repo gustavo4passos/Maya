@@ -1,5 +1,6 @@
 #include "../include/Button.h"
 
+#include "../include/AnimationPlayer.h"
 #include "../include/EventDispatcher.h"
 #include "../include/GameSwitches.h"
 #include "../include/PlayerHitTeleportEvent.h"
