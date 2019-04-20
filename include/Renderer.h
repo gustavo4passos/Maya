@@ -10,7 +10,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
-// Represents a RGBA color. Attributes should ragen from 0.0 ~ 1.0
+// Represents a RGBA color. Attributes should range from 0.0 ~ 1.0
 struct Color {
 	float r;
 	float g;
@@ -88,11 +88,8 @@ private:
 	static const int INTERNAL_RESOLUTION_H = 270;
 	static constexpr float ASPECT_RATIO = (1.f * INTERNAL_RESOLUTION_W) / INTERNAL_RESOLUTION_H; 
 
-	// TODO(Gustavo): Buffer scaling is deprecated. Remove it.
-	float _xScaleFactor, _yScaleFactor;
-	
-	// The currenly bound shader and texture id is stored in order to avoid  
-	// unnecessary binding. Changing the OpenGL context is costly.
+	//The currenly bound shader and texture id is stored in order to avoid  
+	//unnecessary binding. 
 	unsigned int _currentlyBoundShader, _currentlyBoundTexture;
 };
 

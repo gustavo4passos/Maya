@@ -34,5 +34,5 @@ static bool GLLogCall(const char* function, const char* file, int line) {
     x;\
     ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 #else
-#define GLCALL(x) x
+#define GLCall(x) x
 #endif

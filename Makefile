@@ -70,20 +70,20 @@ SOURCES = $(wildcard src/*.cpp)
 OBJECTS = $(patsubst src/%.cpp, build/%.o, $(SOURCES))
 
 bin/Application.exe: $(OBJECTS)
-	$(info $(patsubst bin/%,%:, $@))
+	$(info Application.exe)
 	$(CC) $(OBJECTS) $(LIB_PATHS) $(LINKER_FLAGS) $(COMPILER_FLAGS) -o bin/Application
-	@echo =======================
+	@echo ============================================================================================
 	@echo Make: COMPILATION SUCCEEDED
 
 build/%.o: src/%.cpp include/%.h
-	$(info $(patsubst build/%,%:, $@))
+	$(info $@)
 	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
-	@echo =======================
+	@echo ============================================================================================
 
 build/%.o: src/%.cpp
-	$(info $(patsubst build/%,%:, $@))
+	$(info $@)
 	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
-	@echo =======================
+	@echo ============================================================================================
 
 clean:
 ifeq ($(OS), Windows_NT)

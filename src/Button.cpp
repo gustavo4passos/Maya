@@ -1,6 +1,5 @@
 #include "../include/Button.h"
 
-#include "../include/AnimationPlayer.h"
 #include "../include/EventDispatcher.h"
 #include "../include/GameSwitches.h"
 #include "../include/PlayerHitTeleportEvent.h"
@@ -43,6 +42,7 @@ void Button::Draw(Renderer* renderer, float deltatime) {
 void Button::TurnOn() {
     _isPressed = true;
     SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("button-press"), false);
+
      // Show pressed frame
     _animation.PauseAtFrame(1);
     _collisionRect.setCollisionBehavior(CollisionBehavior::IGNORE);

@@ -94,7 +94,7 @@ bool Renderer::Init(Camera* camera) {
 
 	// Set orthographic projection to the standard normalized space
 	// Setting a diferent projection requires a call to SetViewportSize()
-	glm::mat4 ortho = glm::ortho(-1.f, 1.f, -1.f, 1.f);
+	glm::mat4 ortho = glm::ortho(0.f, (float)INTERNAL_RESOLUTION_W , (float)INTERNAL_RESOLUTION_H, 0.f);
 
 	BindShader(_spriteShader);
 	_spriteShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
@@ -283,24 +283,8 @@ void Renderer::SetViewportSize(int w, int h) {
 	int orthoX = (w - _viewportW) / 2;
 	int orthoY = (h - _viewportH) / 2;
 
-	_xScaleFactor = ((float)w) / INTERNAL_RESOLUTION_W;
-	_yScaleFactor = ((float)h) / INTERNAL_RESOLUTION_H;
-
-	// TODO(Gustavo): Is setting a fixed ortographic projection better than scalling every vertex
-	// before rendering?
-	// What about rendering the scene to an offscreen framebuffer texture, then render it to a 
-	// quad filling the screen?
-
-	glm::mat4 ortho = glm::ortho(0.f, (float)480, (float)270, 0.f);
-
-	BindShader(_spriteShader);
-	_spriteShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
-
-	BindShader(_primitivesShader);
-	_primitivesShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
-
-	BindShader(_meshShader);
-	_meshShader->SetUniformMat4("ortho", glm::value_ptr(ortho));
+	// float _xScaleFactor = ((float)w) / INTERNAL_RESOLUTION_W;
+	// float _yScaleFactor = ((float)h) / INTERNAL_RESOLUTION_H;
 
 	GLCall(glViewport(orthoX, orthoY, _viewportW, _viewportH));
 }
