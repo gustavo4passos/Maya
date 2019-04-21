@@ -8,6 +8,7 @@
 #include "PhysicsEngine.h"
 
 class Renderer; 
+#include <iostream>
 
 enum class Kind {
 	ENEMY,
@@ -37,6 +38,8 @@ public:
 	inline bool isActive() const { return _isActive; }
 	inline int damage() const { return _damage; }
 	inline Kind kind() const { return _kind;  }
+	inline int id() const { return _id; }
+	inline void setId(int id) { _id = id; }
 
 
 	//TEMPORARIAAAAA
@@ -56,7 +59,7 @@ public:
 
 	inline void EnqueueCollisionEvent(CollisionEvent collisionEvent) { _unresolvedCollisionEvents.push(collisionEvent); }
 
-	// Grants access to the collision rect inside the physics engine, to avoid creating a copy at each frame
+	// Grants access to this object collision rect inside the physics engine, to avoid creating a copy at each frame
 	friend class PhysicsEngine; 
 	
 	// (DEBUB) Grants access to speed and impulse to the debug menu
@@ -93,6 +96,7 @@ protected:
 
 	// Kind
 	Kind _kind;
+	int _id;
 };
 
 #endif

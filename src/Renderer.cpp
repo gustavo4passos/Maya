@@ -289,6 +289,14 @@ void Renderer::SetViewportSize(int w, int h) {
 	GLCall(glViewport(orthoX, orthoY, _viewportW, _viewportH));
 }
 
+Vector2D Renderer::ConvertViewportCoordsToInternalResCoords(int x, int y) {
+	int internalX = ((float)x / _viewportW) * INTERNAL_RESOLUTION_W;
+	int internalY = ((float)y / _viewportH) * INTERNAL_RESOLUTION_H;
+	
+	return Vector2D(internalX, internalY);
+}
+
+
 void Renderer::PreparePrimitiveForDrawing(Rect* rect, Color* color) {
 	BindShader(_primitivesShader);
 	_primitivesVAO->Bind();

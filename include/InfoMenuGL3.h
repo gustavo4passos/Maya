@@ -10,7 +10,7 @@
 
 #include <imgui.h>
 
-#include "EventListener.h"
+#include "GuiMenu.h"
 
 class Camera;
 class Game;
@@ -21,7 +21,7 @@ class Player;
 class Rect;
 class Renderer;
 
-class InfoMenuGL3 : public EventListener {
+class InfoMenuGL3 : public GuiMenu {
 public:
 	InfoMenuGL3();
 	~InfoMenuGL3();

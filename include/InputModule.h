@@ -76,8 +76,8 @@ public:
 	static int StickYValue(JoyAnalogStick, int joyIndex=0);
 
 	// Mouse
-	inline static bool WasMouseButtonReleased(MouseButton);
-	inline static bool IsMouseButtonPressed(MouseButton);
+	static bool WasMouseButtonReleased(MouseButton);
+	static bool IsMouseButtonPressed(MouseButton);
 	static const Vector2D& GetMousePosition();
 	inline static void SetMousePosition(int x, int y);
 	inline static void SetMousePosition(Vector2D);
@@ -130,7 +130,7 @@ private:
 
 	// Keyboard atributes (bitFields)
 
-	// Bitfield of pressed keys on the moment
+	// Bitfield of pressed keys at the moment
 	static uint32_t _bfPressed;
 	// Bitfield of keys that just got released
 	static uint32_t _bfReleased;

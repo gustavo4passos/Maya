@@ -61,7 +61,7 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 
 	level = new Level(tileset, width, height, tileWidth, tileHeight, filename);
 
-    for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
+    for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()){
         if(e->Value() == std::string("layer")){
             layer = ParseLayer(e, level, tileset);
 
@@ -150,6 +150,7 @@ Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
 }
 
 void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
+	int id;
 	float x, y;
     std::string test;
 
@@ -195,13 +196,13 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					else{
 						TiXmlElement* initiallyOpen = GetProperty(propertiesNode, "initiallyOpen");
 						if(initiallyOpen == NULL){
-							LOG_WARNING("Door's inittialyOpen is missing, door not loaded");
+							LOG_WARNING("Door's inittialyOpen property is missing. Door not loaded");
 							continue;
 						}
 						initiallyOpen->QueryBoolAttribute("value", &initialState);
 						TiXmlElement* switchesRequiredProperty = GetProperty(propertiesNode, "switchesRequired");
 						if(switchesRequiredProperty == NULL){
-							LOG_WARNING("Door's switchesRequired's is missing, door not loaded");
+							LOG_WARNING("Door's switchesRequired property is missing, Door not loaded");
 							continue;
 						}
 						switchesRequired = std::string(switchesRequiredProperty->Attribute("value"));
@@ -209,12 +210,13 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					}
 
 				}
-
 				else if(temp == std::string("button")){
 					std::string activatesSwitch;
 
 					e->QueryFloatAttribute("x", &x);
 					e->QueryFloatAttribute("y", &y);
+					e->QueryIntAttribute("id", &id);
+
 					TiXmlElement* propertiesNode = e->FirstChildElement();
 					if(propertiesNode == NULL) {
 						LOG_WARNING("Button missing properties field. Ignoring...");
@@ -230,7 +232,9 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 						}
 
 						activatesSwitch = std::string(activatesSwitchNode->Attribute("value"));
-						level->AddGameObject(new Button(x, y, activatesSwitch, false));
+						Button* button = new Button(x, y, activatesSwitch, false);
+						button->setId(id);
+						level->AddGameObject(button);
 					}
 				}
 				else if(temp == std::string("platformSwitch")){

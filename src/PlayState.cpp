@@ -14,16 +14,21 @@
 const std::string PlayState::_playID = "PLAY";
 
 void PlayState::HandleInput(){
-	_maya->HandleInput();
+	if(!_isPaused)
+	{
+		_maya->HandleInput();
+	}
 	_infoMenu->HandleInput();
-
 }
 
 void PlayState::Update(){
-	_region->Update();
-    _maya->Update();
-	_camera->Update();
-	ServiceLocator::GetAnimationPlayer()->Update();
+	if(!_isPaused)
+	{
+		_region->Update();
+		_maya->Update();
+		_camera->Update();
+		ServiceLocator::GetAnimationPlayer()->Update();
+	}
 }
 
 void PlayState::Render(Renderer* renderer, float deltaTime){
@@ -66,6 +71,7 @@ bool PlayState::OnEnter(){
 	ResourceManager::LoadAnimation("maya_run", "maya_run_animation", 8, 10);
 
 	delete save;
+	_isPaused = false;
     return true;
 }
 
@@ -81,4 +87,12 @@ bool PlayState::OnExit(){
 	ResourceManager::DeleteTexture("maya_standing");
 
     return true;
+}
+
+void PlayState::Pause() {
+	_isPaused = true;
+}
+
+void PlayState::Resume() {
+	_isPaused = false;
 }

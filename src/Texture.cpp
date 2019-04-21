@@ -35,7 +35,6 @@ void Texture::SetTexFiltering(bool magLinearFiltering, bool minLinearFiltering) 
     Bind();
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magLinearFiltering ? GL_LINEAR : GL_NEAREST));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minLinearFiltering ? GL_LINEAR : GL_NEAREST));
-    //TODO(Gustavo): Consider generating mipmaps
 }
 
 void Texture::SetTexRepeatBehavior(bool repeat){

@@ -30,6 +30,8 @@ public:
 	const std::vector<GameObject*>& gameObjects() { return _gameObjects; }
 	const std::vector<Enemy*>& enemies() { return _enemies; }
 
+	const GameObject* GetGameObjectById(int id);
+	 
 	Tileset* tileset() { return _tileset; }
 	
 	inline int width() const { return _width; }

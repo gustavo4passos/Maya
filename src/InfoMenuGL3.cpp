@@ -13,6 +13,7 @@
 #include "../include/LevelEditorState.h"
 #include "../include/LevelLoader.h"
 #include "../include/Maya.h"
+#include "../include/PlayState.h"
 #include "../include/PhysicsEngine.h"
 #include "../include/Region.h"
 #include "../include/Renderer.h"
@@ -55,6 +56,8 @@ InfoMenuGL3::~InfoMenuGL3() {
 	EventDispatcher::RemoveListener(this, EventType::LEVEL_CHANGED);
 }
 
+void InfoMenuGL3::Update() { }
+
 void InfoMenuGL3::HandleInput(){
 	if(InputModule::WasKeyReleased(InputModule::ESC)){
 		if(_currentMenu == NO_MENU) _currentMenu = OPTIONS_MENU;
@@ -71,12 +74,84 @@ void InfoMenuGL3::HandleInput(){
 }
 
 void InfoMenuGL3::Render(Renderer* renderer) {
+
+	LOCAL_PERSIST bool wasObjectClicked;
+	LOCAL_PERSIST GameObject* objectClicked;
+	// Checks if a game object was clicked on
+	if(InputModule::IsMouseButtonPressed(InputModule::MouseButton::MOUSE_LB) 
+		|| InputModule::IsMouseButtonPressed(InputModule::MouseButton::MOUSE_RB))
+	{
+		Vector2D mousePosition = renderer->ConvertViewportCoordsToInternalResCoords(InputModule::GetMousePosition().x(), 
+		InputModule::GetMousePosition().y());
+		Rect mouseRect = Rect(mousePosition.x() + renderer->_camera->x(),  mousePosition.y() + renderer->_camera->y(), 2, 2);
+		GameObject* objectCollided = PhysicsEngine::CheckCollisionAgainstLevelGameObjects(&mouseRect);
+
+		if(objectCollided)
+		{
+			objectClicked = objectCollided;
+			if(InputModule::IsMouseButtonPressed(InputModule::MouseButton::MOUSE_RB)) {
+				wasObjectClicked = true;
+				static_cast<PlayState*>(GameStateMachine::_gameStates.top())->Pause();
+			}
+		}
+		else 
+		{
+			if(InputModule::IsMouseButtonPressed(InputModule::MouseButton::MOUSE_RB))
+			{
+				objectClicked = nullptr;
+				wasObjectClicked = false;
+				static_cast<PlayState*>(GameStateMachine::_gameStates.top())->Resume();
+			}
+		}
+	}
+
 	ImGui_ImplSdlGL3_NewFrame(_windowptr->_windowHndl);
 
 	RenderMenuBar(renderer);
 
 	if(_showmenu){
 		RenderGameObjectInfoMenu();
+	}
+
+	if(wasObjectClicked) {
+		if(!ImGui::Begin("Selected Object")) 
+		{
+			ImGui::End();
+		}
+		else 
+		{
+			if(InputModule::WasKeyReleased(InputModule::ESC)) {
+				objectClicked = nullptr;
+				wasObjectClicked = false;
+			}
+			if(objectClicked != nullptr)
+			{
+				ImGui::Value("ID", objectClicked->id());
+				Level* currentLevel = ServiceLocator::GetCurrentLevel();
+				float  maxLevelPositionX = currentLevel->width() * currentLevel->tileWidth() - ServiceLocator::GetPlayer()->w();
+				float maxLevelPositionY = currentLevel->height() * currentLevel->tileHeight() - ServiceLocator::GetPlayer()->w();
+
+				float objectX = objectClicked->x();
+				float objectY = objectClicked->y();
+				if(ImGui::SliderFloat("X", &objectX, 0, maxLevelPositionX)) 
+				{
+					objectClicked->setPosition(objectX, objectY);
+				}
+				if(ImGui::SliderFloat("Y", &objectY, 0, maxLevelPositionY))
+				{
+					objectClicked->setPosition(objectClicked->x(), objectY);
+				}
+
+				if(ImGui::Button("Save")) {
+					
+				}
+			}
+			else 
+			{
+				ImGui::Text("Ooops. Something has gone wrong.");
+			}
+			ImGui::End();
+		}
 	}
 
 	if(_currentMenu){

@@ -19,6 +19,7 @@ struct Color {
 };
 
 class Window;
+class InfoMenuGL3;
 
 // Trying to initialize or render without a valid OpenGL context is going to 
 // cause an infinite loop due to how the error log system works (GLCall()) when in
@@ -55,6 +56,11 @@ public:
 	void RenderOffscreenFramebuffer();	
 
 	void SetViewportSize(int w, int h);
+
+	// Convert the screen coordinates to the internal coordinates
+	Vector2D ConvertViewportCoordsToInternalResCoords(int x, int y);
+
+	friend InfoMenuGL3;
 	
 private:
 	Camera* _camera;

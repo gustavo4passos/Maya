@@ -6,6 +6,8 @@
 #include "GameState.h"
 #include "EventListener.h"
 
+class InfoMenuGL3;
+
 class GameStateMachine {
 public:
 	static void PushState(GameState* _state); 
@@ -17,6 +19,8 @@ public:
 	static void Render(Renderer* renderer, float deltatime);
 
 	static void Clean();
+
+	friend class InfoMenuGL3;
 
 private:
 	GameStateMachine(){}

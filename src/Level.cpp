@@ -114,9 +114,23 @@ void Level::AddEnemy(Enemy* enemy){
 	_enemies.push_back(enemy);
 }
 
-void Level::AddGameObject(GameObject* gameObject) {
+void Level::AddGameObject(GameObject* gameObject){
 	if(gameObject == nullptr) {
 		LOG_WARNING("Unable to add Game Object. Game Object is NULL.");
 	}
 	_gameObjects.push_back(gameObject);
+}
+
+const GameObject* Level::GetGameObjectById(int id){
+	#ifdef M_DEBUG
+		if(id < 0 || id > ((int)_gameObjects.size() - 1)) {
+			LOG_ERROR("Unable to get game object by ID. ID is out of range.");
+			return nullptr;
+		}
+		else {
+			return _gameObjects[id];
+		}
+	#else
+		return _gameObjects[id];
+	#endif
 }

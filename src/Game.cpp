@@ -6,6 +6,7 @@
 #include "../include/GameStateMachine.h"
 #include "../include/GameSwitches.h"
 #include "../include/InputModule.h"
+#include "../include/LevelFile.h"
 #include "../include/Logger.h"
 #include "../include/LuaScript.h"
 #include "../include/PlayState.h"
@@ -59,6 +60,9 @@ bool Game::Init() {
     GameStateMachine::PushState(new PlayState());
     
     _running = false;
+
+    LevelFile levelFile = LevelFile("../res/levels/fofofo.tmx");
+    levelFile.OpenFile();
     return true;
 }
 

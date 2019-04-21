@@ -68,7 +68,10 @@ private:
     static bool CheckCollisionAgainstLevel(GameObject* gameObject, const Vector2D* furthestPosition, const Vector2D* positionToTry);
     
     static bool CheckCollisionAgainstLevelCollisionRects(Rect* rect);
-    static bool CheckCollisionAgainstLevelObjects(GameObject* gameObject);
+    static bool CheckCollisionAgainstLevelGameObjects(GameObject* gameObject);
+    // TEMPORARY: Until I find a better option for testing collisions with game objects inside the debug menu.
+    // I'm using this to test if the player clicked on a game object.
+    static GameObject* CheckCollisionAgainstLevelGameObjects(Rect* rect);
 
     static Vector2D _gravity;
     static std::set<std::pair<GameObject*, CollisionEvent>> _unsentCollisionEvents;
