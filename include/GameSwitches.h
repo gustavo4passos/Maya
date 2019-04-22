@@ -17,16 +17,16 @@ public:
     bool CheckSwitch(const std::string& id);
     void PushSwitch(const std::string& id, bool state = false);
 
-    bool OnNotify(Event* event);
+    const std::map<std::string, bool>& GetSwitches() { return _switches; }
 
-    // Grants access to the game switches map when saving the game
-    friend class SaveSystem;
+    bool OnNotify(Event* event);
 
 private:
     std::map<std::string, bool> _switches;
 
 	std::map<std::string, bool> _gameSwitchesSnapshot;
 
+    void ClearSwitches();
 	void TakeSnapshot();
 	void RestoreGameSwitchesFromSnapshot();
 };

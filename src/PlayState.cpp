@@ -71,6 +71,7 @@ bool PlayState::OnEnter(){
 	ResourceManager::LoadAnimation("maya_run", "maya_run_animation", 8, 10);
 
 	delete save;
+	
 	_isPaused = false;
     return true;
 }

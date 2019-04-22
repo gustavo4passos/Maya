@@ -285,7 +285,7 @@ bool InputModule::InitJoysticks()
 		for (int i = 0; i < numJoy; i++)
 		{
 			SDL_Joystick *joy = SDL_JoystickOpen(i);
-			if (joy == NULL) {
+			if (joy == nullptr) {
 				LOG_ERROR("SDL: " << SDL_GetError());
 			}							
 				
@@ -445,7 +445,7 @@ const Vector2D& InputModule::GetMousePosition()
 
 void InputModule::SetMousePosition(int x, int y)
 {
-	SDL_WarpMouseInWindow(NULL, x, y);
+	SDL_WarpMouseInWindow(nullptr, x, y);
 }
 
 void InputModule::SetMousePosition(Vector2D)

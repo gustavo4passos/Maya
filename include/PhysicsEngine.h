@@ -42,8 +42,10 @@ class PhysicsEngine {
 public:
 
     static void ApplyGravity(GameObject* gameObject);
+    static const Vector2D& GetGravityForce() { return _gravity; }
+    static void SetGravityForce(const Vector2D& strength);
+
     static bool CheckCollision(Rect* one, Rect* two);
-    static CollisionPosition CheckCollisionPosition(GameObject* gameObject1, GameObject* gameObject2);
     static bool OnGround(GameObject* gameObject);
 	static bool OnWall(GameObject* gameObject);
     static bool OnWallLeft(GameObject* gameObject);
@@ -55,9 +57,12 @@ public:
     static void MoveAndCheckCollision(GameObject* gameObject);
     static void MoveAndCheckCollision2(GameObject* gameObject);
     static void CheckCollisionAgainstEnemies(GameObject* gameObject);
-
-    // DEBUG: Allows the debug menu to access and change gravity
-	friend class InfoMenuGL3;
+    // TEMPORARY: Until better option for testing collisions with game 
+    // objects inside the debug menu is found.
+    // This test is beeing used to check if the player clicked on a game object,
+    // then return a pointer to this object (if any has been clicked), or nullptr
+    // otherwise.
+    static GameObject* CheckCollisionAgainstLevelGameObjects(Rect* rect);
     
 private:
     PhysicsEngine() {}
@@ -69,9 +74,7 @@ private:
     
     static bool CheckCollisionAgainstLevelCollisionRects(Rect* rect);
     static bool CheckCollisionAgainstLevelGameObjects(GameObject* gameObject);
-    // TEMPORARY: Until I find a better option for testing collisions with game objects inside the debug menu.
-    // I'm using this to test if the player clicked on a game object.
-    static GameObject* CheckCollisionAgainstLevelGameObjects(Rect* rect);
+    static CollisionPosition CheckCollisionPosition(GameObject* gameObject1, GameObject* gameObject2);
 
     static Vector2D _gravity;
     static std::set<std::pair<GameObject*, CollisionEvent>> _unsentCollisionEvents;

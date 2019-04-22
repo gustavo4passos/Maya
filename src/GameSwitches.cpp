@@ -47,9 +47,13 @@ void GameSwitches::PushSwitch(const std::string& id, bool state){
     }   
 }
 
+void GameSwitches::ClearSwitches() {
+    _switches.clear();
+}
+
 bool GameSwitches::OnNotify(Event* event) {
     if(event->type() == EventType::SWITCH_ACTIVATED) {
-        ActivateSwitch(dynamic_cast<ActivateSwitchEvent*>(event)->switchID());
+        ActivateSwitch(static_cast<ActivateSwitchEvent*>(event)->switchID());
     }
 	if(event->type() == EventType::PLAYER_DIED)	{
 		RestoreGameSwitchesFromSnapshot();

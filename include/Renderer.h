@@ -32,7 +32,7 @@ public:
 	void Clean();
 
 	// Initializes the renderer data
-	bool Init(Camera* camera = NULL);
+	bool Init(Camera* camera = nullptr);
 	void Clear();
 	void SetClearColor(GLclampf r, GLclampf g, GLclampf b, GLclampf a);
 
@@ -48,8 +48,8 @@ public:
 	void DrawRect(Rect* rect, Color* color);
 	void DrawFillRect(Rect* rect, Color* color);
 
-	// Set up a camera for use. If NULL, render using the default view space
-	void UseCamera(Camera* camera = NULL);
+	// Set up a camera for use. If nullptr, render using the default view space
+	void UseCamera(Camera* camera = nullptr);
 
 	void UseOffscreenFramebuffer();
 	void UseDefaultFramebuffer();

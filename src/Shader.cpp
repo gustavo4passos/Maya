@@ -148,14 +148,14 @@ GLuint Shader::CompileShader(GLenum shaderType, const std::string& source) {
   if(shader == 0) LOG_ERROR("OpenGL Error: Unable to create Shader.");
 
   const char* src = source.c_str();
-  GLCall(glShaderSource(shader, 1, &src, NULL));
+  GLCall(glShaderSource(shader, 1, &src, nullptr));
   GLCall(glCompileShader(shader));
 
   GLint compileStatus;
   GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus));
   if(compileStatus != GL_TRUE) {
     GLchar log[512];
-    GLCall(glGetShaderInfoLog(shader, 512, NULL, log));
+    GLCall(glGetShaderInfoLog(shader, 512, nullptr, log));
     LOG_ERROR("Unable to compile shader: file: " +
       (shaderType == GL_VERTEX_SHADER ? _vertexShaderFilepath : _fragmentShaderFilepath) +
       std::string(" \n") + std::string(log));

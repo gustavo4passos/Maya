@@ -42,10 +42,10 @@ void LevelEditorState::Render(Renderer* renderer, float deltaTime) {
             char filename[255];
             OPENFILENAME op = { };    
             op.lStructSize = sizeof(OPENFILENAME);
-            op.hwndOwner = NULL;
-            op.hInstance = NULL;
+            op.hwndOwner = nullptr;
+            op.hInstance = nullptr;
             op.lpstrFilter = ".TMX files\0*.tmx\0All files\0*.*\0\0";
-            op.lpstrCustomFilter = NULL;
+            op.lpstrCustomFilter = nullptr;
             op.lpstrFile = filename;
             op.lpstrFile[0] = '\0';
             op.nMaxFile = sizeof(filename);

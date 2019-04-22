@@ -82,7 +82,7 @@ void Level::DrawForeground(Renderer* renderer, float deltaTime) {
 
 void Level::AddBackgroundLayer(Layer* layer){
 	if(layer == nullptr){
-		LOG_ERROR("Unable to add Background Layer: Layer is NULL");
+		LOG_ERROR("Unable to add Background Layer: Layer is nullptr");
 		return;
 	}
 	_backgroundLayers.push_back(layer);
@@ -90,7 +90,7 @@ void Level::AddBackgroundLayer(Layer* layer){
 
 void Level::AddForegroundLayer(Layer* layer) {
 	if(layer == nullptr) {
-		LOG_ERROR("Unable to add Foreground Layer: Layer is NULL");
+		LOG_ERROR("Unable to add Foreground Layer: Layer is nullptr");
 		return;
 	}
 
@@ -99,7 +99,7 @@ void Level::AddForegroundLayer(Layer* layer) {
 
 void Level::AddCollisionRect(CollisionRect* rect){
 	if(rect == nullptr){
-		LOG_ERROR("Unable to add rect: rect is NULL");
+		LOG_ERROR("Unable to add rect: rect is nullptr");
 		return;
 	}
 	_collisionRects.push_back(rect); 
@@ -108,7 +108,7 @@ void Level::AddCollisionRect(CollisionRect* rect){
 
 void Level::AddEnemy(Enemy* enemy){
 	if(enemy == nullptr) {
-		LOG_WARNING("Unable to add enemy. Enemy is NULL.");
+		LOG_WARNING("Unable to add enemy. Enemy is nullptr.");
 		return;
 	}
 	_enemies.push_back(enemy);
@@ -116,7 +116,7 @@ void Level::AddEnemy(Enemy* enemy){
 
 void Level::AddGameObject(GameObject* gameObject){
 	if(gameObject == nullptr) {
-		LOG_WARNING("Unable to add Game Object. Game Object is NULL.");
+		LOG_WARNING("Unable to add Game Object. Game Object is nullptr.");
 	}
 	_gameObjects.push_back(gameObject);
 }

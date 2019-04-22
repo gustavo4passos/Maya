@@ -17,7 +17,7 @@ class LevelLoader {
 
 public:
 
-    static Level* ParseLevel(const std::string& filename); // Returns NULL if unable to load level
+    static Level* ParseLevel(const std::string& filename); // Returns nullptr if unable to load level
     static Region* ParseRegion(const std::string& filename);
 
 private:

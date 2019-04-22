@@ -6,7 +6,7 @@
 
 class Camera : public EventListener {
 public:
-    Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, int fovbottom, GameObject* subject = NULL);
+    Camera(float fovw, float fovh, int fovleft, int fovright, int fovtop, int fovbottom, GameObject* subject = nullptr);
     ~Camera();
 
 	// Updates the camera position in relation to the subject.
@@ -15,7 +15,7 @@ public:
 	// the world limits.  
     void Update(); 
 	
-	// If subject == NULL, the camera will be positioned at (0, 0)
+	// If subject == nullptr, the camera will be positioned at (0, 0)
     void FocusAt(const GameObject* subject);
 
 	// Sets the field of view and world limits for the camera

@@ -61,8 +61,6 @@ bool Game::Init() {
     
     _running = false;
 
-    LevelFile levelFile = LevelFile("../res/levels/fofofo.tmx");
-    levelFile.OpenFile();
     return true;
 }
 
@@ -129,8 +127,8 @@ void Game::Clean() {
     delete _renderer;
     delete _window;
 
-    _renderer = NULL;
-    _window = NULL; 
+    _renderer = nullptr;
+    _window = nullptr; 
 }
 
 void Game::ChangeResolution(int width, int height) {

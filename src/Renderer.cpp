@@ -7,9 +7,9 @@
 #include "../include/Window.h"
 
 Renderer::Renderer() :
-	_spriteVAO(NULL),
-	_spriteVBO(NULL),
-	_spriteShader(NULL),
+	_spriteVAO(nullptr),
+	_spriteVBO(nullptr),
+	_spriteShader(nullptr),
 	_currentlyBoundShader(0),
 	_currentlyBoundTexture(0)
 { }
@@ -24,14 +24,14 @@ Renderer::~Renderer() {
 	delete _spriteShader;
 	delete _primitivesShader;
 
-	_spriteVAO = NULL;
-	_spriteVBO = NULL;
+	_spriteVAO = nullptr;
+	_spriteVBO = nullptr;
 
-	_primitivesVAO = NULL;
-	_primitivesVBO = NULL;
+	_primitivesVAO = nullptr;
+	_primitivesVBO = nullptr;
 
-	_spriteShader = NULL;
-	_primitivesShader = NULL; 
+	_spriteShader = nullptr;
+	_primitivesShader = nullptr; 
 }
 
 bool Renderer::Init(Camera* camera) {
@@ -108,7 +108,7 @@ bool Renderer::Init(Camera* camera) {
 	GLCall(glGenFramebuffers(1, &osframebuffer));
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, osframebuffer));
 
-	fbtexture = new Texture(NULL, INTERNAL_RESOLUTION_W, INTERNAL_RESOLUTION_H, 3);
+	fbtexture = new Texture(nullptr, INTERNAL_RESOLUTION_W, INTERNAL_RESOLUTION_H, 3);
 	BindTexture(fbtexture); 
 
 	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbtexture->textureID(), 0));
@@ -127,7 +127,7 @@ bool Renderer::Init(Camera* camera) {
 
 void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect, bool flip) {
 	if(!tex){
-		LOG_ERROR("Texture is NULL.");
+		LOG_ERROR("Texture is nullptr.");
 		DEBUG_BREAK();
 		return;
 	}
@@ -142,7 +142,7 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect, bool flip) {
 	model = glm::translate(model, glm::vec3(dstRect->x(), dstRect->y(), 0.f));
 
 	// Camera translation
-	if(_camera != NULL){
+	if(_camera != nullptr){
 		model = glm::translate(model, glm::vec3(-_camera->x(), -_camera->y(), 0.f));
 	}
 
@@ -162,13 +162,13 @@ void Renderer::Draw(Texture* tex, Rect* srcRect, Rect* dstRect, bool flip) {
 
 
 void Renderer::DrawTexturedMesh(Mesh* mesh, Texture* texture, float parallax){
-	if(mesh == NULL) {
+	if(mesh == nullptr) {
 		LOG_ERROR("Unable to draw textured mesh: mesh is null.");
 		DEBUG_BREAK();
 		return;
 	}
 
-	if(texture == NULL){
+	if(texture == nullptr){
 		LOG_ERROR("Unable to draw texture mesh: texture is null.");
 		DEBUG_BREAK();
 		return;
@@ -205,12 +205,12 @@ void Renderer::DrawRepeatingLayer(Texture* tex, int textureHeight, float y,  flo
 
 void Renderer::DrawRect(Rect* rect, Color* color) {
 	if(!rect){
-		LOG_ERROR("Rect is NULL.");
+		LOG_ERROR("Rect is nullptr.");
 		DEBUG_BREAK();
 		return;
 	}
 	if(!color){
-		LOG_ERROR("Color is NULL.");
+		LOG_ERROR("Color is nullptr.");
 		DEBUG_BREAK();
 		return;
 	}
@@ -221,12 +221,12 @@ void Renderer::DrawRect(Rect* rect, Color* color) {
 
 void Renderer::DrawFillRect(Rect* rect, Color* color) {
 	if(!rect){
-		LOG_ERROR("Rect is NULL.");
+		LOG_ERROR("Rect is nullptr.");
 		DEBUG_BREAK();
 		return;
 	}
 	if(!color){
-		LOG_ERROR("Color is NULL.");
+		LOG_ERROR("Color is nullptr.");
 		DEBUG_BREAK();
 		return;
 	}

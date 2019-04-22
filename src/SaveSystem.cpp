@@ -17,7 +17,7 @@ void SaveSystem::SaveGame() {
 
     Region* currentRegion = ServiceLocator::GetCurrentRegion();
     Vector2D playerPosition = ServiceLocator::GetPlayer()->position();
-    std::map<std::string, bool> gameSwitches = ServiceLocator::GetGameSwitches()->_switches;
+    std::map<std::string, bool> gameSwitches = ServiceLocator::GetGameSwitches()->GetSwitches();
 
     // Create document and nodes
     XMLDocument savefile;
@@ -154,7 +154,7 @@ Save* SaveSystem::LoadGame() {
     save->gameSwitchesState = gameSwitches;
 
     for(auto Switch : gameSwitches) {
-        ServiceLocator::GetGameSwitches()->_switches[Switch.first] = Switch.second;
+        ServiceLocator::GetGameSwitches()->PushSwitch(Switch.first, Switch.second);
     }
 
     return save;

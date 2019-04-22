@@ -27,7 +27,7 @@ bool ResourceManager::LoadTexture(const std::string& filename, const std::string
     int w, h, nChannels;
     unsigned char* textureData = stbi_load(filename.c_str(), &w, &h, &nChannels, 0);
 
-    if(textureData == NULL) {
+    if(textureData == nullptr) {
         LOG_ERROR("Unable to load image file: " + filename);
         return false;
     }
@@ -52,7 +52,7 @@ Texture* const ResourceManager::GetTexture(const std::string& name){
 		std::map<std::string, Texture*>::const_iterator texEntry = _textureMap.find(name);
 		if(texEntry == _textureMap.end()){
 			LOG_ERROR("Texture is not in texture map: " << name);
-			return NULL;
+			return nullptr;
 		}
 		return texEntry->second;
 	#else
@@ -287,7 +287,7 @@ Mesh* const ResourceManager::GetMesh(const std::string& name) {
 	if(meshEntry == _meshMap.end()){
 		LOG_ERROR("Mesh is not in mesh map: " + name);
 		// DEBUG_BREAK();
-		return NULL;
+		return nullptr;
 	}
 	return meshEntry->second;
 }

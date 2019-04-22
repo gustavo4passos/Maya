@@ -17,7 +17,7 @@ Window::Window(const char* title, int width, int height, int openGLMajorVersion,
   _openGLMajorVersion(openGLMajorVersion),
   _openGLMinorVersion(openGLMinorVersion),
   _vsync(vsync), _fullscreen(fullscreen),
-  _windowHndl(NULL)
+  _windowHndl(nullptr)
   { }
 
 Window::~Window() {
@@ -45,13 +45,13 @@ bool Window::Init() {
   _windowHndl = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
 		                _windowedWidth, _windowedHeight, SDL_WINDOW_OPENGL);
 
-  if(_windowHndl == NULL) {
+  if(_windowHndl == nullptr) {
     LOG_ERROR("Unable to create window. " + std::string(SDL_GetError()));
     return false;
   }
   else {
     _openGLContext = SDL_GL_CreateContext(_windowHndl);
-    if(_openGLContext == NULL) {
+    if(_openGLContext == nullptr) {
       LOG_ERROR("Unable to create OpenGL context. " + std::string(SDL_GetError()));
       return false;
     }
@@ -79,9 +79,9 @@ bool Window::Init() {
 }
 
 void Window::Close() {
-  if(_windowHndl != NULL){
+  if(_windowHndl != nullptr){
     SDL_DestroyWindow(_windowHndl);
-    _windowHndl = NULL;
+    _windowHndl = nullptr;
   }
 
   if(SDL_WasInit(SDL_INIT_VIDEO)){
@@ -185,7 +185,7 @@ bool Window::ShowQuitMessageBox() {
 	messageBox.message = "Do you really want to quit?";
 	messageBox.numbuttons = 2;
 	messageBox.buttons = buttons;
-	messageBox.colorScheme = NULL; //Uses the OS color scheme
+	messageBox.colorScheme = nullptr; //Uses the OS color scheme
 	
 	int buttonPressed;
 	if(SDL_ShowMessageBox(&messageBox, &buttonPressed)){

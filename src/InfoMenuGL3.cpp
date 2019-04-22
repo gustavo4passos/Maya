@@ -165,7 +165,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 		switch(_currentMenu){
 			case OPTIONS_MENU:
 			{
-				if(ImGui::Begin("Settings", NULL, flags)){
+				if(ImGui::Begin("Settings", nullptr, flags)){
 					ImFont font = *ImGui::GetFont();
 					font.FontSize = 20;
 					ImGui::PushFont(&font);
@@ -205,7 +205,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 			} break;
 			case VIDEO_MENU:
 			{
-				if(ImGui::Begin("Video Options", NULL, flags)){
+				if(ImGui::Begin("Video Options", nullptr, flags)){
 
 					ImGui::Indent();
 					ImGui::Indent();
@@ -255,7 +255,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 				// So if the screen is fullscreenized while at the set resolution menu, return to the video menu
 				if(ServiceLocator::GetWindow()->IsFullscreen()) _currentMenu = VIDEO_MENU;
 				else {
-					if(ImGui::Begin("Set Resolution", NULL, flags)) {
+					if(ImGui::Begin("Set Resolution", nullptr, flags)) {
 						ImGui::Indent();
 						ImGui::Indent();
 						ImGui::Dummy(ImVec2(0, 10));
@@ -304,7 +304,7 @@ void InfoMenuGL3::Render(Renderer* renderer) {
 
 			case SOUND_MENU: 
 			{
-				if(ImGui::Begin("Sound Settings", NULL, flags)) {
+				if(ImGui::Begin("Sound Settings", nullptr, flags)) {
 					ImGui::Indent();
 					ImGui::Indent();
 
@@ -356,12 +356,12 @@ bool InfoMenuGL3::OnNotify(Event* event) {
 
 void InfoMenuGL3::RenderCollisionBoxes(Renderer* renderer){
 	Rect mayaRct = _player->collisionRect();
-	Rect weaponRct = dynamic_cast<Maya*>(_player)->weapon()->collisionRect();
+	Rect weaponRct = static_cast<Maya*>(_player)->weapon()->collisionRect();
 
 	DrawCollisionBox(&mayaRct, renderer);
 	DrawCollisionBox(&weaponRct, renderer);
 
-	if(_levelptr != NULL) {
+	if(_levelptr != nullptr) {
 		for(std::vector<CollisionRect*>::iterator it = _levelptr->_collisionRects.begin();
 			it != _levelptr->_collisionRects.end(); ++it)
 		{
@@ -387,6 +387,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		ImGui::Spacing();
 		ImGui::Value("FPS", ImGui::GetIO().Framerate);
 		ImGui::Separator();
+		ImGui::Text(ServiceLocator::GetCurrentLevel()->filename().c_str());
 		ImGui::Spacing();
 
 		// if(ImGui::BeginMenu("Clear color")){
@@ -399,7 +400,7 @@ void InfoMenuGL3::RenderMenuBar(Renderer* renderer){
 		// ImGui::Separator();
 		// ImGui::Spacing();
 
-	// if(_levelptr != NULL) {
+	// if(_levelptr != nullptr) {
 	// 	if(ImGui::BeginMenu("Collision rects")){
 	// 		for(unsigned int i = 0; i < _levelptr->_collisionRects.size(); i++){
 	// 			std::stringstream objectname;
@@ -538,9 +539,11 @@ void InfoMenuGL3::RenderGameObjectInfoMenu(){
 		ImGui::Value("VelY", _player->velocity().y());
 
 		ImGui::Spacing();
-		LOCAL_PERSIST float gravity = PhysicsEngine::_gravity.y();
-		if(ImGui::InputFloat("Gravity", &gravity)){
-		  	PhysicsEngine::_gravity.setY(gravity);
+		LOCAL_PERSIST Vector2D gravityForce = PhysicsEngine::GetGravityForce();
+		LOCAL_PERSIST float gravityY = gravityForce.y();
+		if(ImGui::InputFloat("Gravity", &gravityY)){
+			gravityForce.setY(gravityY);
+		  	PhysicsEngine::SetGravityForce(gravityForce);
 		}
 
 		ImGui::End();
@@ -558,7 +561,7 @@ std::string InfoMenuGL3::OpenFileDialog(){
 	char filename[255];
 	OPENFILENAME c = { };
 	c.lStructSize = sizeof(c);
-	c.hInstance = NULL;
+	c.hInstance = nullptr;
 	c.lpstrFilter = "TMX Files (.tmx)\0*.tmx\0";
 	c.lpstrFile = filename;
 	c.lpstrFile[0] = '\0';

@@ -53,7 +53,7 @@ void Region::Update() {
         Event* unresolvedEvent = _unresolvedEvents.back().get();
 
         if(unresolvedEvent->type() == EventType::PLAYER_HIT_TELEPORT) {
-            PlayerHitTeleportEvent* event = dynamic_cast<PlayerHitTeleportEvent*>(unresolvedEvent);
+            PlayerHitTeleportEvent* event = static_cast<PlayerHitTeleportEvent*>(unresolvedEvent);
             ChangeCurrentLevel(event->destinationLevel());
             ServiceLocator::GetPlayer()->setPosition(event->destinationPosition().x(), event->destinationPosition().y());
         }
@@ -91,7 +91,7 @@ bool Region::AddLevel(Level* level, const std::string& levelID){
     }
 
     if(level == nullptr){
-        LOG_ERROR("Unable to add level to region. ID [\"" + levelID + "\"]. Level is NULL");
+        LOG_ERROR("Unable to add level to region. ID [\"" + levelID + "\"]. Level is nullptr");
         return false;
     }
 

@@ -8,12 +8,16 @@
 #include "../include/ActivateSwitchEvent.h"
 
 Vector2D PhysicsEngine::_gravity = Vector2D(0, 0.32);
-Level* PhysicsEngine::_currentLevel = NULL;
+Level* PhysicsEngine::_currentLevel = nullptr;
 std::set<std::pair<GameObject*, CollisionEvent>> PhysicsEngine::_unsentCollisionEvents;
 
 void PhysicsEngine::ApplyGravity(GameObject* gameObject){
     Vector2D newVelocity =  gameObject->velocity() + _gravity;
     gameObject->setVelocity( newVelocity.x() , newVelocity.y());
+}
+
+void PhysicsEngine::SetGravityForce(const Vector2D& strength) {
+    _gravity = strength;
 }
 
 bool PhysicsEngine::CheckCollision(Rect* one, Rect* two){
@@ -46,7 +50,7 @@ CollisionPosition PhysicsEngine::CheckCollisionPosition(GameObject* gameObject1,
 
 bool PhysicsEngine::OnGround(GameObject* gameObject){
     if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        LOG_ERROR("_currentLevel in PhysicsEngine is nullptr. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
 
@@ -89,7 +93,7 @@ bool PhysicsEngine::OnWallLeft(GameObject* gameObject){
 
 bool PhysicsEngine::HitHead(GameObject* gameObject){
     if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        LOG_ERROR("_currentLevel in PhysicsEngine is nullptr. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
 
@@ -164,7 +168,7 @@ bool PhysicsEngine::CheckCollisionAgainstLevel(GameObject* gameObject, const Vec
     Rect rect(*positionToTry, gameObject->collisionRect().w(), gameObject->collisionRect().h());
     Rect previousPosition(*furthestPosition, gameObject->collisionRect().w(), gameObject->collisionRect().h());
     if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        LOG_ERROR("_currentLevel in PhysicsEngine is nullptr. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
 
@@ -223,7 +227,7 @@ void PhysicsEngine::NewUnsentCollisonEvent(GameObject* gameObject1, GameObject* 
 
 bool PhysicsEngine::CheckCollisionAgainstLevelCollisionRects(Rect* rect) {
     if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        LOG_ERROR("_currentLevel in PhysicsEngine is nullptr. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
 
@@ -239,7 +243,7 @@ bool PhysicsEngine::CheckCollisionAgainstLevelCollisionRects(Rect* rect) {
 
 bool PhysicsEngine::CheckCollisionAgainstLevelGameObjects(GameObject* gameObject) {
     if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        LOG_ERROR("_currentLevel in PhysicsEngine is nullptr. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
 
@@ -263,7 +267,7 @@ bool PhysicsEngine::CheckCollisionAgainstLevelGameObjects(GameObject* gameObject
 
 GameObject* PhysicsEngine::CheckCollisionAgainstLevelGameObjects(Rect* rect) {
       if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        LOG_ERROR("_currentLevel in PhysicsEngine is nullptr. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
 
@@ -285,7 +289,7 @@ GameObject* PhysicsEngine::CheckCollisionAgainstLevelGameObjects(Rect* rect) {
 
 void PhysicsEngine::CheckCollisionAgainstEnemies(GameObject* gameObject){
     if(!_currentLevel){
-        LOG_ERROR("_currentLevel in PhysicsEngine is NULL. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
+        LOG_ERROR("_currentLevel in PhysicsEngine is nullptr. (Forgot to call PhysicsEngine::SetCurrentLevel(Level* level)?)");
         DEBUG_BREAK();
     }
 

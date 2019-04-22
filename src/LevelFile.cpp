@@ -101,8 +101,6 @@ bool LevelFile::OpenFile()
         GetEnemiesFromEnemiesGroup(_enemiesGroupNode);
     }
 
-    std::cout << "Size " << _levelGameObjects.size() << std::endl;
-
     return true;
 }
 

@@ -38,7 +38,7 @@ void Button::Update() {
 void Button::Draw(Renderer* renderer, float deltatime) {
     _animation.Render(renderer, _collisionRect.origin()); 
 }
-
+#include "../include/SaveSystem.h"
 void Button::TurnOn() {
     _isPressed = true;
     SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("button-press"), false);

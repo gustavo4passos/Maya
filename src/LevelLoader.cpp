@@ -23,7 +23,7 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 	// load the XML document
 	if (!xmlDoc.LoadFile(filename)) {
         LOG_ERROR("Unable to open level file \"" + filename + "\" - " + std::string(xmlDoc.ErrorDesc()));
-		return NULL;
+		return nullptr;
 	}
 
 	// get the root element
@@ -32,8 +32,8 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 	std::vector<int> tileLayer; // ints vector that will contain the tile values
 
 	Level* level;
-	Layer* layer = NULL;
-	Tileset* tileset = NULL;
+	Layer* layer = nullptr;
+	Tileset* tileset = nullptr;
 
 	int width, height, tileWidth, tileHeight;
 	pRoot->Attribute("width", &width);
@@ -42,33 +42,33 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 	pRoot->Attribute("tileheight", &tileHeight);
 
     // Looping the xml file to find the tileset
-	TiXmlElement* e = NULL;
+	TiXmlElement* e = nullptr;
 
-	for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) {
+	for(e = pRoot->FirstChildElement(); e != nullptr; e = e->NextSiblingElement()) {
 		if(e->Value() == std::string("tileset")){
         	if(!(tileset = ParseTileset(e))){
-				LOG_ERROR("Tileset object is NULL");
-				return NULL;
+				LOG_ERROR("Tileset object is nullptr");
+				return nullptr;
 			}
 			break;
         }
 	}
 
-    if(e == NULL){
+    if(e == nullptr){
         LOG_ERROR("Cannot find tileset node on xml file");
-        return NULL;
+        return nullptr;
 	}
 
 	level = new Level(tileset, width, height, tileWidth, tileHeight, filename);
 
-    for(e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()){
+    for(e = pRoot->FirstChildElement(); e != nullptr; e = e->NextSiblingElement()){
         if(e->Value() == std::string("layer")){
             layer = ParseLayer(e, level, tileset);
 
-			if(layer == NULL){
+			if(layer == nullptr){
 			  	LOG_ERROR("Unable to parse layer " + std::string(e->Attribute("name")));
 				delete level;
-				return NULL;
+				return nullptr;
 			}
 
 			if(!layer->IsForeground()) {
@@ -94,7 +94,7 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 		}
     }
 
-	for(e=pRoot->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+	for(e=pRoot->FirstChildElement(); e!=nullptr; e = e->NextSiblingElement()){
 		if(e->Value() == std::string("objectgroup")){
 			ParseObjectGroup(e, level);
 		}
@@ -106,9 +106,9 @@ Level* LevelLoader::ParseLevel(const std::string& filename){
 Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
     TiXmlElement* imagenode = node->FirstChildElement();
 	// Checks if image node is absent
-	if(imagenode == NULL || imagenode->Value() != std::string("image")){
+	if(imagenode == nullptr || imagenode->Value() != std::string("image")){
 	  	LOG_ERROR("Tileset node missing image field.");
-		return NULL;
+		return nullptr;
 	}
 
     std::string source;
@@ -131,8 +131,8 @@ Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
     spacingFieldCheck = node->Attribute("spacing", &spacing);
 
 	// If margin and/or spacing fields are absent, set them to 0
-	if(marginFieldCheck == NULL) { margin = 0; }
-	if(spacingFieldCheck == NULL) { spacing = 0; }
+	if(marginFieldCheck == nullptr) { margin = 0; }
+	if(spacingFieldCheck == nullptr) { spacing = 0; }
 
     source = std::string(imagenode->Attribute("source"));
     imagenode->Attribute("width", &width);
@@ -142,7 +142,7 @@ Tileset* LevelLoader::ParseTileset(TiXmlElement* node){
 	// Tries to load tileset texture to video memory
 	if(!ResourceManager::LoadTexture(source, name)) {
 		LOG_ERROR("Unable to load tileset texture. Filename: " + source);
-		return NULL;
+		return nullptr;
 	}
 
     return new Tileset(source, name, width, height, tileWidth, tileHeight, margin, spacing, nColumns, nRows);
@@ -161,7 +161,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 
     test = std::string(objectsNode->Attribute("name"));
 	if(test == std::string("CollisionLayer")){
-		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=nullptr; e = e->NextSiblingElement()){
 
 			if(e->Value() == std::string("object")){
 				if(CollisionRect* rct = ParseRect(e)){
@@ -173,7 +173,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 		}
 	}
 	else if(test == std::string("GameObjects")){
-		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=nullptr; e = e->NextSiblingElement()){
 			if(e->Value() == std::string("object")){
 				std::string temp;
 
@@ -195,13 +195,13 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 						continue;
 					else{
 						TiXmlElement* initiallyOpen = GetProperty(propertiesNode, "initiallyOpen");
-						if(initiallyOpen == NULL){
+						if(initiallyOpen == nullptr){
 							LOG_WARNING("Door's inittialyOpen property is missing. Door not loaded");
 							continue;
 						}
 						initiallyOpen->QueryBoolAttribute("value", &initialState);
 						TiXmlElement* switchesRequiredProperty = GetProperty(propertiesNode, "switchesRequired");
-						if(switchesRequiredProperty == NULL){
+						if(switchesRequiredProperty == nullptr){
 							LOG_WARNING("Door's switchesRequired property is missing, Door not loaded");
 							continue;
 						}
@@ -218,7 +218,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					e->QueryIntAttribute("id", &id);
 
 					TiXmlElement* propertiesNode = e->FirstChildElement();
-					if(propertiesNode == NULL) {
+					if(propertiesNode == nullptr) {
 						LOG_WARNING("Button missing properties field. Ignoring...");
 						continue;
 					}
@@ -226,15 +226,13 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 						continue;
 					else{
 						TiXmlElement* activatesSwitchNode = GetProperty(propertiesNode, "activatesSwitch");
-						if(activatesSwitchNode == NULL){
+						if(activatesSwitchNode == nullptr){
 							LOG_WARNING("Button's activatesSwitch is missing, button not loaded");
 							continue;
 						}
 
 						activatesSwitch = std::string(activatesSwitchNode->Attribute("value"));
-						Button* button = new Button(x, y, activatesSwitch, false);
-						button->setId(id);
-						level->AddGameObject(button);
+						level->AddGameObject(new Button(x, y, activatesSwitch, false));
 					}
 				}
 				else if(temp == std::string("platformSwitch")){
@@ -248,7 +246,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 						continue;
 					else{
 						TiXmlElement* activatesSwitchNode = GetProperty(propertiesNode, "activatesSwitch");
-						if(activatesSwitchNode == NULL){
+						if(activatesSwitchNode == nullptr){
 							LOG_WARNING("Button's activeatesSwitch is missing, button not loaded");
 							continue;
 						}
@@ -269,7 +267,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 					else{
 
 						TiXmlElement* destinationXProperty = GetProperty(propertiesNode, "destinationX");
-						if(destinationXProperty == NULL){
+						if(destinationXProperty == nullptr){
 							LOG_WARNING("MovingPlatform destination x is missing, MovingPlatform not loaded");
 							continue;
 						}
@@ -278,14 +276,14 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 
 
 						TiXmlElement* destinationYProperty = GetProperty(propertiesNode, "destinationY");
-						if(destinationYProperty == NULL) {
+						if(destinationYProperty == nullptr) {
 							LOG_WARNING("MovingPlatform destination y is missing. Moving platform not loaded");
 							continue;
 						}
 						destinationYProperty->QueryFloatAttribute("value", &destinationY);
 
 						TiXmlElement* requiresSwitchProperty = GetProperty(propertiesNode, "requiresSwitch");
-						if(requiresSwitchProperty != NULL && (requiresSwitchProperty->Attribute("value") != NULL)) {
+						if(requiresSwitchProperty != nullptr && (requiresSwitchProperty->Attribute("value") != nullptr)) {
 							requiresSwitch = std::string(requiresSwitchProperty->Attribute("value"));
  						}
 
@@ -306,7 +304,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
         std::string enemySwitch;
         TiXmlElement* enemyTypeNode;
         TiXmlElement* enemySwitchNode;
-        for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+        for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=nullptr; e = e->NextSiblingElement()){
             if(e->Value() == std::string("object")){
                 e->QueryFloatAttribute("x", &x);
                 e->QueryFloatAttribute("y", &y);
@@ -319,7 +317,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                 else{
                     enemyTypeNode = GetProperty(propertiesNode, "type");
 
-                    if(enemyTypeNode != NULL){
+                    if(enemyTypeNode != nullptr){
                         enemyType = std::string(enemyTypeNode->Attribute("value"));
 
                     } else {
@@ -329,7 +327,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 
                     enemySwitchNode = GetProperty(propertiesNode, "switch");
 
-                    if(enemySwitchNode != NULL){
+                    if(enemySwitchNode != nullptr){
                         enemySwitch = std::string(enemySwitchNode->Attribute("value"));
 
                     } else {
@@ -349,14 +347,14 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 		float destinationX;
 		float destinationY;
 		TiXmlElement* zoneNode;
-		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+		for(TiXmlElement* e = objectsNode->FirstChildElement(); e!=nullptr; e = e->NextSiblingElement()){
             if(e->Value() == std::string("object")){
 				e->QueryFloatAttribute("x", &x);
                 e->QueryFloatAttribute("y", &y);
                 e->Attribute("width", &width);
                 e->Attribute("height", &height);
 
-				if(e->Attribute("type") == NULL) {
+				if(e->Attribute("type") == nullptr) {
 					LOG_WARNING("Zone's type is missing. Ignoring...");
 					return;
 				}
@@ -367,7 +365,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
                 else{
                     zoneNode = GetProperty(propertiesNode, "destinationLevel");
 
-                    if(zoneNode != NULL){
+                    if(zoneNode != nullptr){
                         destinationLevel = std::string(zoneNode->Attribute("value"));
                     } else {
                         LOG_WARNING("Zone's destination is missing, zone not loaded");
@@ -376,7 +374,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 
 					zoneNode = GetProperty(propertiesNode, "destinationX");
 
-					if(zoneNode != NULL){
+					if(zoneNode != nullptr){
                        zoneNode->QueryFloatAttribute("value", &destinationX);
                     } else {
                         LOG_WARNING("Zone's destinationX is missing, zone not loaded");
@@ -385,7 +383,7 @@ void LevelLoader::ParseObjectGroup(TiXmlElement* objectsNode, Level* level){
 
 					zoneNode = GetProperty(propertiesNode, "destinationY");
 
-					if(zoneNode != NULL){
+					if(zoneNode != nullptr){
                        zoneNode->QueryFloatAttribute("value", &destinationY);
                     } else {
                         LOG_WARNING("Zone's destinationY is missing, zone not loaded");
@@ -410,34 +408,34 @@ CollisionRect* LevelLoader::ParseRect(TiXmlElement* objectNode){
 	int width, height;
 
 	const char* aux = objectNode->Attribute("id");
-	if(aux == NULL){
+	if(aux == nullptr){
 		LOG_ERROR("Id field missing in object from objectgroup");
 	} else {
 		id = std::string(objectNode->Attribute("id"));
 	}
 	if(!objectNode->Attribute("x", &x)){
 		LOG_ERROR("X field missing in object from objectgroup. Id: " + id);
-		return NULL;
+		return nullptr;
 	}
 	if(!objectNode->Attribute("y", &y)){
 		LOG_ERROR("Y field missing in object from objectgroup. Id: " + id);
-		return NULL;
+		return nullptr;
 	}
 	if(!objectNode->Attribute("width", &width)){
 		LOG_ERROR("Width field missing in object from objectgroup. Id: " + id);
-		return NULL;
+		return nullptr;
 	}
 	if(!objectNode->Attribute("height", &height)){
 		LOG_ERROR("Height field missing in object from objectgroup. Id: " + id);
-		return NULL;
+		return nullptr;
 	}
-	if(objectNode->FirstChildElement() == NULL){
+	if(objectNode->FirstChildElement() == nullptr){
 		return new CollisionRect(Rect(x, y, width, height), CollisionBehavior::BLOCK);
 	}
 	else{
 		TiXmlElement* rectProperties = objectNode->FirstChildElement();
-		TiXmlElement* e = NULL;
-		for(e = rectProperties->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
+		TiXmlElement* e = nullptr;
+		for(e = rectProperties->FirstChildElement(); e!= nullptr; e = e->NextSiblingElement()){
 			if(std::string(e->Value()) == std::string("property")){
 				if(std::string(e->Attribute("name")) == std::string("collisionbehavior")){
 					std::string collision = e->Attribute("value");
@@ -461,10 +459,10 @@ CollisionRect* LevelLoader::ParseRect(TiXmlElement* objectNode){
 }
 
 Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* tileset){
-    if(layerNode == NULL){
-        LOG_ERROR("layerNode is NULL");
+    if(layerNode == nullptr){
+        LOG_ERROR("layerNode is nullptr");
         DEBUG_BREAK();
-		return NULL;
+		return nullptr;
     }
 
 	// Query name, width and height info
@@ -480,8 +478,8 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 	layerNode->Attribute("height", &height);
 
 	// Find layer properties node
-	TiXmlElement* propertiesNode = NULL;
-	for(propertiesNode = layerNode->FirstChildElement(); propertiesNode != NULL; propertiesNode = propertiesNode->NextSiblingElement()){
+	TiXmlElement* propertiesNode = nullptr;
+	for(propertiesNode = layerNode->FirstChildElement(); propertiesNode != nullptr; propertiesNode = propertiesNode->NextSiblingElement()){
 	  	if(propertiesNode->Value() == std::string("properties")){
 		  	break;
 		}
@@ -489,9 +487,9 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 
 	// Read layer properties data
 	double zDistance = 1; // Sets zDistance to the default value, in case it isn't specified
-	if(propertiesNode != NULL){
-		TiXmlElement* propertyElement = NULL;
-		for(propertyElement = propertiesNode->FirstChildElement(); propertyElement != NULL; propertyElement = propertyElement->NextSiblingElement()){
+	if(propertiesNode != nullptr){
+		TiXmlElement* propertyElement = nullptr;
+		for(propertyElement = propertiesNode->FirstChildElement(); propertyElement != nullptr; propertyElement = propertyElement->NextSiblingElement()){
 			// Convert to lower case, to make the property name case insensitive
 			std::string loweredCasePropertyName = propertyElement->Attribute("name");
 			std::transform(loweredCasePropertyName.begin(), loweredCasePropertyName.end(), loweredCasePropertyName.begin(), ::tolower);
@@ -511,8 +509,8 @@ Layer* LevelLoader::ParseLayer(TiXmlElement* layerNode, Level* level, Tileset* t
 	}
 
 	// Load layers mesh data to the GPU
-	TiXmlElement* dataNode = NULL;
-	for(dataNode = layerNode->FirstChildElement(); dataNode != NULL; dataNode = dataNode->NextSiblingElement()) {
+	TiXmlElement* dataNode = nullptr;
+	for(dataNode = layerNode->FirstChildElement(); dataNode != nullptr; dataNode = dataNode->NextSiblingElement()) {
 		if(dataNode->Value() == std::string("data")){ // find the dataNode and call ParseLayerData
 			layerData = ParseLayerData(dataNode);
 			LoadLayerMesh(layerData, level, tileset, name);
@@ -587,13 +585,13 @@ std::vector<int> LevelLoader::ParseLayerData(TiXmlElement* dataNode){
     std::vector<int> layerdata;
 
 	//finding the text in xml and attributing it to t
-	if (dataNode != NULL) {
-		for (TiXmlNode* e = dataNode->FirstChild(); e != NULL; e = e->NextSibling()) {
+	if (dataNode != nullptr) {
+		for (TiXmlNode* e = dataNode->FirstChild(); e != nullptr; e = e->NextSibling()) {
 			TiXmlText* text = e->ToText();
 			t = text->Value();
 		}
 	} else {
-        LOG_ERROR("dataNode is NULL");
+        LOG_ERROR("dataNode is nullptr");
         DEBUG_BREAK();
     }
 
@@ -700,17 +698,17 @@ void LevelLoader::LoadLayerMesh(std::vector<int>& layerData, Level* level, Tiles
 }
 
 TiXmlElement* LevelLoader::GetProperty(TiXmlElement* propertiesNode, std::string propertyName){
-	if(propertiesNode==NULL){
-		LOG_ERROR("PropertiesNode is NULL");
-		return NULL;
+	if(propertiesNode==nullptr){
+		LOG_ERROR("PropertiesNode is nullptr");
+		return nullptr;
 	} else {
-		for(TiXmlElement* e = propertiesNode->FirstChildElement(); e!=NULL; e = e->NextSiblingElement()){
+		for(TiXmlElement* e = propertiesNode->FirstChildElement(); e!=nullptr; e = e->NextSiblingElement()){
 			if(std::string(e->Attribute("name")) == propertyName){
 				return e;
 			}
 		}
 	}
-	return NULL; //Property not found.
+	return nullptr; //Property not found.
 }
 
 Region* LevelLoader::ParseRegion(const std::string& filename){
@@ -726,11 +724,11 @@ Region* LevelLoader::ParseRegion(const std::string& filename){
 	// get the root element
 	TiXmlElement* pRoot = xmlDoc.RootElement();
 
-	TiXmlElement* e = NULL;
+	TiXmlElement* e = nullptr;
 
 	Region* region = new Region(filename);
 
-	for(e = pRoot->FirstChildElement(); e!= NULL; e = e->NextSiblingElement()){
+	for(e = pRoot->FirstChildElement(); e!= nullptr; e = e->NextSiblingElement()){
 		if(std::string(e->Value()) == std::string("resources")){
 			ParseRegionResources(e, region);
 		}
@@ -748,9 +746,9 @@ Region* LevelLoader::ParseRegion(const std::string& filename){
 }
 
 void LevelLoader::ParseRegionResources(TiXmlElement* ResourcesNode, Region* region){
-	TiXmlElement* e = NULL;
+	TiXmlElement* e = nullptr;
 
-	for(e = ResourcesNode->FirstChildElement(); e != NULL; e = e->NextSiblingElement()){
+	for(e = ResourcesNode->FirstChildElement(); e != nullptr; e = e->NextSiblingElement()){
 		if(std::string(e->Value()) == std::string("audio")){
 			TiXmlElement* soundEffects = e->FirstChildElement(); //SoundEfects Node
 			TiXmlElement* songs = soundEffects->NextSiblingElement(); //Songs Node
@@ -765,16 +763,16 @@ void LevelLoader::ParseRegionResources(TiXmlElement* ResourcesNode, Region* regi
 }
 
 void LevelLoader::ParseRegionLevelData(TiXmlElement* LevelDataNode, Region* region){
-	if(LevelDataNode->FirstChildElement() != NULL){
-		TiXmlElement* currentLevel = NULL;
-		for(currentLevel = LevelDataNode->FirstChildElement(); currentLevel != NULL; currentLevel = currentLevel->NextSiblingElement()){
-			if(currentLevel->Attribute("filename") == NULL){
+	if(LevelDataNode->FirstChildElement() != nullptr){
+		TiXmlElement* currentLevel = nullptr;
+		for(currentLevel = LevelDataNode->FirstChildElement(); currentLevel != nullptr; currentLevel = currentLevel->NextSiblingElement()){
+			if(currentLevel->Attribute("filename") == nullptr){
 				LOG_WARNING("LevelDataNode is missing filename");
 				continue;
 			}
 			std::string filename = std::string(currentLevel->Attribute("filename"));
 
-			if(currentLevel->Attribute("id") == NULL){
+			if(currentLevel->Attribute("id") == nullptr){
 				LOG_WARNING("LevelDataNode is missing id");
 				continue;
 			}
@@ -787,14 +785,14 @@ void LevelLoader::ParseRegionLevelData(TiXmlElement* LevelDataNode, Region* regi
 }
 
 void LevelLoader::ParseSoundEffects(TiXmlElement* SoundEffectsNode, Region* region){
-	if(SoundEffectsNode->FirstChildElement() != NULL){
-		for(TiXmlElement* currentSoundEffect = SoundEffectsNode->FirstChildElement(); currentSoundEffect != NULL; currentSoundEffect = currentSoundEffect->NextSiblingElement()){
-			if(currentSoundEffect->Attribute("filename") == NULL){
+	if(SoundEffectsNode->FirstChildElement() != nullptr){
+		for(TiXmlElement* currentSoundEffect = SoundEffectsNode->FirstChildElement(); currentSoundEffect != nullptr; currentSoundEffect = currentSoundEffect->NextSiblingElement()){
+			if(currentSoundEffect->Attribute("filename") == nullptr){
 				LOG_WARNING("SoundEffectsNode is missing filename");
 				continue;
 			}
 			std::string filename = std::string(currentSoundEffect->Attribute("filename"));
-			if(currentSoundEffect->Attribute("id") == NULL){
+			if(currentSoundEffect->Attribute("id") == nullptr){
 				LOG_WARNING("SoundEffectsNode is missing id");
 				continue;
 			}
@@ -806,14 +804,14 @@ void LevelLoader::ParseSoundEffects(TiXmlElement* SoundEffectsNode, Region* regi
 }
 
 void LevelLoader::ParseSongs(TiXmlElement* SongsNode, Region* region){
-	if(SongsNode->FirstChildElement() != NULL){
-		for(TiXmlElement* currentSong = SongsNode->FirstChildElement(); currentSong != NULL; currentSong = currentSong->NextSiblingElement()){
-			if(currentSong->Attribute("filename") == NULL){
+	if(SongsNode->FirstChildElement() != nullptr){
+		for(TiXmlElement* currentSong = SongsNode->FirstChildElement(); currentSong != nullptr; currentSong = currentSong->NextSiblingElement()){
+			if(currentSong->Attribute("filename") == nullptr){
 				LOG_WARNING("SongsNode is missing filename");
 				continue;
 			}
 			std::string filename = std::string(currentSong->Attribute("filename"));
-			if(currentSong->Attribute("id") == NULL){
+			if(currentSong->Attribute("id") == nullptr){
 				LOG_WARNING("SongsNode is missing id");
 				continue;
 			}
@@ -826,15 +824,15 @@ void LevelLoader::ParseSongs(TiXmlElement* SongsNode, Region* region){
 }
 
 void LevelLoader::ParseSprites(TiXmlElement* SpritesNode, Region* region){
-	if(SpritesNode->FirstChildElement() != NULL){
-		TiXmlElement* currentSprite = NULL;
-		for(currentSprite = SpritesNode->FirstChildElement(); currentSprite != NULL; currentSprite = currentSprite->NextSiblingElement()){
-			if(currentSprite->Attribute("filename") == NULL){
+	if(SpritesNode->FirstChildElement() != nullptr){
+		TiXmlElement* currentSprite = nullptr;
+		for(currentSprite = SpritesNode->FirstChildElement(); currentSprite != nullptr; currentSprite = currentSprite->NextSiblingElement()){
+			if(currentSprite->Attribute("filename") == nullptr){
 				LOG_WARNING("SpritesNode is missing filename");
 				continue;
 			}
 			std::string filename = std::string(currentSprite->Attribute("filename"));
-			if(currentSprite->Attribute("id") == NULL){
+			if(currentSprite->Attribute("id") == nullptr){
 				LOG_WARNING("SpritesNode is missing id");
 				continue;
 			}
