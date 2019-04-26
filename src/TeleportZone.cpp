@@ -7,8 +7,6 @@
 #include "../include/SaveSystem.h"
 #include "../include/ServiceLocator.h"
 
-#include <iostream>
-
 TeleportZone::TeleportZone(const Rect& bounds, const std::string& destinationLevel, const Vector2D& destinationPosition)
 :   
     Zone(bounds),

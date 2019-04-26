@@ -48,8 +48,8 @@ private:
     // Gets the id of the element
     // Returns -1 if the id is not found
     int GetObjectID(tinyxml2::XMLElement* objectElement);
-    void GetAllChildElements(tinyxml2::XMLElement* element, std::vector<tinyxml2::XMLElement*>* childElements);
 
+    void GetLayerElements();
     void GetCollisionRectsFromCollisionGroup(tinyxml2::XMLElement* collisionLayerElement);
     void GetEnemiesFromEnemiesGroup(tinyxml2::XMLElement* enemiesElement);
 

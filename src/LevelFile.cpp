@@ -1,6 +1,7 @@
 #include "../include/LevelFile.h"
 
 #include "../include/Logger.h"
+#include "../include/TMXHelper.h"
 
 LevelFile::LevelFile(const std::string& filename)
 :   _filename(filename),
@@ -35,16 +36,7 @@ bool LevelFile::OpenFile()
     _isOpen = true;
     _rootElement = _tmxFile.RootElement();
 
-    for(XMLElement* e = _rootElement->FirstChildElement();
-        e != nullptr;
-        e = e->NextSiblingElement())
-    {
-        if(std::string(e->Name()) == "tileset") 
-        {
-            _tilesetNode = e;
-            break;
-        }
-    }
+    _tilesetNode = TMXHelper::GetFirstChildElementWithName(_rootElement, "tileset");
 
     // Tileset node is not present
     if(_tilesetNode == nullptr) {
@@ -52,16 +44,7 @@ bool LevelFile::OpenFile()
         return false;
     }
 
-    for(XMLElement* e = _rootElement->FirstChildElement();
-        e != nullptr;
-        e = e->NextSiblingElement())
-    {
-        if(std::string(e->Name()) == "layer") 
-        {
-            _layerNodes.push_back(e);
-        }
-    }
-
+    GetLayerElements();
     if(_layerNodes.size() == 0) 
     {
         LOG_WARNING("No layer nodes were found in \"" + _filename + "\"");
@@ -89,7 +72,7 @@ bool LevelFile::OpenFile()
 
     if(_collisionObjectsGroupNode == nullptr) 
     {
-        LOG_WARNING("Level file \"" + _filename + "\" has collision objects node.");
+        LOG_WARNING("Level file \"" + _filename + "\" has no collision objects node.");
     }
     else
     {
@@ -113,16 +96,21 @@ int LevelFile::GetObjectID(tinyxml2::XMLElement* objectElement)
     return id;
 }
 
+void LevelFile::GetLayerElements()
+{
+    TMXHelper::GetAllChildElementsWithName(_rootElement, "layer", &_layerNodes);
+}
+
 void LevelFile::GetCollisionRectsFromCollisionGroup(tinyxml2::XMLElement* collisionLayerElement)
 {
-    GetAllChildElements(collisionLayerElement, &_collisionObjectsNodes);
+    TMXHelper::GetAllChildElements(collisionLayerElement, &_collisionObjectsNodes);
 }
 
 void LevelFile::GetEnemiesFromEnemiesGroup(tinyxml2::XMLElement* enemiesElement)
 {
     // The enemies element pointer is not checked here
     // This resopnsability is delegated to GetAllChildElements
-    GetAllChildElements(enemiesElement, &_enemiesNodes);
+    TMXHelper::GetAllChildElements(enemiesElement, &_enemiesNodes);
     for(auto enemyNode = _enemiesNodes.begin();
         enemyNode != _enemiesNodes.end();
         enemyNode++)
@@ -135,28 +123,5 @@ void LevelFile::GetEnemiesFromEnemiesGroup(tinyxml2::XMLElement* enemiesElement)
         }
 
         _levelGameObjects[enemyId] = *enemyNode;
-    }
-}
-
-void LevelFile::GetAllChildElements(tinyxml2::XMLElement* element, std::vector<tinyxml2::XMLElement*>* childElements)
-{
-    #ifdef M_DEBUG
-    if(element == nullptr) 
-    {
-        LOG_ERROR("Element is null.");
-        return;
-    }
-    if(childElements == nullptr)
-    {
-        LOG_ERROR("Element is null.");
-        return;
-    }    
-    #endif
-
-    for(tinyxml2::XMLElement* e = element->FirstChildElement();
-        e != nullptr;
-        e = e->NextSiblingElement())
-    {
-        childElements->push_back(e);
     }
 }

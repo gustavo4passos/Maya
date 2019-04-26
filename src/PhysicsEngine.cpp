@@ -247,7 +247,10 @@ bool PhysicsEngine::CheckCollisionAgainstLevelGameObjects(GameObject* gameObject
         DEBUG_BREAK();
     }
 
-    for(auto levelObject = _currentLevel->gameObjects().begin(); levelObject != _currentLevel->gameObjects().end(); levelObject++) {
+    for(auto levelObject = _currentLevel->gameObjects().begin(); 
+        levelObject != _currentLevel->gameObjects().end(); 
+        levelObject++)
+    {
         if( *levelObject == gameObject) continue;
 
         if((*levelObject)->collisionRect().collisionBehavior() == CollisionBehavior::IGNORE) {
@@ -271,13 +274,19 @@ GameObject* PhysicsEngine::CheckCollisionAgainstLevelGameObjects(Rect* rect) {
         DEBUG_BREAK();
     }
 
-    for(auto levelObject = _currentLevel->gameObjects().begin(); levelObject != _currentLevel->gameObjects().end(); levelObject++) {
+    for(auto levelObject = _currentLevel->gameObjects().begin(); 
+        levelObject != _currentLevel->gameObjects().end(); 
+        levelObject++) 
+    {
         Rect collisionRect = (*levelObject)->collisionRect();
         if(CheckCollision(rect, &collisionRect)) {
             return *levelObject;
         }
     }
-    for(auto levelEnemy = _currentLevel->enemies().begin(); levelEnemy != _currentLevel->enemies().end(); levelEnemy++) {
+    for(auto levelEnemy = _currentLevel->enemies().begin(); 
+        levelEnemy != _currentLevel->enemies().end(); 
+        levelEnemy++) 
+    {
         Rect collisionRect = (*levelEnemy)->collisionRect();
         if(CheckCollision(rect, &collisionRect)) {
             return *levelEnemy;
