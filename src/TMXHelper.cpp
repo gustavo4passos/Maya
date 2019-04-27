@@ -15,7 +15,7 @@ void TMXHelper::GetAllChildElements(
     }
 }
 
- tinyxml2::XMLElement* TMXHelper::GetFirstChildElementWithName(
+ tinyxml2::XMLElement* TMXHelper::GetChildElementByName(
         tinyxml2::XMLElement* element,
         const std::string& name)
 {
@@ -29,7 +29,7 @@ void TMXHelper::GetAllChildElements(
     return nullptr;
 }
 
-void TMXHelper::GetAllChildElementsWithName(
+void TMXHelper::GetChildElementsByName(
         tinyxml2::XMLElement* element, 
         const std::string& name, 
         std::vector<tinyxml2::XMLElement*>* elements)
@@ -37,11 +37,29 @@ void TMXHelper::GetAllChildElementsWithName(
     if(!CheckPointerValidity(element, elements)) return; 
 
     for(auto e = element->FirstChildElement(); 
+        e != nullptr; 
+        e = e->NextSiblingElement())
+    {
+        if(std::string(e->Name()) == name) elements->push_back(e);
+    }
+}
+
+tinyxml2::XMLElement* TMXHelper::GetChildElementByAttribute(
+        tinyxml2::XMLElement* element,
+        const std::string& attribute,
+        const std::string& equalTo
+    )
+{
+    if(!CheckPointerValidity(element)) return nullptr;
+
+    for(auto e = element->FirstChildElement(); 
         e != nullptr; e =
         e->NextSiblingElement())
     {
-        if(std::string(e->Name()) == "layer") elements->push_back(e);
+        if(std::string(e->Attribute(attribute.c_str())) == equalTo) return e;
     }
+
+    return nullptr;
 }
 
 template<>
@@ -49,7 +67,7 @@ bool TMXHelper::GetProperty(tinyxml2::XMLElement* element,
     const std::string& propertyName,
     std::string* value)
 {
-    tinyxml2::XMLElement* propertyElement = GetPropertyElementWithName(element, propertyName);
+    tinyxml2::XMLElement* propertyElement = GetPropertyElementByName(element, propertyName);
     if(propertyElement == nullptr) return false;
     std::string result = propertyElement->Attribute("value");
 
@@ -95,20 +113,20 @@ bool TMXHelper::CheckPointerValidity(tinyxml2::XMLElement* element,
     return true;
 }
 
-tinyxml2::XMLElement* TMXHelper::GetPropertyElementWithName(
+tinyxml2::XMLElement* TMXHelper::GetPropertyElementByName(
         tinyxml2::XMLElement* element,
         const std::string& propertyName)
 {
     if(!CheckPointerValidity(element)) return nullptr;
 
-    tinyxml2::XMLElement* propertiesRoot = GetFirstChildElementWithName(element, "properties");
+    tinyxml2::XMLElement* propertiesRoot = GetChildElementByName(element, "properties");
     if(propertiesRoot == nullptr) 
     {
         LOG_ERROR("Unable to get property \"" + propertyName + "\". Element has no properties." );
         return nullptr;
     }
 
-    tinyxml2::XMLElement* propertyElement = GetChildElementWhereAttributeIsEqualTo(propertiesRoot, "name", propertyName);
+    tinyxml2::XMLElement* propertyElement = GetChildElementByAttribute(propertiesRoot, "name", propertyName);
     if(propertyElement == nullptr)
     {
         LOG_ERROR("Property " + propertyName + " has not been found in element.");
@@ -124,20 +142,3 @@ tinyxml2::XMLElement* TMXHelper::GetPropertyElementWithName(
     return propertyElement;
 }
 
- tinyxml2::XMLElement* TMXHelper::GetChildElementWhereAttributeIsEqualTo(
-        tinyxml2::XMLElement* element,
-        const std::string& attribute,
-        const std::string& equalTo
-    )
-{
-    if(!CheckPointerValidity(element)) return nullptr;
-
-    for(auto e = element->FirstChildElement(); 
-        e != nullptr; e =
-        e->NextSiblingElement())
-    {
-        if(std::string(e->Attribute(attribute.c_str())) == equalTo) return e;
-    }
-
-    return nullptr;
-}

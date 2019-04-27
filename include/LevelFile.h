@@ -12,6 +12,9 @@ public:
     LevelFile(const std::string& filename);
     LevelFile(const LevelFile&);
 
+    bool IsOpen() const { return _isOpen; }
+    const std::string& filename() const { return _filename; }
+
     // Opens the TMX level file
     // This must be called before any operation in the file is performed.
     // Returns true if file has been succesfully opened and the level
@@ -43,16 +46,23 @@ private:
     std::vector<tinyxml2::XMLElement*> _collisionObjectsNodes;
     std::vector<tinyxml2::XMLElement*> _enemiesNodes;
     
-    std::map<int, tinyxml2::XMLElement*> _levelGameObjects;
+    std::map<int, tinyxml2::XMLElement*> _levelObjects;
 
     // Gets the id of the element
-    // Returns -1 if the id is not found
+    // Returns -1 if the id attribute is not found
     int GetObjectID(tinyxml2::XMLElement* objectElement);
 
     void GetLayerElements();
-    void GetCollisionRectsFromCollisionGroup(tinyxml2::XMLElement* collisionLayerElement);
-    void GetEnemiesFromEnemiesGroup(tinyxml2::XMLElement* enemiesElement);
 
+    // Stores all from an object group in _levelObjects.
+    // If elements is not nullptr, stores it in it too.
+    void GetObjects(tinyxml2::XMLElement* objectGroup, std::vector<tinyxml2::XMLElement*>* elements = nullptr);
+
+    // Consults the map of level objects, and return the smallest
+    // not yet used ID.
+    // This query relies on the fact that the id's inside
+    // the map are ordered.
+    int GetFirstAvailableID();
 };
 
 

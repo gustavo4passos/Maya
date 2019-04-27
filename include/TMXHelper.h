@@ -18,13 +18,13 @@ public:
 
     // Returns first child element with the specified name, or
     // nullptr if no child with such name can be found
-    static tinyxml2::XMLElement* GetFirstChildElementWithName(
+    static tinyxml2::XMLElement* GetChildElementByName(
         tinyxml2::XMLElement* element,
         const std::string& name
     );
 
     // Stores all child elements with a certain name inside the elements vector
-    static void GetAllChildElementsWithName(
+    static void GetChildElementsByName(
         tinyxml2::XMLElement* element, 
         const std::string& name, 
         std::vector<tinyxml2::XMLElement*>* elements
@@ -41,8 +41,18 @@ public:
         T value
     );
 
+    // Returns the first child element where the attribute
+    // has a certain value.
+    // Returns nullptr if no element satisfies the condition
+    static tinyxml2::XMLElement* GetChildElementByAttribute(
+        tinyxml2::XMLElement* element,
+        const std::string& attribute,
+        const std::string& equalTo
+    );
+
     // TODO(Gustavo): Should this be here or in LevelFile?
     // static int GetObjectID(tinyxml2::XMLElement* objectElement);
+
 
 private:
     static bool CheckPointerValidity(tinyxml2::XMLElement* element);
@@ -51,19 +61,11 @@ private:
         std::vector<tinyxml2::XMLElement*>* elements
     );
 
-    static tinyxml2::XMLElement* GetPropertyElementWithName(
+    static tinyxml2::XMLElement* GetPropertyElementByName(
         tinyxml2::XMLElement* element,
         const std::string& propertyName
     );
 
-    // Returns the first child element where the attribute
-    // has a certain value.
-    // Returns nullptr if no element satisfies the condition
-    static tinyxml2::XMLElement* GetChildElementWhereAttributeIsEqualTo(
-        tinyxml2::XMLElement* element,
-        const std::string& attribute,
-        const std::string& equalTo
-    );
 };
 
 template<typename T>
@@ -73,7 +75,7 @@ bool TMXHelper::GetProperty(
         T value)
 {
 
-    tinyxml2::XMLElement* propertyElement = GetPropertyElementWithName(element, propertyName);
+    tinyxml2::XMLElement* propertyElement = GetPropertyElementByName(element, propertyName);
     if(propertyElement == nullptr) return false;
 
     tinyxml2::XMLError error = (tinyxml2::XMLError)propertyElement->QueryAttribute("value", value);

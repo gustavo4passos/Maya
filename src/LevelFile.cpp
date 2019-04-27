@@ -36,7 +36,7 @@ bool LevelFile::OpenFile()
     _isOpen = true;
     _rootElement = _tmxFile.RootElement();
 
-    _tilesetNode = TMXHelper::GetFirstChildElementWithName(_rootElement, "tileset");
+    _tilesetNode = TMXHelper::GetChildElementByName(_rootElement, "tileset");
 
     // Tileset node is not present
     if(_tilesetNode == nullptr) {
@@ -49,42 +49,42 @@ bool LevelFile::OpenFile()
     {
         LOG_WARNING("No layer nodes were found in \"" + _filename + "\"");
     }
-    
-    for(XMLElement* e = _rootElement->FirstChildElement();
-        e != nullptr;
-        e = e->NextSiblingElement())
+
+    std::vector<tinyxml2::XMLElement*> objectGroups;
+    TMXHelper::GetChildElementsByName(_rootElement, "objectgroup", &objectGroups);
+
+    for(auto objectGroup = objectGroups.begin(); 
+        objectGroup != objectGroups.end(); 
+        ++objectGroup)
     {
-        if(std::string(e->Name()) == "objectgroup")
+        const std::string groupName = (*objectGroup)->Attribute("name");
+        if(groupName  == "CollisionLayer")
         {
-            std::string objectGroupType = std::string(e->Attribute("name"));
-            if(objectGroupType == "CollisionLayer")
-            {
-                _collisionObjectsGroupNode = e;
-                continue;
-            }
-            else if(objectGroupType == "Enemies") 
-            {
-                _enemiesGroupNode = e;
-                continue;
-            }
+            _collisionObjectsGroupNode = *objectGroup;
+            GetObjects(*objectGroup, &_collisionObjectsNodes);
+        }
+        else if(groupName == "Enemies") 
+        {
+            _enemiesGroupNode = *objectGroup;
+            GetObjects(*objectGroup, &_enemiesNodes);
+        }
+        else 
+        {
+            // Objectroup is none of the above,
+            // but will still be added to _levelObjects because
+            // their id should NOT be ignored when
+            // creating new objects.
+            GetObjects(*objectGroup);
         }
     }
 
-    if(_collisionObjectsGroupNode == nullptr) 
+    if(_collisionObjectsNodes.size() == 0) 
     {
         LOG_WARNING("Level file \"" + _filename + "\" has no collision objects node.");
     }
-    else
-    {
-        GetCollisionRectsFromCollisionGroup(_collisionObjectsGroupNode);
-    }
 
-    if(_enemiesGroupNode != nullptr)
-    {
-        GetEnemiesFromEnemiesGroup(_enemiesGroupNode);
-    }
-
-    return true;
+    std::cout << "Number of objects " << _levelObjects.size() << std::endl;
+    return true; 
 }
 
 int LevelFile::GetObjectID(tinyxml2::XMLElement* objectElement)
@@ -98,30 +98,52 @@ int LevelFile::GetObjectID(tinyxml2::XMLElement* objectElement)
 
 void LevelFile::GetLayerElements()
 {
-    TMXHelper::GetAllChildElementsWithName(_rootElement, "layer", &_layerNodes);
+    TMXHelper::GetChildElementsByName(_rootElement, "layer", &_layerNodes);
 }
 
-void LevelFile::GetCollisionRectsFromCollisionGroup(tinyxml2::XMLElement* collisionLayerElement)
+void LevelFile::GetObjects(tinyxml2::XMLElement* objectGroup, std::vector<tinyxml2::XMLElement*>* elements)
 {
-    TMXHelper::GetAllChildElements(collisionLayerElement, &_collisionObjectsNodes);
-}
-
-void LevelFile::GetEnemiesFromEnemiesGroup(tinyxml2::XMLElement* enemiesElement)
-{
-    // The enemies element pointer is not checked here
-    // This resopnsability is delegated to GetAllChildElements
-    TMXHelper::GetAllChildElements(enemiesElement, &_enemiesNodes);
-    for(auto enemyNode = _enemiesNodes.begin();
-        enemyNode != _enemiesNodes.end();
-        enemyNode++)
+    #ifdef M_DEBUG
+    if(objectGroup == nullptr)
     {
-        int enemyId = GetObjectID(*enemyNode);
-        if(enemyId == -1)
+        LOG_ERROR("Unable to get objects from object group in file \"" + _filename + "\". Object group is nullptr.");
+        return;
+    }
+    #endif
+
+    std::vector<tinyxml2::XMLElement*> objectNodes;
+    TMXHelper::GetAllChildElements(objectGroup, &objectNodes);
+
+    for(auto objectNode = objectNodes.begin();
+        objectNode != objectNodes.end();
+        ++objectNode)
+    {
+        int id = GetObjectID(*objectNode);
+        if(id == -1)
         {
-            LOG_WARNING("An enemy has an invalid ID. Ignoring...");
+            LOG_WARNING("Ignoring object with an invalid ID. File: " + _filename + ". Object group type: " + std::string(objectGroup->Attribute("name")));
             continue;
         }
 
-        _levelGameObjects[enemyId] = *enemyNode;
+        _levelObjects[id] = *objectNode;
+        if(elements != nullptr) elements->push_back(*objectNode);
     }
+}
+
+int LevelFile::GetFirstAvailableID() 
+{
+    int id = 1;
+    auto entry = _levelObjects.begin();
+
+    while(entry != _levelObjects.end())
+    {
+        if(entry->first == id)
+        {
+            ++entry;
+            id++;
+        }      
+        else break;  
+    }
+
+    return id;
 }
