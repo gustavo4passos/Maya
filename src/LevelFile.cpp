@@ -70,9 +70,9 @@ bool LevelFile::OpenFile()
         }
         else 
         {
-            // Objectroup is none of the above,
-            // but will still be added to _levelObjects because
-            // their id should NOT be ignored when
+            // When Objectroup is none of the above,
+            // but will still needs to be added to _levelObjects
+            // because their id should NOT be ignored when
             // creating new objects.
             GetObjects(*objectGroup);
         }
@@ -83,8 +83,18 @@ bool LevelFile::OpenFile()
         LOG_WARNING("Level file \"" + _filename + "\" has no collision objects node.");
     }
 
-    std::cout << "Number of objects " << _levelObjects.size() << std::endl;
     return true; 
+}
+
+bool LevelFile::SaveFile()
+{
+    if(_tmxFile.SaveFile(_filename.c_str()) != tinyxml2::XML_SUCCESS)
+    {
+        LOG_ERROR("Unable to write to level file \"" + _filename + "\". Error: " + _tmxFile.ErrorStr());
+        return false;
+    }
+
+    return true;
 }
 
 int LevelFile::GetObjectID(tinyxml2::XMLElement* objectElement)

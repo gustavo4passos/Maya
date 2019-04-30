@@ -44,6 +44,36 @@ void TMXHelper::GetChildElementsByName(
     }
 }
 
+
+template<>
+bool TMXHelper::GetProperty(
+    tinyxml2::XMLElement* element, 
+    const std::string& propertyName,
+    std::string* value)
+{
+    tinyxml2::XMLElement* propertyElement = GetPropertyElementByName(element, propertyName);
+    if(propertyElement == nullptr) return false;
+    std::string result = propertyElement->Attribute("value");
+
+    *value = result;
+
+    return true;
+}
+
+template<>
+bool TMXHelper::SetProperty(
+    tinyxml2::XMLElement* element,
+    const std::string& propertyName,
+    const std::string& value)
+{
+    if(!CheckPointerValidity(element)) return false;
+
+    tinyxml2::XMLElement* propertyElement = GetPropertyElementByName(element, propertyName);
+    if(propertyElement == nullptr) return false;
+    propertyElement->SetAttribute("value", value.c_str());
+    return true;
+}
+
 tinyxml2::XMLElement* TMXHelper::GetChildElementByAttribute(
         tinyxml2::XMLElement* element,
         const std::string& attribute,
@@ -60,20 +90,6 @@ tinyxml2::XMLElement* TMXHelper::GetChildElementByAttribute(
     }
 
     return nullptr;
-}
-
-template<>
-bool TMXHelper::GetProperty(tinyxml2::XMLElement* element, 
-    const std::string& propertyName,
-    std::string* value)
-{
-    tinyxml2::XMLElement* propertyElement = GetPropertyElementByName(element, propertyName);
-    if(propertyElement == nullptr) return false;
-    std::string result = propertyElement->Attribute("value");
-
-    *value = result;
-
-    return true;
 }
 
 // TODO(Gustavo): Should this be here or in LevelFile?

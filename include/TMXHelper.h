@@ -41,6 +41,13 @@ public:
         T value
     );
 
+    template<typename T>
+    static bool SetProperty(
+        tinyxml2::XMLElement* element,
+        const std::string& propertyName,
+        T value
+    );
+
     // Returns the first child element where the attribute
     // has a certain value.
     // Returns nullptr if no element satisfies the condition
@@ -53,17 +60,16 @@ public:
     // TODO(Gustavo): Should this be here or in LevelFile?
     // static int GetObjectID(tinyxml2::XMLElement* objectElement);
 
+    static tinyxml2::XMLElement* GetPropertyElementByName(
+        tinyxml2::XMLElement* element,
+        const std::string& propertyName
+    );
 
 private:
     static bool CheckPointerValidity(tinyxml2::XMLElement* element);
     static bool CheckPointerValidity(
         tinyxml2::XMLElement* element, 
         std::vector<tinyxml2::XMLElement*>* elements
-    );
-
-    static tinyxml2::XMLElement* GetPropertyElementByName(
-        tinyxml2::XMLElement* element,
-        const std::string& propertyName
     );
 
 };
@@ -74,6 +80,7 @@ bool TMXHelper::GetProperty(
         const std::string& propertyName, 
         T value)
 {
+    if(!CheckPointerValidity(element)) return false;
 
     tinyxml2::XMLElement* propertyElement = GetPropertyElementByName(element, propertyName);
     if(propertyElement == nullptr) return false;
@@ -88,5 +95,26 @@ bool TMXHelper::GetProperty(
     tinyxml2::XMLElement* element,
     const std::string& propertyName,
     std::string* value);
+
+template<typename T>
+bool TMXHelper::SetProperty(
+    tinyxml2::XMLElement* element,
+    const std::string& propertyName,
+    T value)
+{
+    if(!CheckPointerValidity(element)) return false;
+    tinyxml2::XMLElement* propertyElement = GetPropertyElementByName(element, propertyName);
+
+    if(propertyElement == nullptr) return false;
+    propertyElement->SetAttribute("value", value);
+    return true;
+}
+
+template<>
+bool TMXHelper::SetProperty(
+    tinyxml2::XMLElement* element,
+    const std::string& propertyName,
+    const std::string& value
+);
 
 #endif

@@ -60,10 +60,6 @@ bool Game::Init() {
     GameStateMachine::PushState(new PlayState());
     
     _running = false;
-
-    LevelFile lf = LevelFile("temple-entrance-3.tmx");
-    lf.OpenFile();
-
     return true;
 }
 
