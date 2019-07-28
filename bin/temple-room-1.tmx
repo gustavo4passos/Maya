@@ -8,7 +8,7 @@
  </tileset>
  <layer name="Tile Layer 0" width="60" height="40">
   <properties>
-   <property name="zDistance" type="float" value="0.7"/>
+   <property name="zdistance" type="float" value="0.7"/>
   </properties>
   <data encoding="csv">
 8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,

@@ -1,13 +1,10 @@
 #include "../include/LevelFile.h"
 
-#include "../include/Logger.h"
-#include "../include/TMXHelper.h"
-
 LevelFile::LevelFile(const std::string& filename)
 :   _filename(filename),
     _isOpen(false),
     _rootElement(nullptr),
-    _tilesetNode(nullptr),
+    _tilesetElement(nullptr),
     _collisionObjectsGroupNode(nullptr),
     _enemiesGroupNode(nullptr)
 { }
@@ -36,37 +33,40 @@ bool LevelFile::OpenFile()
     _isOpen = true;
     _rootElement = _tmxFile.RootElement();
 
-    _tilesetNode = TMXHelper::GetChildElementByName(_rootElement, "tileset");
+    _tilesetElement = TMXHelper::GetChildElementByName(_rootElement, "tileset");
 
     // Tileset node is not present
-    if(_tilesetNode == nullptr) {
+    if(_tilesetElement == nullptr) {
         LOG_ERROR("Level file \"" + _filename + "\" is missing tileset node.");
         return false;
     }
 
     GetLayerElements();
-    if(_layerNodes.size() == 0) 
+    if(_layerElements.size() == 0) 
     {
         LOG_WARNING("No layer nodes were found in \"" + _filename + "\"");
     }
-
+    
     std::vector<tinyxml2::XMLElement*> objectGroups;
     TMXHelper::GetChildElementsByName(_rootElement, "objectgroup", &objectGroups);
 
-    for(auto objectGroup = objectGroups.begin(); 
-        objectGroup != objectGroups.end(); 
-        ++objectGroup)
+    for(const auto& objectGroup : objectGroups)
     {
-        const std::string groupName = (*objectGroup)->Attribute("name");
+        const std::string groupName = objectGroup->Attribute("name");
         if(groupName  == "CollisionLayer")
         {
-            _collisionObjectsGroupNode = *objectGroup;
-            GetObjects(*objectGroup, &_collisionObjectsNodes);
+            _collisionObjectsGroupNode = objectGroup;
+            RetrieveObjects(objectGroup, &_collisionRectsElements);
         }
         else if(groupName == "Enemies") 
         {
-            _enemiesGroupNode = *objectGroup;
-            GetObjects(*objectGroup, &_enemiesNodes);
+            _enemiesGroupNode = objectGroup;
+            RetrieveObjects(objectGroup, &_enemiesNodes);
+        }
+        else if(groupName == "Zones")
+        {
+            _zonesNode = objectGroup;
+            RetrieveObjects(objectGroup, &_zonesElements);
         }
         else 
         {
@@ -74,11 +74,11 @@ bool LevelFile::OpenFile()
             // but will still needs to be added to _levelObjects
             // because their id should NOT be ignored when
             // creating new objects.
-            GetObjects(*objectGroup);
+            RetrieveObjects(objectGroup);
         }
     }
 
-    if(_collisionObjectsNodes.size() == 0) 
+    if(_collisionRectsElements.size() == 0) 
     {
         LOG_WARNING("Level file \"" + _filename + "\" has no collision objects node.");
     }
@@ -108,10 +108,18 @@ int LevelFile::GetObjectID(tinyxml2::XMLElement* objectElement)
 
 void LevelFile::GetLayerElements()
 {
-    TMXHelper::GetChildElementsByName(_rootElement, "layer", &_layerNodes);
+    for(auto element = _rootElement->FirstChildElement();
+        element != nullptr;
+        element = element->NextSiblingElement())
+    {
+        if(std::string(element->Name()) == "layer" || std::string(element->Name()) == "imagelayer")
+        {
+            _layerElements.push_back(element);
+        }
+    }
 }
 
-void LevelFile::GetObjects(tinyxml2::XMLElement* objectGroup, std::vector<tinyxml2::XMLElement*>* elements)
+void LevelFile::RetrieveObjects(tinyxml2::XMLElement* objectGroup, std::vector<tinyxml2::XMLElement*>* elements)
 {
     #ifdef M_DEBUG
     if(objectGroup == nullptr)
@@ -140,7 +148,7 @@ void LevelFile::GetObjects(tinyxml2::XMLElement* objectGroup, std::vector<tinyxm
     }
 }
 
-int LevelFile::GetFirstAvailableID() 
+int LevelFile::GetFirstUnusedID() 
 {
     int id = 1;
     auto entry = _levelObjects.begin();

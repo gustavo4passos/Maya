@@ -1,13 +1,12 @@
 #include "../include/SaveSystem.h"
 
-#include <tinyxml2.h>
-
 #include "../include/Logger.h"
 #include "../include/GameSwitches.h"
 #include "../include/GameObject.h"
 #include "../include/Level.h"
 #include "../include/Region.h"
 #include "../include/ServiceLocator.h"
+#include "../include/TMXHelper.h"
 
 
 SaveSystem::SaveSystem() { }
@@ -75,10 +74,7 @@ Save* SaveSystem::LoadGame() {
 
     // Tries to read region and subregion data 
     XMLElement* regionDataNode = nullptr;
-    for(regionDataNode = root->FirstChildElement(); regionDataNode != nullptr; regionDataNode = regionDataNode->NextSiblingElement()) {
-        if(std::string(regionDataNode->Name()) == "regiondata") break;
-    }
-
+    regionDataNode = TMXHelper::GetChildElementByName(root, "regiondata");
     if(regionDataNode == nullptr) {
         LOG_ERROR("Unable to load save: region data is missing.");
         return nullptr;

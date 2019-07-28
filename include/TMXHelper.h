@@ -41,6 +41,9 @@ public:
         T value
     );
 
+    // Sets the propertyName to value.
+    // Returns true if the property is successfully set
+    // If the property can't be found, false is returned.
     template<typename T>
     static bool SetProperty(
         tinyxml2::XMLElement* element,
@@ -65,6 +68,8 @@ public:
         const std::string& propertyName
     );
 
+    // Returns the name of an element as a std::string
+    static const std::string GetElementName(tinyxml2::XMLElement* element);
 private:
     static bool CheckPointerValidity(tinyxml2::XMLElement* element);
     static bool CheckPointerValidity(

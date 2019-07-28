@@ -65,7 +65,7 @@ bool PlayState::OnEnter(){
 	ServiceLocator::ProvideCurrentRegion(_region);
 
 	SoundPlayer::PlaySFX(ResourceManager::GetSoundEffect("forest_sounds"), true);
-	SoundPlayer::PlayBGM(ResourceManager::GetMusic("hello"), true);
+	SoundPlayer::PlayBGM(ResourceManager::GetMusic("another-theme"), true);
 
 	ResourceManager::LoadSpritesheet("maya_running", "maya_run", 2);
 	ResourceManager::LoadAnimation("maya_run", "maya_run_animation", 8, 10);

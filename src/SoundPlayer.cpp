@@ -17,7 +17,7 @@ bool SoundPlayer::Init() {
 		}
 	}
 
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048)==-1) {
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1) {
 		LOG_ERROR("Unable to open the Sound Mixer: " + std::string(Mix_GetError()));
 		return false;
 	}

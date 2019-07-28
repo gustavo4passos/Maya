@@ -92,6 +92,41 @@ tinyxml2::XMLElement* TMXHelper::GetChildElementByAttribute(
     return nullptr;
 }
 
+tinyxml2::XMLElement* TMXHelper::GetPropertyElementByName(
+        tinyxml2::XMLElement* element,
+        const std::string& propertyName)
+{
+    if(!CheckPointerValidity(element)) return nullptr;
+
+    tinyxml2::XMLElement* propertiesRoot = GetChildElementByName(element, "properties");
+    if(propertiesRoot == nullptr) 
+    {
+        // LOG_ERROR("Unable to get property \"" + propertyName + "\". Element has no properties." );
+        return nullptr;
+    }
+
+    tinyxml2::XMLElement* propertyElement = GetChildElementByAttribute(propertiesRoot, "name", propertyName);
+    if(propertyElement == nullptr)
+    {
+        // LOG_ERROR("Property " + propertyName + " has not been found in element.");
+        return nullptr;
+    }
+
+    if(propertyElement->Attribute("value") == nullptr)
+    {
+        LOG_ERROR("Property " + propertyName + " is missing value.");
+        return nullptr;
+    }
+
+    return propertyElement;
+}
+
+const std::string TMXHelper::GetElementName(tinyxml2::XMLElement* element)
+{
+    if(!CheckPointerValidity(element)) return std::string();
+
+    return std::string(element->Name());
+}
 // TODO(Gustavo): Should this be here or in LevelFile?
 // int TMXHelper::GetObjectID(tinyxml2::XMLElement* objectElement)
 // {
@@ -108,7 +143,7 @@ bool TMXHelper::CheckPointerValidity(tinyxml2::XMLElement* element)
 {
     if(element == nullptr) 
     {
-        LOG_ERROR("Unable to get child nodes. element is nullptr.");
+        LOG_ERROR("Unable to access element. Element is nullptr.");
         return false;
     }
 
@@ -128,33 +163,3 @@ bool TMXHelper::CheckPointerValidity(tinyxml2::XMLElement* element,
 
     return true;
 }
-
-tinyxml2::XMLElement* TMXHelper::GetPropertyElementByName(
-        tinyxml2::XMLElement* element,
-        const std::string& propertyName)
-{
-    if(!CheckPointerValidity(element)) return nullptr;
-
-    tinyxml2::XMLElement* propertiesRoot = GetChildElementByName(element, "properties");
-    if(propertiesRoot == nullptr) 
-    {
-        LOG_ERROR("Unable to get property \"" + propertyName + "\". Element has no properties." );
-        return nullptr;
-    }
-
-    tinyxml2::XMLElement* propertyElement = GetChildElementByAttribute(propertiesRoot, "name", propertyName);
-    if(propertyElement == nullptr)
-    {
-        LOG_ERROR("Property " + propertyName + " has not been found in element.");
-        return nullptr;
-    }
-
-    if(propertyElement->Attribute("value") == nullptr)
-    {
-        LOG_ERROR("Property " + propertyName + " is missing value.");
-        return nullptr;
-    }
-
-    return propertyElement;
-}
-

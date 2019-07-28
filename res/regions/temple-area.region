@@ -11,7 +11,7 @@
 
             <songs>
                 <song filename="../res/audio/music/piano-theme-drums.mp3" id="piano-theme"/>
-                <song filename="../res/audio/music/hello.mp3" id="hello"/>
+                <song filename="../res/audio/music/another-theme.mp3" id="another-theme"/>
             </songs>
 
         </audio>
@@ -38,12 +38,12 @@
     </resources>
 
     <leveldata>
-        <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
         <level filename="temple-room-1.tmx" id="temple-room-2"/>
         <level filename="temple-entrance-10.tmx" id="temple-entrance-10"/>
         <level filename="temple-entrance-0.tmx" id="temple-entrance-0"/>
         <level filename="temple-entrance-2.tmx" id="temple-entrance-2"/>
         <level filename="temple-entrance-3.tmx" id="temple-entrance-3"/>
+        <level filename="../res/levels/TempleEntrance1.tmx" id="TempleEntrance1"/>
     </leveldata>
 
     <startinglevel id="temple-entrance-0"/>

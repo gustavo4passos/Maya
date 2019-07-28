@@ -71,18 +71,18 @@ OBJECTS = $(patsubst src/%.cpp, build/%.o, $(SOURCES))
 
 bin/Application.exe: $(OBJECTS)
 	$(info Application.exe)
-	$(CC) $(OBJECTS) $(LIB_PATHS) $(LINKER_FLAGS) $(COMPILER_FLAGS) -o bin/Application
+	$(CC) $(OBJECTS) $(LIB_PATHS) $(LINKER_FLAGS) $(COMPILER_FLAGS) -g -o bin/Application
 	@echo ============================================================================================
 	@echo Make: COMPILATION SUCCEEDED
 
 build/%.o: src/%.cpp include/%.h
 	$(info $@)
-	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
+	$(CC) -g -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
 	@echo ============================================================================================
 
 build/%.o: src/%.cpp
 	$(info $@)
-	$(CC) -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
+	$(CC) -g -c $< $(INCLUDE_PATHS) $(COMPILER_FLAGS) -o $@
 	@echo ============================================================================================
 
 clean:
