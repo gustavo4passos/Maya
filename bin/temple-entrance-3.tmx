@@ -213,7 +213,7 @@
         <object id="32" x="0" y="368" width="32" height="112"/>
     </objectgroup>
     <objectgroup name="Zones">
-        <object id="26" type="teleport" x="1172" y="-17" width="143" height="503">
+        <object id="26" type="teleportZone" x="1172" y="-17" width="143" height="503">
             <properties>
                 <property name="destinationLevel" value="temple-room-2"/>
                 <property name="destinationX" value="0"/>

@@ -350,12 +350,12 @@
   <object id="33" x="519" y="-1" width="119" height="414"/>
  </objectgroup>
  <objectgroup name="Enemies">
-  <object id="19" x="40" y="0" width="64" height="96">
+  <object id="40" x="40" y="0" width="64" height="96">
    <properties>
     <property name="type" value="golem"/>
    </properties>
   </object>
-  <object id="19" x="300" y="0" width="64" height="96">
+  <object id="41" x="300" y="0" width="64" height="96">
    <properties>
     <property name="type" value="golem"/>
    </properties>

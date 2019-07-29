@@ -61,15 +61,23 @@ bool LevelFile::OpenFile()
         else if(groupName == "Enemies") 
         {
             _enemiesGroupNode = objectGroup;
-            RetrieveObjects(objectGroup, &_enemiesNodes);
+            RetrieveObjects(objectGroup, &_enemiesElements);
         }
         else if(groupName == "Zones")
         {
             _zonesNode = objectGroup;
             RetrieveObjects(objectGroup, &_zonesElements);
         }
+        else if(groupName == "GameObjects")
+        {
+            _gameObjectsNode = objectGroup;
+            RetrieveObjects(objectGroup, &_gameObjectsElements);
+        }
         else 
         {
+            LOG_WARNING("Unkonwn objectgroup \"" + groupName + "\" in level: " +
+                this->filename() + ". Object group will be ignored.");
+            
             // When Objectroup is none of the above,
             // but will still needs to be added to _levelObjects
             // because their id should NOT be ignored when
@@ -124,7 +132,8 @@ void LevelFile::RetrieveObjects(tinyxml2::XMLElement* objectGroup, std::vector<t
     #ifdef M_DEBUG
     if(objectGroup == nullptr)
     {
-        LOG_ERROR("Unable to get objects from object group in file \"" + _filename + "\". Object group is nullptr.");
+        LOG_ERROR("Unable to get objects from object group in file \"" + 
+            _filename + "\". Object group is nullptr.");
         return;
     }
     #endif
@@ -139,13 +148,31 @@ void LevelFile::RetrieveObjects(tinyxml2::XMLElement* objectGroup, std::vector<t
         int id = GetObjectID(*objectNode);
         if(id == -1)
         {
-            LOG_WARNING("Ignoring object with an invalid ID. File: " + _filename + ". Object group type: " + std::string(objectGroup->Attribute("name")));
+            LOG_WARNING("Ignoring object with an invalid ID. File: " + _filename + 
+            ". Object group type: " + std::string(objectGroup->Attribute("name")));
             continue;
         }
-
+        else if(IsIdAlreadyInUse(id))
+        {
+            LOG_WARNING("ID is already in use by another object in level: " + this->_filename +
+                ". ID: " + std::to_string(id) + ". Object will be ignored.");
+            
+            continue;
+        }
         _levelObjects[id] = *objectNode;
         if(elements != nullptr) elements->push_back(*objectNode);
     }
+}
+
+bool LevelFile::IsIdAlreadyInUse(int id)
+{
+    const auto& it = _levelObjects.find(id);
+    if(it != _levelObjects.end())
+    {
+        return true;
+    }
+
+    return false;
 }
 
 int LevelFile::GetFirstUnusedID() 

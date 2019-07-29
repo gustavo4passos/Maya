@@ -12,17 +12,17 @@
 class LevelFile {
 public:
     LevelFile(const std::string& filename);
-    LevelFile(const LevelFile&);
 
     bool IsOpen() const { return _isOpen; }
     const std::string& filename()                const { return _filename;       }
     const tinyxml2::XMLElement* rootElement()    const { return _rootElement;    }
     const tinyxml2::XMLElement* tilesetElement() const { return _tilesetElement; }
 
-    const std::vector<tinyxml2::XMLElement*>& enemiesElements()         const { return _enemiesNodes;           }
+    const std::vector<tinyxml2::XMLElement*>& enemiesElements()         const { return _enemiesElements;        }
     const std::vector<tinyxml2::XMLElement*>& layerElements()           const { return _layerElements;          }
     const std::vector<tinyxml2::XMLElement*>& collisionRectsElements()  const { return _collisionRectsElements; }
-    const std::vector<tinyxml2::XMLElement*>& zonesElements()            const { return _zonesElements;           }
+    const std::vector<tinyxml2::XMLElement*>& zonesElements()           const { return _zonesElements;          }
+    const std::vector<tinyxml2::XMLElement*>& gameObjectsElements()     const { return _gameObjectsElements;    }
     
     // Opens the TMX level file
     // This must be called before any operation in the file is performed.
@@ -49,6 +49,8 @@ public:
     bool GetObjectProperty(int objectID, const std::string& property, T* value);
 
 private:
+    LevelFile(const LevelFile&);
+    
     std::string _filename;
     tinyxml2::XMLDocument _tmxFile;
     bool _isOpen;
@@ -58,11 +60,13 @@ private:
     tinyxml2::XMLElement* _collisionObjectsGroupNode;
     tinyxml2::XMLElement* _zonesNode;
     tinyxml2::XMLElement* _enemiesGroupNode;
+    tinyxml2::XMLElement* _gameObjectsNode;
 
     std::vector<tinyxml2::XMLElement*> _layerElements;
     std::vector<tinyxml2::XMLElement*> _collisionRectsElements;
-    std::vector<tinyxml2::XMLElement*> _enemiesNodes;
-    std::vector<tinyxml2::XMLElement*> _zonesElements;
+    std::vector<tinyxml2::XMLElement*> _enemiesElements;
+    std::vector<tinyxml2::XMLElement*> _zonesElements; 
+    std::vector<tinyxml2::XMLElement*> _gameObjectsElements;;
     
     std::map<int, tinyxml2::XMLElement*> _levelObjects;
 
@@ -75,6 +79,8 @@ private:
     // Stores all objects from an object group in _levelObjects.
     // If elements is not nullptr, stores it in it too.
     void RetrieveObjects(tinyxml2::XMLElement* objectGroup, std::vector<tinyxml2::XMLElement*>* elements = nullptr);
+
+    bool IsIdAlreadyInUse(int id);
 
     // Consults the map of level objects, and return the smallest
     // not yet used ID.

@@ -124,7 +124,7 @@
   </object>
  </objectgroup>
  <objectgroup name="Zones">
-  <object id="10" type="teleport" x="966.667" y="-156" width="144" height="856">
+  <object id="10" type="teleportZone" x="966.667" y="-156" width="144" height="856">
    <properties>
     <property name="destinationLevel" value="temple-room-2"/>
     <property name="destinationX" type="float" value="0"/>
