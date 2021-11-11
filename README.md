@@ -1,2 +1,2 @@
 # Maya
-Repository for the Maya Project
+The Maya Project
